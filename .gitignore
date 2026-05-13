@@ -27,3 +27,11 @@ Thumbs.db
 # Test results
 test-results/
 .vercel
+
+# Cleanup ignores
+node_modules/
+dist/
+test-results/
+tests/
+package-lock.json
+
