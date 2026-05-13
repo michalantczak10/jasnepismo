@@ -7,8 +7,8 @@ $searchExts = @('*.html','*.css','*.ts','*.js','*.mjs','*.json','*.md')
 $searchFiles = Get-ChildItem -Path $cwd -Recurse -Include $searchExts -File -ErrorAction SilentlyContinue
 Write-Output "Scanning $($searchFiles.Count) files for image references..."
 
-# Regex to capture img/... paths
-$pattern = "img/[^\s\"'\)\(<>]+"
+# Regex to capture img/... paths (avoid embedding quotes in the literal)
+$pattern = 'img/[^)\s<>]+'
 
 $matches = New-Object System.Collections.Generic.List[string]
 foreach ($f in $searchFiles) {
@@ -24,9 +24,12 @@ foreach ($f in $searchFiles) {
 }
 
 $refs = $matches | ForEach-Object {
-    $r = $_ -replace "^[\"']+", "" -replace "[\"']+$", ""
-    $r = $r -replace "^\.\./", "" -replace "^\./", "" -replace "^/", ""
-    $r = $r -replace "\\", "/"
+    $r = $_
+    # remove surrounding quotes if present
+    while ($r.StartsWith('"') -or $r.StartsWith("'")) { $r = $r.Substring(1) }
+    while ($r.EndsWith('"') -or $r.EndsWith("'")) { $r = $r.Substring(0, $r.Length - 1) }
+    $r = $r -replace '^\.\./', '' -replace '^\./', '' -replace '^/', ''
+    $r = $r -replace '\\', '/'
     $r
 } | Select-Object -Unique
 
