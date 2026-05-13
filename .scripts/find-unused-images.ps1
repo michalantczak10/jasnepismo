@@ -7,8 +7,8 @@ $searchExts = @('*.html','*.css','*.ts','*.js','*.mjs','*.json','*.md')
 $searchFiles = Get-ChildItem -Path $cwd -Recurse -Include $searchExts -File -ErrorAction SilentlyContinue
 Write-Output "Scanning $($searchFiles.Count) files for image references..."
 
-# Regex to capture img/... paths (avoid embedding quotes in the literal)
-$pattern = 'img/[^)\s<>]+'
+# Regex to capture image file paths ending with common extensions (non-greedy, case-insensitive)
+$pattern = '(?i)img/.*?\.(png|jpg|jpeg|webp|svg|pdf)'
 
 $matches = New-Object System.Collections.Generic.List[string]
 foreach ($f in $searchFiles) {
