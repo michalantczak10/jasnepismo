@@ -1,0 +1,1106 @@
+{
+  "poster": [
+    {
+      "id": "poster-v1",
+      "title": "Plakaty szkolne PDF (A3) - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/poster-v1.webp",
+      "jpg": "/img/previews/poster-v1.jpg"
+    },
+    {
+      "id": "poster-v2",
+      "title": "Plakaty szkolne PDF (A3) - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/poster-v2.webp",
+      "jpg": "/img/previews/poster-v2.jpg"
+    },
+    {
+      "id": "poster-v3",
+      "title": "Plakaty szkolne PDF (A3) - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/poster-v3.webp",
+      "jpg": "/img/previews/poster-v3.jpg"
+    }
+  ],
+  "poster-a4": [
+    {
+      "id": "poster-a4-v1",
+      "title": "Plakaty szkolne PDF (A4) - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/poster-a4-v1.webp",
+      "jpg": "/img/previews/poster-a4-v1.jpg"
+    },
+    {
+      "id": "poster-a4-v2",
+      "title": "Plakaty szkolne PDF (A4) - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/poster-a4-v2.webp",
+      "jpg": "/img/previews/poster-a4-v2.jpg"
+    },
+    {
+      "id": "poster-a4-v3",
+      "title": "Plakaty szkolne PDF (A4) - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/poster-a4-v3.webp",
+      "jpg": "/img/previews/poster-a4-v3.jpg"
+    }
+  ],
+  "newsletter": [
+    {
+      "id": "newsletter-v1",
+      "title": "Szablony gazetki PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/newsletter-v1.webp",
+      "jpg": "/img/previews/newsletter-v1.jpg"
+    },
+    {
+      "id": "newsletter-v2",
+      "title": "Szablony gazetki PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/newsletter-v2.webp",
+      "jpg": "/img/previews/newsletter-v2.jpg"
+    },
+    {
+      "id": "newsletter-v3",
+      "title": "Szablony gazetki PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/newsletter-v3.webp",
+      "jpg": "/img/previews/newsletter-v3.jpg"
+    }
+  ],
+  "newsletter-classic": [
+    {
+      "id": "newsletter-classic-v1",
+      "title": "Szablon klasyczny PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/newsletter-classic-v1.webp",
+      "jpg": "/img/previews/newsletter-classic-v1.jpg"
+    },
+    {
+      "id": "newsletter-classic-v2",
+      "title": "Szablon klasyczny PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/newsletter-classic-v2.webp",
+      "jpg": "/img/previews/newsletter-classic-v2.jpg"
+    },
+    {
+      "id": "newsletter-classic-v3",
+      "title": "Szablon klasyczny PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/newsletter-classic-v3.webp",
+      "jpg": "/img/previews/newsletter-classic-v3.jpg"
+    }
+  ],
+  "boze-narodzenie-zestaw": [
+    {
+      "id": "boze-narodzenie-zestaw-v1",
+      "title": "Zestaw świąteczny PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/boze-narodzenie-zestaw-v1.webp",
+      "jpg": "/img/previews/boze-narodzenie-zestaw-v1.jpg"
+    },
+    {
+      "id": "boze-narodzenie-zestaw-v2",
+      "title": "Zestaw świąteczny PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/boze-narodzenie-zestaw-v2.webp",
+      "jpg": "/img/previews/boze-narodzenie-zestaw-v2.jpg"
+    },
+    {
+      "id": "boze-narodzenie-zestaw-v3",
+      "title": "Zestaw świąteczny PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/boze-narodzenie-zestaw-v3.webp",
+      "jpg": "/img/previews/boze-narodzenie-zestaw-v3.jpg"
+    }
+  ],
+  "boze-narodzenie-plakaty": [
+    {
+      "id": "boze-narodzenie-plakaty-v1",
+      "title": "Plakaty bożonarodzeniowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/boze-narodzenie-plakaty-v1.webp",
+      "jpg": "/img/previews/boze-narodzenie-plakaty-v1.jpg"
+    },
+    {
+      "id": "boze-narodzenie-plakaty-v2",
+      "title": "Plakaty bożonarodzeniowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/boze-narodzenie-plakaty-v2.webp",
+      "jpg": "/img/previews/boze-narodzenie-plakaty-v2.jpg"
+    },
+    {
+      "id": "boze-narodzenie-plakaty-v3",
+      "title": "Plakaty bożonarodzeniowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/boze-narodzenie-plakaty-v3.webp",
+      "jpg": "/img/previews/boze-narodzenie-plakaty-v3.jpg"
+    }
+  ],
+  "zima-plakaty": [
+    {
+      "id": "zima-plakaty-v1",
+      "title": "Plakaty zimowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/zima-plakaty-v1.webp",
+      "jpg": "/img/previews/zima-plakaty-v1.jpg"
+    },
+    {
+      "id": "zima-plakaty-v2",
+      "title": "Plakaty zimowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/zima-plakaty-v2.webp",
+      "jpg": "/img/previews/zima-plakaty-v2.jpg"
+    },
+    {
+      "id": "zima-plakaty-v3",
+      "title": "Plakaty zimowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/zima-plakaty-v3.webp",
+      "jpg": "/img/previews/zima-plakaty-v3.jpg"
+    }
+  ],
+  "zima-szablony": [
+    {
+      "id": "zima-szablony-v1",
+      "title": "Szablony zimowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/zima-szablony-v1.webp",
+      "jpg": "/img/previews/zima-szablony-v1.jpg"
+    },
+    {
+      "id": "zima-szablony-v2",
+      "title": "Szablony zimowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/zima-szablony-v2.webp",
+      "jpg": "/img/previews/zima-szablony-v2.jpg"
+    },
+    {
+      "id": "zima-szablony-v3",
+      "title": "Szablony zimowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/zima-szablony-v3.webp",
+      "jpg": "/img/previews/zima-szablony-v3.jpg"
+    }
+  ],
+  "mikolajki-plakaty": [
+    {
+      "id": "mikolajki-plakaty-v1",
+      "title": "Plakaty mikołajkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/mikolajki-plakaty-v1.webp",
+      "jpg": "/img/previews/mikolajki-plakaty-v1.jpg"
+    },
+    {
+      "id": "mikolajki-plakaty-v2",
+      "title": "Plakaty mikołajkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/mikolajki-plakaty-v2.webp",
+      "jpg": "/img/previews/mikolajki-plakaty-v2.jpg"
+    },
+    {
+      "id": "mikolajki-plakaty-v3",
+      "title": "Plakaty mikołajkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/mikolajki-plakaty-v3.webp",
+      "jpg": "/img/previews/mikolajki-plakaty-v3.jpg"
+    }
+  ],
+  "mikolajki-szablony": [
+    {
+      "id": "mikolajki-szablony-v1",
+      "title": "Szablony mikołajkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/mikolajki-szablony-v1.webp",
+      "jpg": "/img/previews/mikolajki-szablony-v1.jpg"
+    },
+    {
+      "id": "mikolajki-szablony-v2",
+      "title": "Szablony mikołajkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/mikolajki-szablony-v2.webp",
+      "jpg": "/img/previews/mikolajki-szablony-v2.jpg"
+    },
+    {
+      "id": "mikolajki-szablony-v3",
+      "title": "Szablony mikołajkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/mikolajki-szablony-v3.webp",
+      "jpg": "/img/previews/mikolajki-szablony-v3.jpg"
+    }
+  ],
+  "walentynki-plakaty": [
+    {
+      "id": "walentynki-plakaty-v1",
+      "title": "Plakaty walentynkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/walentynki-plakaty-v1.webp",
+      "jpg": "/img/previews/walentynki-plakaty-v1.jpg"
+    },
+    {
+      "id": "walentynki-plakaty-v2",
+      "title": "Plakaty walentynkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/walentynki-plakaty-v2.webp",
+      "jpg": "/img/previews/walentynki-plakaty-v2.jpg"
+    },
+    {
+      "id": "walentynki-plakaty-v3",
+      "title": "Plakaty walentynkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/walentynki-plakaty-v3.webp",
+      "jpg": "/img/previews/walentynki-plakaty-v3.jpg"
+    }
+  ],
+  "walentynki-szablony": [
+    {
+      "id": "walentynki-szablony-v1",
+      "title": "Szablony walentynkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/walentynki-szablony-v1.webp",
+      "jpg": "/img/previews/walentynki-szablony-v1.jpg"
+    },
+    {
+      "id": "walentynki-szablony-v2",
+      "title": "Szablony walentynkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/walentynki-szablony-v2.webp",
+      "jpg": "/img/previews/walentynki-szablony-v2.jpg"
+    },
+    {
+      "id": "walentynki-szablony-v3",
+      "title": "Szablony walentynkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/walentynki-szablony-v3.webp",
+      "jpg": "/img/previews/walentynki-szablony-v3.jpg"
+    }
+  ],
+  "dzien-babci-plakaty": [
+    {
+      "id": "dzien-babci-plakaty-v1",
+      "title": "Plakaty – Dzień Babci i Dziadka PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-babci-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-babci-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-babci-plakaty-v2",
+      "title": "Plakaty – Dzień Babci i Dziadka PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-babci-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-babci-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-babci-plakaty-v3",
+      "title": "Plakaty – Dzień Babci i Dziadka PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-babci-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-babci-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-babci-szablony": [
+    {
+      "id": "dzien-babci-szablony-v1",
+      "title": "Szablony – Dzień Babci i Dziadka PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-babci-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-babci-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-babci-szablony-v2",
+      "title": "Szablony – Dzień Babci i Dziadka PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-babci-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-babci-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-babci-szablony-v3",
+      "title": "Szablony – Dzień Babci i Dziadka PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-babci-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-babci-szablony-v3.jpg"
+    }
+  ],
+  "dzien-kobiet-plakaty": [
+    {
+      "id": "dzien-kobiet-plakaty-v1",
+      "title": "Plakaty – Dzień Kobiet PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-kobiet-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-kobiet-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-kobiet-plakaty-v2",
+      "title": "Plakaty – Dzień Kobiet PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-kobiet-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-kobiet-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-kobiet-plakaty-v3",
+      "title": "Plakaty – Dzień Kobiet PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-kobiet-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-kobiet-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-kobiet-szablony": [
+    {
+      "id": "dzien-kobiet-szablony-v1",
+      "title": "Szablony – Dzień Kobiet PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-kobiet-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-kobiet-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-kobiet-szablony-v2",
+      "title": "Szablony – Dzień Kobiet PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-kobiet-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-kobiet-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-kobiet-szablony-v3",
+      "title": "Szablony – Dzień Kobiet PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-kobiet-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-kobiet-szablony-v3.jpg"
+    }
+  ],
+  "pierwszy-dzien-wiosny-plakaty": [
+    {
+      "id": "pierwszy-dzien-wiosny-plakaty-v1",
+      "title": "Plakaty – Pierwszy Dzień Wiosny PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-plakaty-v1.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-plakaty-v1.jpg"
+    },
+    {
+      "id": "pierwszy-dzien-wiosny-plakaty-v2",
+      "title": "Plakaty – Pierwszy Dzień Wiosny PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-plakaty-v2.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-plakaty-v2.jpg"
+    },
+    {
+      "id": "pierwszy-dzien-wiosny-plakaty-v3",
+      "title": "Plakaty – Pierwszy Dzień Wiosny PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-plakaty-v3.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-plakaty-v3.jpg"
+    }
+  ],
+  "pierwszy-dzien-wiosny-szablony": [
+    {
+      "id": "pierwszy-dzien-wiosny-szablony-v1",
+      "title": "Szablony – Pierwszy Dzień Wiosny PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-szablony-v1.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-szablony-v1.jpg"
+    },
+    {
+      "id": "pierwszy-dzien-wiosny-szablony-v2",
+      "title": "Szablony – Pierwszy Dzień Wiosny PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-szablony-v2.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-szablony-v2.jpg"
+    },
+    {
+      "id": "pierwszy-dzien-wiosny-szablony-v3",
+      "title": "Szablony – Pierwszy Dzień Wiosny PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/pierwszy-dzien-wiosny-szablony-v3.webp",
+      "jpg": "/img/previews/pierwszy-dzien-wiosny-szablony-v3.jpg"
+    }
+  ],
+  "wielkanoc-plakaty": [
+    {
+      "id": "wielkanoc-plakaty-v1",
+      "title": "Plakaty wielkanocne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/wielkanoc-plakaty-v1.webp",
+      "jpg": "/img/previews/wielkanoc-plakaty-v1.jpg"
+    },
+    {
+      "id": "wielkanoc-plakaty-v2",
+      "title": "Plakaty wielkanocne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/wielkanoc-plakaty-v2.webp",
+      "jpg": "/img/previews/wielkanoc-plakaty-v2.jpg"
+    },
+    {
+      "id": "wielkanoc-plakaty-v3",
+      "title": "Plakaty wielkanocne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/wielkanoc-plakaty-v3.webp",
+      "jpg": "/img/previews/wielkanoc-plakaty-v3.jpg"
+    }
+  ],
+  "wielkanoc-szablony": [
+    {
+      "id": "wielkanoc-szablony-v1",
+      "title": "Szablony wielkanocne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/wielkanoc-szablony-v1.webp",
+      "jpg": "/img/previews/wielkanoc-szablony-v1.jpg"
+    },
+    {
+      "id": "wielkanoc-szablony-v2",
+      "title": "Szablony wielkanocne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/wielkanoc-szablony-v2.webp",
+      "jpg": "/img/previews/wielkanoc-szablony-v2.jpg"
+    },
+    {
+      "id": "wielkanoc-szablony-v3",
+      "title": "Szablony wielkanocne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/wielkanoc-szablony-v3.webp",
+      "jpg": "/img/previews/wielkanoc-szablony-v3.jpg"
+    }
+  ],
+  "dzien-ziemi-plakaty": [
+    {
+      "id": "dzien-ziemi-plakaty-v1",
+      "title": "Plakaty – Dzień Ziemi PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-ziemi-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-ziemi-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-ziemi-plakaty-v2",
+      "title": "Plakaty – Dzień Ziemi PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-ziemi-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-ziemi-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-ziemi-plakaty-v3",
+      "title": "Plakaty – Dzień Ziemi PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-ziemi-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-ziemi-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-ziemi-szablony": [
+    {
+      "id": "dzien-ziemi-szablony-v1",
+      "title": "Szablony – Dzień Ziemi PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-ziemi-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-ziemi-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-ziemi-szablony-v2",
+      "title": "Szablony – Dzień Ziemi PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-ziemi-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-ziemi-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-ziemi-szablony-v3",
+      "title": "Szablony – Dzień Ziemi PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-ziemi-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-ziemi-szablony-v3.jpg"
+    }
+  ],
+  "wiosna-plakaty": [
+    {
+      "id": "wiosna-plakaty-v1",
+      "title": "Plakaty wiosenne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/wiosna-plakaty-v1.webp",
+      "jpg": "/img/previews/wiosna-plakaty-v1.jpg"
+    },
+    {
+      "id": "wiosna-plakaty-v2",
+      "title": "Plakaty wiosenne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/wiosna-plakaty-v2.webp",
+      "jpg": "/img/previews/wiosna-plakaty-v2.jpg"
+    },
+    {
+      "id": "wiosna-plakaty-v3",
+      "title": "Plakaty wiosenne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/wiosna-plakaty-v3.webp",
+      "jpg": "/img/previews/wiosna-plakaty-v3.jpg"
+    }
+  ],
+  "wiosna-szablony": [
+    {
+      "id": "wiosna-szablony-v1",
+      "title": "Szablony wiosenne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/wiosna-szablony-v1.webp",
+      "jpg": "/img/previews/wiosna-szablony-v1.jpg"
+    },
+    {
+      "id": "wiosna-szablony-v2",
+      "title": "Szablony wiosenne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/wiosna-szablony-v2.webp",
+      "jpg": "/img/previews/wiosna-szablony-v2.jpg"
+    },
+    {
+      "id": "wiosna-szablony-v3",
+      "title": "Szablony wiosenne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/wiosna-szablony-v3.webp",
+      "jpg": "/img/previews/wiosna-szablony-v3.jpg"
+    }
+  ],
+  "konstytucja-plakaty": [
+    {
+      "id": "konstytucja-plakaty-v1",
+      "title": "Plakaty – 3 Maja PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/konstytucja-plakaty-v1.webp",
+      "jpg": "/img/previews/konstytucja-plakaty-v1.jpg"
+    },
+    {
+      "id": "konstytucja-plakaty-v2",
+      "title": "Plakaty – 3 Maja PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/konstytucja-plakaty-v2.webp",
+      "jpg": "/img/previews/konstytucja-plakaty-v2.jpg"
+    },
+    {
+      "id": "konstytucja-plakaty-v3",
+      "title": "Plakaty – 3 Maja PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/konstytucja-plakaty-v3.webp",
+      "jpg": "/img/previews/konstytucja-plakaty-v3.jpg"
+    }
+  ],
+  "konstytucja-szablony": [
+    {
+      "id": "konstytucja-szablony-v1",
+      "title": "Szablony – 3 Maja PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/konstytucja-szablony-v1.webp",
+      "jpg": "/img/previews/konstytucja-szablony-v1.jpg"
+    },
+    {
+      "id": "konstytucja-szablony-v2",
+      "title": "Szablony – 3 Maja PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/konstytucja-szablony-v2.webp",
+      "jpg": "/img/previews/konstytucja-szablony-v2.jpg"
+    },
+    {
+      "id": "konstytucja-szablony-v3",
+      "title": "Szablony – 3 Maja PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/konstytucja-szablony-v3.webp",
+      "jpg": "/img/previews/konstytucja-szablony-v3.jpg"
+    }
+  ],
+  "dzien-matki-plakaty": [
+    {
+      "id": "dzien-matki-plakaty-v1",
+      "title": "Plakaty – Dzień Matki PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-matki-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-matki-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-matki-plakaty-v2",
+      "title": "Plakaty – Dzień Matki PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-matki-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-matki-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-matki-plakaty-v3",
+      "title": "Plakaty – Dzień Matki PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-matki-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-matki-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-matki-szablony": [
+    {
+      "id": "dzien-matki-szablony-v1",
+      "title": "Szablony – Dzień Matki PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-matki-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-matki-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-matki-szablony-v2",
+      "title": "Szablony – Dzień Matki PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-matki-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-matki-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-matki-szablony-v3",
+      "title": "Szablony – Dzień Matki PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-matki-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-matki-szablony-v3.jpg"
+    }
+  ],
+  "dzien-dziecka-plakaty": [
+    {
+      "id": "dzien-dziecka-plakaty-v1",
+      "title": "Plakaty – Dzień Dziecka PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-dziecka-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-dziecka-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-dziecka-plakaty-v2",
+      "title": "Plakaty – Dzień Dziecka PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-dziecka-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-dziecka-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-dziecka-plakaty-v3",
+      "title": "Plakaty – Dzień Dziecka PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-dziecka-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-dziecka-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-dziecka-szablony": [
+    {
+      "id": "dzien-dziecka-szablony-v1",
+      "title": "Szablony – Dzień Dziecka PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-dziecka-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-dziecka-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-dziecka-szablony-v2",
+      "title": "Szablony – Dzień Dziecka PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-dziecka-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-dziecka-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-dziecka-szablony-v3",
+      "title": "Szablony – Dzień Dziecka PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-dziecka-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-dziecka-szablony-v3.jpg"
+    }
+  ],
+  "dzien-ojca-plakaty": [
+    {
+      "id": "dzien-ojca-plakaty-v1",
+      "title": "Plakaty – Dzień Ojca PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-ojca-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-ojca-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-ojca-plakaty-v2",
+      "title": "Plakaty – Dzień Ojca PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-ojca-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-ojca-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-ojca-plakaty-v3",
+      "title": "Plakaty – Dzień Ojca PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-ojca-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-ojca-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-ojca-szablony": [
+    {
+      "id": "dzien-ojca-szablony-v1",
+      "title": "Szablony – Dzień Ojca PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-ojca-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-ojca-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-ojca-szablony-v2",
+      "title": "Szablony – Dzień Ojca PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-ojca-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-ojca-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-ojca-szablony-v3",
+      "title": "Szablony – Dzień Ojca PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-ojca-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-ojca-szablony-v3.jpg"
+    }
+  ],
+  "lato-plakaty": [
+    {
+      "id": "lato-plakaty-v1",
+      "title": "Plakaty letnie PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/lato-plakaty-v1.webp",
+      "jpg": "/img/previews/lato-plakaty-v1.jpg"
+    },
+    {
+      "id": "lato-plakaty-v2",
+      "title": "Plakaty letnie PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/lato-plakaty-v2.webp",
+      "jpg": "/img/previews/lato-plakaty-v2.jpg"
+    },
+    {
+      "id": "lato-plakaty-v3",
+      "title": "Plakaty letnie PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/lato-plakaty-v3.webp",
+      "jpg": "/img/previews/lato-plakaty-v3.jpg"
+    }
+  ],
+  "lato-szablony": [
+    {
+      "id": "lato-szablony-v1",
+      "title": "Szablony letnie PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/lato-szablony-v1.webp",
+      "jpg": "/img/previews/lato-szablony-v1.jpg"
+    },
+    {
+      "id": "lato-szablony-v2",
+      "title": "Szablony letnie PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/lato-szablony-v2.webp",
+      "jpg": "/img/previews/lato-szablony-v2.jpg"
+    },
+    {
+      "id": "lato-szablony-v3",
+      "title": "Szablony letnie PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/lato-szablony-v3.webp",
+      "jpg": "/img/previews/lato-szablony-v3.jpg"
+    }
+  ],
+  "zakonczenie-roku-plakaty": [
+    {
+      "id": "zakonczenie-roku-plakaty-v1",
+      "title": "Plakaty – Zakończenie roku PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-plakaty-v1.webp",
+      "jpg": "/img/previews/zakonczenie-roku-plakaty-v1.jpg"
+    },
+    {
+      "id": "zakonczenie-roku-plakaty-v2",
+      "title": "Plakaty – Zakończenie roku PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-plakaty-v2.webp",
+      "jpg": "/img/previews/zakonczenie-roku-plakaty-v2.jpg"
+    },
+    {
+      "id": "zakonczenie-roku-plakaty-v3",
+      "title": "Plakaty – Zakończenie roku PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-plakaty-v3.webp",
+      "jpg": "/img/previews/zakonczenie-roku-plakaty-v3.jpg"
+    }
+  ],
+  "zakonczenie-roku-szablony": [
+    {
+      "id": "zakonczenie-roku-szablony-v1",
+      "title": "Szablony – Zakończenie roku PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-szablony-v1.webp",
+      "jpg": "/img/previews/zakonczenie-roku-szablony-v1.jpg"
+    },
+    {
+      "id": "zakonczenie-roku-szablony-v2",
+      "title": "Szablony – Zakończenie roku PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-szablony-v2.webp",
+      "jpg": "/img/previews/zakonczenie-roku-szablony-v2.jpg"
+    },
+    {
+      "id": "zakonczenie-roku-szablony-v3",
+      "title": "Szablony – Zakończenie roku PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/zakonczenie-roku-szablony-v3.webp",
+      "jpg": "/img/previews/zakonczenie-roku-szablony-v3.jpg"
+    }
+  ],
+  "poczatek-roku-plakaty": [
+    {
+      "id": "poczatek-roku-plakaty-v1",
+      "title": "Plakaty – Początek roku PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/poczatek-roku-plakaty-v1.webp",
+      "jpg": "/img/previews/poczatek-roku-plakaty-v1.jpg"
+    },
+    {
+      "id": "poczatek-roku-plakaty-v2",
+      "title": "Plakaty – Początek roku PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/poczatek-roku-plakaty-v2.webp",
+      "jpg": "/img/previews/poczatek-roku-plakaty-v2.jpg"
+    },
+    {
+      "id": "poczatek-roku-plakaty-v3",
+      "title": "Plakaty – Początek roku PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/poczatek-roku-plakaty-v3.webp",
+      "jpg": "/img/previews/poczatek-roku-plakaty-v3.jpg"
+    }
+  ],
+  "poczatek-roku-szablony": [
+    {
+      "id": "poczatek-roku-szablony-v1",
+      "title": "Szablony – Początek roku PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/poczatek-roku-szablony-v1.webp",
+      "jpg": "/img/previews/poczatek-roku-szablony-v1.jpg"
+    },
+    {
+      "id": "poczatek-roku-szablony-v2",
+      "title": "Szablony – Początek roku PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/poczatek-roku-szablony-v2.webp",
+      "jpg": "/img/previews/poczatek-roku-szablony-v2.jpg"
+    },
+    {
+      "id": "poczatek-roku-szablony-v3",
+      "title": "Szablony – Początek roku PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/poczatek-roku-szablony-v3.webp",
+      "jpg": "/img/previews/poczatek-roku-szablony-v3.jpg"
+    }
+  ],
+  "jesien-plakaty": [
+    {
+      "id": "jesien-plakaty-v1",
+      "title": "Plakaty jesienne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/jesien-plakaty-v1.webp",
+      "jpg": "/img/previews/jesien-plakaty-v1.jpg"
+    },
+    {
+      "id": "jesien-plakaty-v2",
+      "title": "Plakaty jesienne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/jesien-plakaty-v2.webp",
+      "jpg": "/img/previews/jesien-plakaty-v2.jpg"
+    },
+    {
+      "id": "jesien-plakaty-v3",
+      "title": "Plakaty jesienne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/jesien-plakaty-v3.webp",
+      "jpg": "/img/previews/jesien-plakaty-v3.jpg"
+    }
+  ],
+  "jesien-szablony": [
+    {
+      "id": "jesien-szablony-v1",
+      "title": "Szablony jesienne PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/jesien-szablony-v1.webp",
+      "jpg": "/img/previews/jesien-szablony-v1.jpg"
+    },
+    {
+      "id": "jesien-szablony-v2",
+      "title": "Szablony jesienne PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/jesien-szablony-v2.webp",
+      "jpg": "/img/previews/jesien-szablony-v2.jpg"
+    },
+    {
+      "id": "jesien-szablony-v3",
+      "title": "Szablony jesienne PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/jesien-szablony-v3.webp",
+      "jpg": "/img/previews/jesien-szablony-v3.jpg"
+    }
+  ],
+  "dzien-nauczyciela-plakaty": [
+    {
+      "id": "dzien-nauczyciela-plakaty-v1",
+      "title": "Plakaty – Dzień Nauczyciela PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-plakaty-v1.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-plakaty-v1.jpg"
+    },
+    {
+      "id": "dzien-nauczyciela-plakaty-v2",
+      "title": "Plakaty – Dzień Nauczyciela PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-plakaty-v2.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-plakaty-v2.jpg"
+    },
+    {
+      "id": "dzien-nauczyciela-plakaty-v3",
+      "title": "Plakaty – Dzień Nauczyciela PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-plakaty-v3.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-plakaty-v3.jpg"
+    }
+  ],
+  "dzien-nauczyciela-szablony": [
+    {
+      "id": "dzien-nauczyciela-szablony-v1",
+      "title": "Szablony – Dzień Nauczyciela PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-szablony-v1.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-szablony-v1.jpg"
+    },
+    {
+      "id": "dzien-nauczyciela-szablony-v2",
+      "title": "Szablony – Dzień Nauczyciela PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-szablony-v2.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-szablony-v2.jpg"
+    },
+    {
+      "id": "dzien-nauczyciela-szablony-v3",
+      "title": "Szablony – Dzień Nauczyciela PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/dzien-nauczyciela-szablony-v3.webp",
+      "jpg": "/img/previews/dzien-nauczyciela-szablony-v3.jpg"
+    }
+  ],
+  "halloween-plakaty": [
+    {
+      "id": "halloween-plakaty-v1",
+      "title": "Plakaty Halloween PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/halloween-plakaty-v1.webp",
+      "jpg": "/img/previews/halloween-plakaty-v1.jpg"
+    },
+    {
+      "id": "halloween-plakaty-v2",
+      "title": "Plakaty Halloween PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/halloween-plakaty-v2.webp",
+      "jpg": "/img/previews/halloween-plakaty-v2.jpg"
+    },
+    {
+      "id": "halloween-plakaty-v3",
+      "title": "Plakaty Halloween PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/halloween-plakaty-v3.webp",
+      "jpg": "/img/previews/halloween-plakaty-v3.jpg"
+    }
+  ],
+  "halloween-szablony": [
+    {
+      "id": "halloween-szablony-v1",
+      "title": "Szablony Halloween PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/halloween-szablony-v1.webp",
+      "jpg": "/img/previews/halloween-szablony-v1.jpg"
+    },
+    {
+      "id": "halloween-szablony-v2",
+      "title": "Szablony Halloween PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/halloween-szablony-v2.webp",
+      "jpg": "/img/previews/halloween-szablony-v2.jpg"
+    },
+    {
+      "id": "halloween-szablony-v3",
+      "title": "Szablony Halloween PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/halloween-szablony-v3.webp",
+      "jpg": "/img/previews/halloween-szablony-v3.jpg"
+    }
+  ],
+  "andrzejki-plakaty": [
+    {
+      "id": "andrzejki-plakaty-v1",
+      "title": "Plakaty andrzejkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/andrzejki-plakaty-v1.webp",
+      "jpg": "/img/previews/andrzejki-plakaty-v1.jpg"
+    },
+    {
+      "id": "andrzejki-plakaty-v2",
+      "title": "Plakaty andrzejkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/andrzejki-plakaty-v2.webp",
+      "jpg": "/img/previews/andrzejki-plakaty-v2.jpg"
+    },
+    {
+      "id": "andrzejki-plakaty-v3",
+      "title": "Plakaty andrzejkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/andrzejki-plakaty-v3.webp",
+      "jpg": "/img/previews/andrzejki-plakaty-v3.jpg"
+    }
+  ],
+  "andrzejki-szablony": [
+    {
+      "id": "andrzejki-szablony-v1",
+      "title": "Szablony andrzejkowe PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/andrzejki-szablony-v1.webp",
+      "jpg": "/img/previews/andrzejki-szablony-v1.jpg"
+    },
+    {
+      "id": "andrzejki-szablony-v2",
+      "title": "Szablony andrzejkowe PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/andrzejki-szablony-v2.webp",
+      "jpg": "/img/previews/andrzejki-szablony-v2.jpg"
+    },
+    {
+      "id": "andrzejki-szablony-v3",
+      "title": "Szablony andrzejkowe PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/andrzejki-szablony-v3.webp",
+      "jpg": "/img/previews/andrzejki-szablony-v3.jpg"
+    }
+  ],
+  "niepodleglosc-plakaty": [
+    {
+      "id": "niepodleglosc-plakaty-v1",
+      "title": "Plakaty – 11 Listopada PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/niepodleglosc-plakaty-v1.webp",
+      "jpg": "/img/previews/niepodleglosc-plakaty-v1.jpg"
+    },
+    {
+      "id": "niepodleglosc-plakaty-v2",
+      "title": "Plakaty – 11 Listopada PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/niepodleglosc-plakaty-v2.webp",
+      "jpg": "/img/previews/niepodleglosc-plakaty-v2.jpg"
+    },
+    {
+      "id": "niepodleglosc-plakaty-v3",
+      "title": "Plakaty – 11 Listopada PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/niepodleglosc-plakaty-v3.webp",
+      "jpg": "/img/previews/niepodleglosc-plakaty-v3.jpg"
+    }
+  ],
+  "niepodleglosc-szablony": [
+    {
+      "id": "niepodleglosc-szablony-v1",
+      "title": "Szablony – 11 Listopada PDF - Wersja 1",
+      "caption": "Wariant 1 podgladu",
+      "webp": "/img/previews/niepodleglosc-szablony-v1.webp",
+      "jpg": "/img/previews/niepodleglosc-szablony-v1.jpg"
+    },
+    {
+      "id": "niepodleglosc-szablony-v2",
+      "title": "Szablony – 11 Listopada PDF - Wersja 2",
+      "caption": "Wariant 2 podgladu",
+      "webp": "/img/previews/niepodleglosc-szablony-v2.webp",
+      "jpg": "/img/previews/niepodleglosc-szablony-v2.jpg"
+    },
+    {
+      "id": "niepodleglosc-szablony-v3",
+      "title": "Szablony – 11 Listopada PDF - Wersja 3",
+      "caption": "Wariant 3 podgladu",
+      "webp": "/img/previews/niepodleglosc-szablony-v3.webp",
+      "jpg": "/img/previews/niepodleglosc-szablony-v3.jpg"
+    }
+  ]
+}

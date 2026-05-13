@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/ 
+
+# Build outputs
+dist/
+
+# Logs
+*.log
+*.tmp
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test results
+test-results/
+.vercel

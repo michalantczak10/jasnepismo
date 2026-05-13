@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
+  <rect width="400" height="260" fill="#fafafa"/>
+  <rect width="400" height="260" fill="#FCA5A5" fill-opacity=".08"/>
+  
+      <rect x="0" y="0" width="400" height="44" fill="#991B1B"/>
+      <text x="22" y="28" font-size="22" dominant-baseline="middle" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif">🎅</text>
+      <text x="52" y="28" font-size="15" font-weight="bold" dominant-baseline="middle" fill="#fff" font-family="Arial,sans-serif">Wywiad / Quiz</text>
+      <rect x="12" y="56" width="376" height="50" rx="4" fill="#FCA5A5" fill-opacity=".2"/>
+      <rect x="22" y="63" width="6" height="36" rx="2" fill="#991B1B" fill-opacity=".8"/>
+      <rect x="38" y="68" width="200" height="8" rx="3" fill="#991B1B" fill-opacity=".4"/>
+      <rect x="38" y="82" width="160" height="6" rx="3" fill="#888" fill-opacity=".25"/>
+      <rect x="12" y="118" width="376" height="50" rx="4" fill="#FCA5A5" fill-opacity=".3"/>
+      <rect x="22" y="125" width="6" height="36" rx="2" fill="#991B1B" fill-opacity=".8"/>
+      <rect x="38" y="130" width="180" height="8" rx="3" fill="#991B1B" fill-opacity=".4"/>
+      <rect x="38" y="144" width="140" height="6" rx="3" fill="#888" fill-opacity=".25"/>
+      <rect x="12" y="180" width="376" height="30" rx="4" fill="#FCA5A5" fill-opacity=".15"/>
+      <text x="374" y="248" font-size="11" text-anchor="end" fill="#991B1B" font-family="Arial,sans-serif" opacity=".7">str. 5</text>
+</svg>

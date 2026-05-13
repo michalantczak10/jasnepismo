@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DB2777"/>
+      <stop offset="100%" stop-color="#701A75"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="260" fill="url(#g)"/>
+  <circle cx="50" cy="50" r="80" fill="#fff" fill-opacity=".07"/>
+  <circle cx="370" cy="220" r="100" fill="#fff" fill-opacity=".05"/>
+  <text x="200" y="105" font-size="80" text-anchor="middle" dominant-baseline="middle" font-family="Segoe UI Emoji,Apple Color Emoji,Noto Color Emoji,sans-serif">🌸</text>
+  <rect x="0" y="190" width="400" height="70" fill="#000" fill-opacity=".25"/>
+  <text x="200" y="230" font-size="20" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="#fff" font-family="Arial,sans-serif">Plakaty PDF</text>
+</svg>
