@@ -124,7 +124,7 @@ a {
 section {
   width: min(100%, 920px);
   margin: 0 auto;
-  padding: 40px 18px;
+  padding: 52px 24px;
 }
 
 .contact-section {
@@ -134,7 +134,7 @@ section {
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: clamp(48px, 6vw, 72px) 18px;
+  padding: clamp(64px, 7vw, 90px) 24px;
   background: linear-gradient(180deg, #fff2b8 0%, #fff9e0 55%, #f9f1d4 100%);
 }
 
@@ -161,12 +161,12 @@ section.trust {
 .about-grid {
   display: grid;
   grid-template-columns: 1.4fr 0.9fr;
-  gap: 1.5rem;
+  gap: 2rem;
   align-items: flex-start;
 }
 
 .about-copy p {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .about-highlights {
@@ -255,7 +255,7 @@ section.trust {
 .benefit-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap: 1rem;
+  gap: 1.75rem;
 }
 
 .benefit-card {
@@ -313,7 +313,7 @@ section.trust {
   background: #fff4b8;
   border: 1px solid rgba(255, 204, 0, 0.35);
   border-radius: var(--radius);
-  padding: 28px 26px;
+  padding: 34px 30px;
   text-align: center;
   box-shadow: 0 16px 40px rgba(255, 187, 0, 0.14);
 }
@@ -352,7 +352,7 @@ section.trust {
   border: 1px solid rgba(255, 204, 0, 0.35);
   border-radius: var(--radius);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
-  padding: 32px 32px;
+  padding: 40px 40px;
 }
 
 .product-inner h2,
