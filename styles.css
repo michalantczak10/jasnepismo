@@ -158,6 +158,76 @@ section.trust {
   margin-bottom: 1.5rem;
 }
 
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.about-copy p {
+  margin-bottom: 1.2rem;
+}
+
+.about-highlights {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.about-highlights li {
+  background: #fff7e0;
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  border-radius: 18px;
+  padding: 1rem 1.15rem;
+  color: #1a1a1a;
+  text-align: left;
+  box-shadow: 0 18px 30px rgba(255, 190, 0, 0.1);
+}
+
+.about-highlights li strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #b36a00;
+}
+
+.about-card {
+  background: linear-gradient(180deg, #fff8c1 0%, #fffdeb 100%);
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  border-radius: 28px;
+  padding: 30px 24px;
+  box-shadow: 0 24px 60px rgba(255, 190, 0, 0.12);
+}
+
+.about-card-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: #ffd400;
+  color: #111;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.about-card h3 {
+  margin: 0 0 1rem;
+  color: #1a2b55;
+  font-size: 1.35rem;
+}
+
+.about-card p {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.75;
+}
+
 .section-tag {
   display: inline-flex;
   gap: 0.5rem;
@@ -433,6 +503,11 @@ section.trust {
 
   .hero-image {
     max-height: 45vh;
+  }
+
+  .about-grid,
+  .benefit-grid {
+    grid-template-columns: 1fr;
   }
 }
 
