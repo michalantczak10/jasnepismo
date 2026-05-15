@@ -1,6 +1,6 @@
 ﻿# Naukazmichalem — Wizytówka
 
-Prosta, statyczna wizytówka internetowa prezentująca ofertę korepetycji i pomoc IT.
+Prosta, statyczna wizytówka internetowa prezentująca ofertę korepetycji z matematyki i informatyki.
 
 ## Co znajduje się w projekcie
 
