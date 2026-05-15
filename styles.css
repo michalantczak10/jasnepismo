@@ -127,6 +127,17 @@ section {
   padding: 40px 18px;
 }
 
+.contact-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: clamp(48px, 6vw, 72px) 18px;
+  background: linear-gradient(180deg, #f6fbff 0%, #eaf2ff 100%);
+}
+
 section.about,
 section.product,
 section.trust {
