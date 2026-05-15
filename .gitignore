@@ -1,5 +1,5 @@
 # Dependencies
-node_modules/ 
+node_modules/
 
 # Build outputs
 dist/
@@ -26,12 +26,9 @@ Thumbs.db
 
 # Test results
 test-results/
+
+# Vercel
 .vercel
 
-# Cleanup ignores
-node_modules/
-dist/
-test-results/
-tests/
+# Lockfiles
 package-lock.json
-
