@@ -135,7 +135,7 @@ section {
   margin-left: -50vw;
   margin-right: -50vw;
   padding: clamp(48px, 6vw, 72px) 18px;
-  background: linear-gradient(180deg, #f6fbff 0%, #eaf2ff 100%);
+  background: linear-gradient(180deg, #fff7dc 0%, #f6f3ff 100%);
 }
 
 section.about,
@@ -164,9 +164,12 @@ section.trust {
   font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: #8c5e00;
   font-weight: 700;
   margin-bottom: 0.75rem;
+  background: rgba(255, 204, 0, 0.18);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
 }
 
 .section-intro {
@@ -272,7 +275,8 @@ section.trust {
 }
 
 .product-inner {
-  background: #fff;
+  background: linear-gradient(180deg, #fff9d6 0%, #ffffff 100%);
+  border: 1px solid rgba(255, 204, 0, 0.24);
   border-radius: var(--radius);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
   padding: 32px 32px;
@@ -321,7 +325,7 @@ section.trust {
   text-align: center;
   gap: 0.75rem;
   padding: 1.3rem 1.15rem;
-  border: 1px solid rgba(179, 0, 0, 0.12);
+  border: 1px solid rgba(255, 204, 0, 0.25);
   border-radius: 18px;
   background: #fff7e0;
   color: #1f1f1f;
@@ -367,16 +371,17 @@ section.trust {
 }
 
 .contact-card {
-  background: #f3f7ff;
-  border: 1px solid rgba(47, 128, 237, 0.14);
+  background: #fff7e0;
+  border: 1px solid rgba(255, 204, 0, 0.34);
   border-radius: var(--radius);
   padding: 28px 26px;
   text-align: center;
-  box-shadow: 0 16px 40px rgba(47, 128, 237, 0.08);
+  box-shadow: 0 16px 40px rgba(255, 204, 0, 0.16);
 }
 
 .contact-card-secondary {
-  background: #ffffff;
+  background: #fffdf2;
+  border: 1px solid rgba(255, 204, 0, 0.16);
 }
 
 .contact-phone,
