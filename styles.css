@@ -158,6 +158,12 @@ section {
   padding: 52px 24px;
 }
 
+.section h2 {
+  margin: 0 0 24px;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: var(--color-primary);
+}
+
 .contact-section {
   width: 100vw;
   position: relative;
