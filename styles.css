@@ -382,12 +382,18 @@ section.trust {
   white-space: nowrap;
 }
 
+.contact-subtitle {
+  margin: 0 0 1rem;
+  color: #4c3c00;
+  font-weight: 700;
+}
+
 .contact-email a.hero-cta .button-icon {
   margin-right: 0.75rem;
 }
 
 .contact-email {
-  margin-top: 2rem;
+  margin-top: 2.8rem;
 }
 
 .contact-email .contact-note {
