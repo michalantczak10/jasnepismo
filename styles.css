@@ -180,6 +180,8 @@ section {
 
 .contact-section {
   width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden;
   position: relative;
   left: 50%;
   right: 50%;
@@ -400,6 +402,11 @@ section {
   background: #fff8d8;
   padding: 28px 24px;
   text-align: center;
+}
+
+.footer-inner {
+  width: min(100%, 920px);
+  margin: 0 auto;
 }
 
 .site-footer p {
