@@ -261,12 +261,6 @@ section {
   margin-bottom: 2.8rem;
 }
 
-.about-card h3 {
-  margin: 0 0 1rem;
-  color: #1a2b55;
-  font-size: 1.35rem;
-}
-
 .about-card p {
   margin: 0;
   color: var(--color-text);
