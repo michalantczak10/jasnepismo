@@ -11,6 +11,13 @@
   cursor: default !important;
 }
 
+.hero-cta,
+.hero-cta:hover,
+.contact-card a,
+.contact-card a:hover {
+  cursor: pointer !important;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
