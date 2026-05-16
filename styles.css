@@ -194,10 +194,6 @@ section {
   text-align: center;
 }
 
-.contact-section h2 {
-  text-align: center;
-}
-
 .section-header {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -400,16 +396,30 @@ section {
   display: inline-block;
 }
 
+.site-footer {
+  background: #fff8d8;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.site-footer a {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .product-inner {
   background: linear-gradient(180deg, #fff8c1 0%, #fffef2 80%);
   border: 1px solid rgba(255, 204, 0, 0.35);
   border-radius: var(--radius);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
   padding: 40px 40px;
-}
-
-.section--pricing .section-header {
-  text-align: center;
 }
 
 .section--pricing .product-inner {
