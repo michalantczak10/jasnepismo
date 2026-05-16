@@ -1,9 +1,3 @@
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-
 # Logs
 *.log
 *.tmp
@@ -24,11 +18,5 @@ Thumbs.db
 .env.local
 .env.*.local
 
-# Test results
-test-results/
-
 # Vercel
 .vercel
-
-# Lockfiles
-package-lock.json
