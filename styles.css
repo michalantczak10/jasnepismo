@@ -219,7 +219,7 @@ section {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.9rem;
+  gap: 1.5rem;
 }
 
 .about-highlights li {
