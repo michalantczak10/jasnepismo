@@ -18,5 +18,12 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# Node
+node_modules/
+
+# Playwright
+playwright-report/
+test-results/
+
 # Vercel
 .vercel
