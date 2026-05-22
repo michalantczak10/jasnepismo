@@ -15,7 +15,7 @@ test.describe('Strona główna', () => {
 
     const heroHeading = page.locator('.hero-copy h1');
     await expect(heroHeading).toBeVisible();
-    await expect(heroHeading).toContainText(/Korepetycje matematyka i informatyka/i);
+    await expect(heroHeading).toContainText(/Korepetycje z matematyki i informatyki/i);
 
     const heroSubtitle = page.locator('.hero-subtitle');
     await expect(heroSubtitle).toBeVisible();
