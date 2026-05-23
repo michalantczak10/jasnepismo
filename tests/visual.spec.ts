@@ -18,7 +18,7 @@ test.describe('Style and layout checks', () => {
     expect(heroBackground).toContain('radial-gradient');
 
     const heading = page.locator('.hero-copy h1');
-    await expect(heading).toHaveText(/Korepetycje matematyka i informatyka w Płocku/i);
+    await expect(heading).toHaveText(/Korepetycje z matematyki i informatyki w Płocku/i);
 
     const headingColor = await heading.evaluate((element) => window.getComputedStyle(element).color);
     expect(headingColor).toBe('rgb(255, 255, 255)');
