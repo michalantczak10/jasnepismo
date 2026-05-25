@@ -59,6 +59,18 @@ curl -X POST https://www.jasnepismo.pl/api/explain \
   -d '{"text":"To jest testowy dokument do wyjaśnienia."}'
 ```
 
+#### Sprawdzenie rozliczeń OpenAI
+
+```bash
+curl -X GET https://www.jasnepismo.pl/api/billing
+```
+
+Możesz też użyć dat w query:
+
+```bash
+curl -X GET "https://www.jasnepismo.pl/api/billing?start_date=2026-05-01&end_date=2026-05-25"
+```
+
 Przykładowa odpowiedź z `/api/explain`:
 
 ```json
@@ -112,6 +124,7 @@ Dodatkowo:
 
 - `POST /api/explain` zwraca pole `usage` wraz z wyjaśnieniem, co pozwala monitorować zużycie tokenów przy każdym żądaniu.
 - `GET /api/usage` zwraca ostatnie użycie tokenów z wywołania `/api/explain`.
+- `GET /api/billing` pobiera aktualne dane rozliczeniowe OpenAI dla bieżącego miesiąca.
 
 ### Propozycja monitoringu
 
