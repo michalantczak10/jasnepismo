@@ -106,6 +106,16 @@ Przykładowa odpowiedź z `/api/explain`:
 1. Otwórz wdrożoną stronę na Vercel.
 2. Wklej tekst pisma urzędowego i wybierz przycisk "Wyjaśnij za darmo".
 
+### Testy jednostkowe
+
+Aby uruchomić testy lokalnie, wpisz:
+
+```bash
+npm test
+```
+
+Do repozytorium dodano także GitHub Actions, które uruchamiają testy przy pushu i pull requestach do `main`.
+
 ## Monitoring i zdrowie serwisu
 
 Aby zewnętrzny serwis monitorujący przekonał się, że aplikacja działa, możesz podłączyć adres:
