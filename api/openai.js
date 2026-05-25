@@ -1,4 +1,5 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 
 async function generateExplanation(text) {
   if (!OPENAI_API_KEY) {
@@ -17,7 +18,7 @@ ${text.trim()}
       Authorization: `Bearer ${OPENAI_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'gpt-4.1-mini',
+      model: OPENAI_MODEL,
       messages: [
         { role: 'system', content: 'Jesteś asystentem, który tłumaczy pisma urzędowe na prosty język.' },
         { role: 'user', content: prompt }

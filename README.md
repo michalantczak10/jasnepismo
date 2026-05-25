@@ -29,6 +29,7 @@ Ten projekt teraz obsługuje prostą wersję backendu na Vercel i przetwarzanie 
 ## Wymagane zmienne środowiskowe
 
 - `OPENAI_API_KEY` — klucz OpenAI dla endpointu `/api/explain`.
+- `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
 
 ## Deployment on Vercel
 
