@@ -21,32 +21,18 @@ module.exports = async function handler(req, res) {
   }
 
   const { start_date, end_date } = req.query || getCurrentMonthDates();
-  const usageUrl = `https://api.openai.com/v1/dashboard/billing/usage?start_date=${start_date}&end_date=${end_date}`;
-  const subscriptionUrl = 'https://api.openai.com/v1/dashboard/billing/subscription';
+  const usageUrl = `https://api.openai.com/v1/usage?start_date=${start_date}&end_date=${end_date}`;
 
   try {
-    const [usageResp, subscriptionResp] = await Promise.all([
-      fetch(usageUrl, {
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-      }),
-      fetch(subscriptionUrl, {
-        headers: {
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
-        },
-      }),
-    ]);
+    const usageResp = await fetch(usageUrl, {
+      headers: {
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+      },
+    });
 
     const usageData = await usageResp.json();
-    const subscriptionData = await subscriptionResp.json();
-
     if (!usageResp.ok) {
       return res.status(usageResp.status).json({ error: usageData.error || usageData });
-    }
-
-    if (!subscriptionResp.ok) {
-      return res.status(subscriptionResp.status).json({ error: subscriptionData.error || subscriptionData });
     }
 
     return res.status(200).json({
@@ -54,7 +40,6 @@ module.exports = async function handler(req, res) {
       start_date,
       end_date,
       usage: usageData,
-      subscription: subscriptionData,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Błąd serwera.' });

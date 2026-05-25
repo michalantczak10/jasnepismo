@@ -71,6 +71,8 @@ Możesz też użyć dat w query:
 curl -X GET "https://www.jasnepismo.pl/api/billing?start_date=2026-05-01&end_date=2026-05-25"
 ```
 
+Ten endpoint używa standardowego OpenAI `/v1/usage` i zwraca dane rozliczeniowe dla podanego okresu.
+
 Przykładowa odpowiedź z `/api/explain`:
 
 ```json
