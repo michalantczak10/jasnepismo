@@ -839,7 +839,21 @@ section:last-of-type {
   border: 1px solid rgba(255, 204, 0, 0.35);
   color: var(--color-text);
   line-height: 1.6;
-  white-space: pre-wrap;
+}
+
+.preview-textarea {
+  width: 100%;
+  margin-top: 0.75rem;
+  min-height: 10rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--color-text);
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .form-actions {

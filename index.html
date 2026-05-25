@@ -79,9 +79,12 @@
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
           <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
           <p id="textCount" class="field-note">0 / 5000 znaków</p>
-          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu (opcjonalnie, max 5 MB)</label>
-          <input id="documentFile" type="file" accept="image/*" class="file-upload-input" />
-          <div id="extractedTextPreview" class="extracted-text-preview" hidden></div>
+          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOCX / PDF (opcjonalnie, max 5 MB)</label>
+          <input id="documentFile" type="file" accept=".doc,.docx,.pdf,image/*" class="file-upload-input" />
+          <div id="extractedTextContainer" class="extracted-text-preview" hidden>
+            <strong>Surowy tekst wczytany z dokumentu</strong>
+            <textarea id="extractedTextPreview" class="preview-textarea" rows="8" placeholder="Tutaj pojawi się tekst z dokumentu. Możesz go poprawić przed wysłaniem."></textarea>
+          </div>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
             <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść</button>
@@ -119,9 +122,12 @@
     </footer>
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+    <script src="https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
       const documentFile = document.getElementById('documentFile');
+      const extractedTextContainer = document.getElementById('extractedTextContainer');
       const extractedTextPreview = document.getElementById('extractedTextPreview');
       const textCount = document.getElementById('textCount');
       const freeButton = document.getElementById('freeButton');
@@ -176,13 +182,105 @@
 
       function updateExtractedTextPreview(text) {
         if (!text) {
-          extractedTextPreview.hidden = true;
-          extractedTextPreview.textContent = '';
+          extractedTextContainer.hidden = true;
+          extractedTextPreview.value = '';
+          extractedText = '';
           return;
         }
 
-        extractedTextPreview.hidden = false;
-        extractedTextPreview.textContent = `Rozpoznany tekst ze skanu: ${text}`;
+        extractedTextContainer.hidden = false;
+        extractedTextPreview.value = text;
+        extractedText = text;
+      }
+
+      function normalizeExtractedText(text) {
+        return text
+          .replace(/\r\n/g, '\n')
+          .replace(/\r/g, '\n')
+          .replace(/\u0000/g, '')
+          .replace(/[ \t\f\v]+/g, ' ')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+
+      function extractTextFromDoc(arrayBuffer) {
+        const encodings = ['utf-16le', 'windows-1250', 'windows-1252'];
+        let bestText = '';
+        let bestScore = -1;
+
+        for (const encoding of encodings) {
+          try {
+            const text = new TextDecoder(encoding).decode(arrayBuffer);
+            const score = (text.match(/[\p{L}\p{N}]/gu) || []).length;
+            if (score > bestScore) {
+              bestScore = score;
+              bestText = text;
+            }
+          } catch (error) {
+            // ignore unsupported decoder
+          }
+        }
+
+        if (bestScore <= 0) {
+          const bytes = new Uint8Array(arrayBuffer);
+          bestText = Array.from(bytes, (byte) => {
+            if (byte === 9 || byte === 10 || byte === 13) return String.fromCharCode(byte);
+            if (byte >= 32 && byte <= 126) return String.fromCharCode(byte);
+            if (byte >= 160 && byte <= 255) return String.fromCharCode(byte);
+            return ' ';
+          }).join('');
+        }
+
+        return normalizeExtractedText(bestText);
+      }
+
+      function normalizePdfLine(text) {
+        return text
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      async function extractTextFromPdf(arrayBuffer) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.worker.min.js';
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        let extractedText = '';
+
+        for (let pageIndex = 1; pageIndex <= pdf.numPages; pageIndex += 1) {
+          const page = await pdf.getPage(pageIndex);
+          const content = await page.getTextContent();
+
+          const lines = [];
+          content.items.forEach((item) => {
+            const str = item.str || '';
+            const transform = item.transform || [1, 0, 0, 1, 0, 0];
+            const x = transform[4] || 0;
+            const y = transform[5] || 0;
+            const key = Math.round(y / 2) * 2;
+
+            const line = lines.find((row) => Math.abs(row.y - key) < 3);
+            if (line) {
+              line.items.push({ x, str });
+            } else {
+              lines.push({ y: key, items: [{ x, str }] });
+            }
+          });
+
+          lines.sort((a, b) => b.y - a.y);
+          const pageText = lines
+            .map((line) => line.items
+              .sort((a, b) => a.x - b.x)
+              .map((item) => item.str)
+              .join(' ')
+            )
+            .map(normalizePdfLine)
+            .filter(Boolean)
+            .join('\n');
+
+          extractedText += `${pageText}\n\n`;
+        }
+
+        return normalizeExtractedText(extractedText);
       }
 
       async function sendRequest(url, body) {
@@ -240,6 +338,10 @@
         }
       });
 
+      extractedTextPreview.addEventListener('input', () => {
+        extractedText = extractedTextPreview.value.trim();
+      });
+
       documentFile.addEventListener('change', async (event) => {
         const file = event.target.files?.[0];
         extractedText = '';
@@ -248,8 +350,14 @@
           return;
         }
 
-        if (!file.type.startsWith('image/')) {
-          showError('Możesz przesłać tylko zdjęcie dokumentu.');
+        const fileName = file.name.toLowerCase();
+        const isImage = file.type.startsWith('image/');
+        const isPdf = file.type === 'application/pdf' || fileName.endsWith('.pdf');
+        const isDocx = fileName.endsWith('.docx');
+        const isDoc = fileName.endsWith('.doc');
+
+        if (!isImage && !isPdf && !isDocx && !isDoc) {
+          showError('Możesz przesłać tylko obraz, plik PDF, plik DOCX lub plik DOC.');
           documentFile.value = '';
           return;
         }
@@ -261,22 +369,73 @@
         }
 
         setLoading(true);
-        setStatus('Rozpoznawanie obrazu...', false);
         errorMessage.hidden = true;
 
-        try {
-          const { data: { text } } = await Tesseract.recognize(file, 'pol');
-          extractedText = text ? text.trim() : '';
-          if (!extractedText) {
-            showError('Nie udało się rozpoznać tekstu ze skanu.');
-          } else {
-            setStatus('OCR zakończony. Możesz wysłać rozpoznany tekst do wyjaśnienia.', false);
+        if (isImage) {
+          setStatus('Rozpoznawanie obrazu...', false);
+          try {
+            const { data: { text } } = await Tesseract.recognize(file, 'pol');
+            extractedText = text ? text.trim() : '';
+            if (!extractedText) {
+              showError('Nie udało się rozpoznać tekstu ze skanu.');
+            } else {
+              setStatus('OCR zakończony. Możesz wysłać rozpoznany tekst do wyjaśnienia.', false);
+            }
+            updateExtractedTextPreview(extractedText);
+          } catch (error) {
+            showError('Błąd OCR. Spróbuj inny skan lub wklej tekst ręcznie.');
+          } finally {
+            setLoading(false);
           }
-          updateExtractedTextPreview(extractedText);
-        } catch (error) {
-          showError('Błąd OCR. Spróbuj inny skan lub wklej tekst ręcznie.');
-        } finally {
-          setLoading(false);
+        } else if (isPdf) {
+          setStatus('Wczytywanie pliku PDF...', false);
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            extractedText = await extractTextFromPdf(arrayBuffer);
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku PDF.');
+            } else {
+              setStatus('Plik PDF wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            updateExtractedTextPreview(extractedText);
+          } catch (error) {
+            showError('Błąd podczas odczytu pliku PDF. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
+        } else if (isDocx) {
+          setStatus('Wczytywanie pliku DOCX...', false);
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            extractedText = result.value ? result.value.trim() : '';
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku DOCX.');
+            } else {
+              setStatus('Plik DOCX wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            updateExtractedTextPreview(extractedText);
+          } catch (error) {
+            showError('Błąd podczas odczytu pliku DOCX. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
+        } else {
+          setStatus('Wczytywanie pliku DOC...', false);
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            extractedText = extractTextFromDoc(arrayBuffer);
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku DOC.');
+            } else {
+              setStatus('Plik DOC wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            updateExtractedTextPreview(extractedText);
+          } catch (error) {
+            showError('Błąd podczas odczytu pliku DOC. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
         }
       });
 
@@ -285,7 +444,8 @@
         textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
         documentFile.value = '';
         extractedText = '';
-        updateExtractedTextPreview('');
+        extractedTextPreview.value = '';
+        extractedTextContainer.hidden = true;
         resultCard.hidden = true;
         downloadButton.hidden = true;
         errorMessage.hidden = true;
