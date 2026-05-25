@@ -802,6 +802,7 @@ section:last-of-type {
 .form-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -815,6 +816,10 @@ section:last-of-type {
   color: #fff;
   background: rgba(0, 0, 0, 0.16);
   border-radius: 999px;
+}
+
+.loader[hidden] {
+  display: none !important;
 }
 
 .error-message {
