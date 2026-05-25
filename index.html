@@ -123,7 +123,7 @@
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js"></script>
-    <script src="https://unpkg.com/jszip@3.11.1/dist/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
@@ -250,7 +250,9 @@
           ? JSZip
           : typeof window !== 'undefined' && window.JSZip
             ? window.JSZip
-            : null;
+            : typeof globalThis !== 'undefined' && globalThis.JSZip
+              ? globalThis.JSZip
+              : null;
 
         if (!JSZipClass) {
           throw new Error('JSZip nie jest dostępny w tej przeglądarce.');
