@@ -77,8 +77,9 @@
         </div>
         <form id="explainForm" class="explain-form">
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
-          <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..." ></textarea>
-          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu (opcjonalnie)</label>
+          <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
+          <p id="textCount" class="field-note">0 / 5000 znaków</p>
+          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu (opcjonalnie, max 5 MB)</label>
           <input id="documentFile" type="file" accept="image/*" class="file-upload-input" />
           <div id="extractedTextPreview" class="extracted-text-preview" hidden></div>
           <div class="form-actions">
@@ -119,12 +120,15 @@
       const textarea = document.getElementById('documentText');
       const documentFile = document.getElementById('documentFile');
       const extractedTextPreview = document.getElementById('extractedTextPreview');
+      const textCount = document.getElementById('textCount');
       const freeButton = document.getElementById('freeButton');
       const loader = document.getElementById('loader');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
 
+      const MAX_TEXT_LENGTH = 5000;
+      const MAX_FILE_SIZE = 5 * 1024 * 1024;
       let extractedText = '';
 
       function setLoading(isLoading) {
@@ -181,6 +185,11 @@
           return;
         }
 
+        if (text.length > MAX_TEXT_LENGTH) {
+          showError(`Tekst nie może przekraczać ${MAX_TEXT_LENGTH} znaków.`);
+          return;
+        }
+
         setLoading(true);
 
         try {
@@ -193,6 +202,16 @@
         }
       }
 
+      textarea.addEventListener('input', () => {
+        const length = textarea.value.length;
+        textCount.textContent = `${length} / ${MAX_TEXT_LENGTH} znaków`;
+        if (length > MAX_TEXT_LENGTH) {
+          textCount.style.color = '#9b1d1d';
+        } else {
+          textCount.style.color = 'rgba(17, 17, 17, 0.78)';
+        }
+      });
+
       documentFile.addEventListener('change', async (event) => {
         const file = event.target.files?.[0];
         extractedText = '';
@@ -203,6 +222,12 @@
 
         if (!file.type.startsWith('image/')) {
           showError('Możesz przesłać tylko zdjęcie dokumentu.');
+          documentFile.value = '';
+          return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+          showError('Plik musi mieć maksymalnie 5 MB.');
           documentFile.value = '';
           return;
         }

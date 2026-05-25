@@ -816,6 +816,12 @@ section:last-of-type {
   color: var(--color-text);
 }
 
+.field-note {
+  margin: 0.25rem 0 0.85rem;
+  color: rgba(17, 17, 17, 0.78);
+  font-size: 0.95rem;
+}
+
 .extracted-text-preview {
   padding: 1rem 1.2rem;
   border-radius: 20px;
