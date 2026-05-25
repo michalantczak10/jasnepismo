@@ -91,6 +91,7 @@
             <span id="loader" class="loader" hidden></span>
           </div>
           <p id="statusMessage" class="status-message" hidden></p>
+          <progress id="fileProgress" class="file-progress" max="100" value="0" hidden></progress>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
         <article id="resultCard" class="result-card" hidden>
@@ -136,6 +137,7 @@
       const downloadButton = document.getElementById('downloadButton');
       const loader = document.getElementById('loader');
       const statusMessage = document.getElementById('statusMessage');
+      const fileProgress = document.getElementById('fileProgress');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
@@ -151,7 +153,18 @@
         clearButton.disabled = isLoading;
         if (!isLoading) {
           setStatus('');
+          setProgress(null);
         }
+      }
+
+      function setProgress(value) {
+        if (!fileProgress) return;
+        if (typeof value !== 'number' || isNaN(value)) {
+          fileProgress.hidden = true;
+          return;
+        }
+        fileProgress.hidden = false;
+        fileProgress.value = Math.max(0, Math.min(100, value));
       }
 
       function setStatus(message, isError = false) {
@@ -287,7 +300,15 @@
         }
 
         try {
-          const zip = await JSZipClass.loadAsync(arrayBuffer);
+          setProgress(0);
+          const zip = await JSZipClass.loadAsync(arrayBuffer, {
+            onProgress(metadata) {
+              if (typeof metadata.percent === 'number') {
+                setProgress(metadata.percent);
+              }
+            }
+          });
+          setProgress(90);
           const documentXmlFile = zip.file('word/document.xml');
           if (!documentXmlFile) {
             throw new Error('Brak pliku word/document.xml w pliku DOCX.');
@@ -300,6 +321,7 @@
             const nodes = Array.from(paragraph.getElementsByTagName('w:t'));
             return nodes.map((node) => node.textContent || '').join('');
           }).join('\n');
+          setProgress(100);
           return normalizeExtractedText(text);
         } catch (error) {
           throw new Error(error?.message || 'Nie udało się odczytać pliku DOCX.');
