@@ -1,4 +1,4 @@
-﻿# JasnePismo — wyjaśnianie pism urzędowych
+﻿# Jasne pismo — wyjaśnianie pism urzędowych
 
 Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Umożliwia wklejenie tekstu lub przesłanie skanu dokumentu i wygenerowanie prostego wyjaśnienia.
 
