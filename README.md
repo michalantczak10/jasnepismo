@@ -35,10 +35,20 @@ Ten projekt teraz obsługuje prostą wersję backendu na Vercel.
 - `PAYMENT_PROVIDER` — domyślnie `demo`, żeby używać symulowanej płatności.
 - `PAYMENT_WEBHOOK_SECRET` — sekret webhooka płatności (w trybie demo ma wartość `demo-webhook-secret`).
 
+## Deployment on Vercel
+
+1. Create a new project in Vercel and connect it to the `jasnepismo` repository.
+2. Make sure `vercel.json` is present in the repo root.
+3. Add the environment variables in Vercel:
+   - `OPENAI_API_KEY`
+   - `PAYMENT_PROVIDER` set to `demo`
+   - `PAYMENT_WEBHOOK_SECRET` set to `demo-webhook-secret`
+4. Deploy the project. The site is served statically and backend routes are handled by Vercel Serverless Functions in the `api/` folder.
+
 ## Jak testować
 
-1. Wdroż repozycję na Vercel.
-2. Ustaw `OPENAI_API_KEY` w ustawieniach środowiska.
-3. Odpal stronę i użyj przycisków "Wyjaśnij za darmo" lub "Wyjaśnij za 1 zł".
-4. W trybie demo płatność zostanie zasymulowana przez `mock-payment.html`.
+1. Otwórz wdrożoną stronę na Vercel.
+2. Wklej tekst pisma urzędowego i wybierz przycisk "Wyjaśnij za darmo" lub "Wyjaśnij za 1 zł".
+3. W trybie demo płatność jest symulowana przez `mock-payment.html`.
+4. Jeśli chcesz, możesz dodać jeszcze `PAYMENT_PROVIDER=demo` i `PAYMENT_WEBHOOK_SECRET=demo-webhook-secret`.
 

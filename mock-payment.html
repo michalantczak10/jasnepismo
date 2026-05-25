@@ -29,10 +29,12 @@
       const button = document.getElementById('payButton');
       const status = document.getElementById('status');
       const returnLink = document.getElementById('returnLink');
+      const storageKey = paymentId ? `jasnepismo_payment_${paymentId}` : null;
+      const paymentText = storageKey ? localStorage.getItem(storageKey) : null;
 
-      if (!paymentId) {
+      if (!paymentId || !paymentText) {
         status.hidden = false;
-        status.textContent = 'Brak paymentId w adresie URL. Upewnij się, że otworzyłeś poprawny link do płatności.';
+        status.textContent = 'Brak paymentId lub brak zapisanej treści płatności. Powróć na stronę główną i spróbuj ponownie.';
         button.disabled = true;
       }
 
@@ -44,7 +46,7 @@
           const response = await fetch('/api/mock-pay', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId })
+            body: JSON.stringify({ paymentId, text: paymentText })
           });
 
           const data = await response.json();
@@ -53,16 +55,9 @@
           }
 
           status.hidden = false;
-          status.innerHTML = `Płatność zakończona. Możesz zamknąć tę stronę i wrócić do serwisu. <br><strong>Id transakcji:</strong> ${data.paymentId}`;
+          status.innerHTML = `Płatność zakończona. Oto wyjaśnienie twojego pisma:<div style="margin-top:1rem; white-space:pre-wrap;">${data.explanation}</div>`;
           returnLink.hidden = false;
           button.textContent = 'Zapłacono';
-        } catch (error) {
-          status.hidden = false;
-          status.textContent = error.message || 'Wystąpił błąd.';
-          button.disabled = false;
-          button.textContent = 'Zapłać 1 zł';
-        }
-      });
-    </script>
+          localStorage.removeItem(storageKey);
   </body>
 </html>

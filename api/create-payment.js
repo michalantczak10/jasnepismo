@@ -1,5 +1,3 @@
-const { createPaymentSession } = require('./paymentsStore');
-
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -11,22 +9,14 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.' });
   }
 
-  const payment = createPaymentSession(text.trim());
-  const provider = process.env.PAYMENT_PROVIDER || 'demo';
-
-  if (provider !== 'demo') {
-    return res.status(501).json({
-      error: 'Integracja płatności nie została jeszcze skonfigurowana. Ustaw PAYMENT_PROVIDER i odpowiednie dane w env.'
-    });
-  }
-
-  const paymentUrl = `/mock-payment.html?paymentId=${encodeURIComponent(payment.id)}`;
+  const paymentId = `pay_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const paymentUrl = `/mock-payment.html?paymentId=${encodeURIComponent(paymentId)}`;
 
   return res.status(200).json({
-    paymentId: payment.id,
+    paymentId,
     paymentUrl,
-    amount: payment.amount,
-    currency: payment.currency,
+    amount: 100,
+    currency: 'PLN',
     provider: 'demo'
   });
 };

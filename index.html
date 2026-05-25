@@ -128,6 +128,8 @@
       const paymentInfo = document.getElementById('paymentInfo');
       const paymentLink = document.getElementById('paymentLink');
 
+      const PAYMENT_STORAGE_PREFIX = 'jasnepismo_payment_';
+
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
         freeButton.disabled = isLoading;
@@ -150,10 +152,22 @@
 
       function showPaymentLink(url) {
         paymentLink.href = url;
-        paymentLink.textContent = url;
+        paymentLink.textContent = 'Otwórz płatność demo';
         paymentInfo.hidden = false;
         resultCard.hidden = true;
         errorMessage.hidden = true;
+      }
+
+      function getPaymentStorageKey(paymentId) {
+        return `${PAYMENT_STORAGE_PREFIX}${paymentId}`;
+      }
+
+      function storePaymentText(paymentId, text) {
+        try {
+          localStorage.setItem(getPaymentStorageKey(paymentId), text);
+        } catch (error) {
+          console.warn('Unable to save payment text to localStorage.', error);
+        }
       }
 
       async function sendRequest(url, body) {
@@ -183,6 +197,7 @@
         try {
           if (isPaid) {
             const data = await sendRequest('/api/create-payment', { text });
+            storePaymentText(data.paymentId, text);
             showPaymentLink(data.paymentUrl);
           } else {
             const data = await sendRequest('/api/explain', { text });
