@@ -1,5 +1,6 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
+let lastUsage = null;
 
 async function generateExplanation(text) {
   if (!OPENAI_API_KEY) {
@@ -38,9 +39,15 @@ ${text.trim()}
     throw new Error('Model nie zwrócił wyjaśnienia.');
   }
 
-  return explanation;
+  lastUsage = data.usage || null;
+  return { explanation, usage: lastUsage };
+}
+
+function getLastUsage() {
+  return lastUsage;
 }
 
 module.exports = {
-  generateExplanation
+  generateExplanation,
+  getLastUsage
 };

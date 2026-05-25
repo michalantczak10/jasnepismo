@@ -12,8 +12,8 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const explanation = await generateExplanation(text.trim());
-    return res.status(200).json({ explanation });
+    const { explanation, usage } = await generateExplanation(text.trim());
+    return res.status(200).json({ explanation, usage });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Błąd serwera.' });
   }
