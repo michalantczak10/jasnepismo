@@ -123,7 +123,7 @@
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/jszip@3.11.1/dist/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
@@ -246,9 +246,23 @@
           }
         }
 
+        const JSZipClass = typeof JSZip !== 'undefined'
+          ? JSZip
+          : typeof window !== 'undefined' && window.JSZip
+            ? window.JSZip
+            : null;
+
+        if (!JSZipClass) {
+          throw new Error('JSZip nie jest dostępny w tej przeglądarce.');
+        }
+
         try {
-          const zip = await JSZip.loadAsync(arrayBuffer);
-          const documentXml = await zip.file('word/document.xml').async('string');
+          const zip = await JSZipClass.loadAsync(arrayBuffer);
+          const documentXmlFile = zip.file('word/document.xml');
+          if (!documentXmlFile) {
+            throw new Error('Brak pliku word/document.xml w pliku DOCX.');
+          }
+          const documentXml = await documentXmlFile.async('string');
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(documentXml, 'application/xml');
           const paragraphs = Array.from(xmlDoc.getElementsByTagName('w:p'));
