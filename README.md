@@ -65,13 +65,13 @@ curl -X POST https://www.jasnepismo.pl/api/explain \
 curl -X GET https://www.jasnepismo.pl/api/billing
 ```
 
-Możesz też użyć dat w query:
+Możesz też użyć daty w query:
 
 ```bash
-curl -X GET "https://www.jasnepismo.pl/api/billing?start_date=2026-05-01&end_date=2026-05-25"
+curl -X GET "https://www.jasnepismo.pl/api/billing?date=2026-05-25"
 ```
 
-Ten endpoint używa standardowego OpenAI `/v1/usage` i zwraca dane rozliczeniowe dla podanego okresu.
+Ten endpoint używa standardowego OpenAI `/v1/usage` i zwraca dane rozliczeniowe dla wybranego dnia.
 
 Przykładowa odpowiedź z `/api/explain`:
 

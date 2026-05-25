@@ -1,13 +1,7 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-function getCurrentMonthDates() {
-  const now = new Date();
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-  const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  return {
-    start_date: start.toISOString().slice(0, 10),
-    end_date: end.toISOString().slice(0, 10),
-  };
+function getTodayDate() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 module.exports = async function handler(req, res) {
@@ -20,8 +14,8 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Brak klucza OpenAI API na serwerze.' });
   }
 
-  const { start_date, end_date } = req.query || getCurrentMonthDates();
-  const usageUrl = `https://api.openai.com/v1/usage?start_date=${start_date}&end_date=${end_date}`;
+  const date = req.query?.date || getTodayDate();
+  const usageUrl = `https://api.openai.com/v1/usage?date=${date}`;
 
   try {
     const usageResp = await fetch(usageUrl, {
@@ -37,8 +31,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       status: 'ok',
-      start_date,
-      end_date,
+      date,
       usage: usageData,
     });
   } catch (error) {
