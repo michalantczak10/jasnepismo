@@ -73,22 +73,17 @@
         <div class="section-header">
           <p class="section-tag">Jak to działa</p>
           <h2 id="app-heading">Szybkie wyjaśnienie urzędowego dokumentu</h2>
-          <p class="section-intro">Wklej treść pisma do pola poniżej. Wybierz darmową opcję lub zapłać 1 zł za wygenerowanie wyjaśnienia.</p>
+          <p class="section-intro">Wklej treść pisma do pola poniżej i kliknij „Wyjaśnij za darmo”. System wyświetli jasne podsumowanie i praktyczne wskazówki.</p>
         </div>
         <form id="explainForm" class="explain-form">
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
           <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..." required></textarea>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
-            <button type="button" id="paidButton" class="hero-cta hero-cta-secondary">Wyjaśnij za 1 zł</button>
             <span id="loader" class="loader" hidden>Przetwarzam…</span>
           </div>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
-        <div id="paymentInfo" class="payment-info" hidden>
-          <p>Przejdź do płatności, aby zakończyć operację:</p>
-          <a id="paymentLink" class="payment-link" target="_blank" rel="noreferrer noopener"></a>
-        </div>
         <article id="resultCard" class="result-card" hidden>
           <h3>Wyjaśnienie</h3>
           <div id="resultText" class="result-text"></div>
@@ -117,57 +112,28 @@
     </footer>
 
     <script>
-      const form = document.getElementById('explainForm');
       const textarea = document.getElementById('documentText');
       const freeButton = document.getElementById('freeButton');
-      const paidButton = document.getElementById('paidButton');
       const loader = document.getElementById('loader');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
-      const paymentInfo = document.getElementById('paymentInfo');
-      const paymentLink = document.getElementById('paymentLink');
-
-      const PAYMENT_STORAGE_PREFIX = 'jasnepismo_payment_';
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
         freeButton.disabled = isLoading;
-        paidButton.disabled = isLoading;
       }
 
       function showError(message) {
         errorMessage.textContent = message;
         errorMessage.hidden = false;
         resultCard.hidden = true;
-        paymentInfo.hidden = true;
       }
 
       function showResult(text) {
         resultText.innerHTML = text.replace(/\n/g, '<br>');
         resultCard.hidden = false;
         errorMessage.hidden = true;
-        paymentInfo.hidden = true;
-      }
-
-      function showPaymentLink(url) {
-        paymentLink.href = url;
-        paymentLink.textContent = 'Otwórz płatność demo';
-        paymentInfo.hidden = false;
-        resultCard.hidden = true;
-        errorMessage.hidden = true;
-      }
-
-      function getPaymentStorageKey(paymentId) {
-        return `${PAYMENT_STORAGE_PREFIX}${paymentId}`;
-      }
-
-      function storePaymentText(paymentId, text) {
-        try {
-          localStorage.setItem(getPaymentStorageKey(paymentId), text);
-        } catch (error) {
-          console.warn('Unable to save payment text to localStorage.', error);
-        }
       }
 
       async function sendRequest(url, body) {
@@ -185,7 +151,7 @@
         return data;
       }
 
-      async function handleAction(isPaid) {
+      async function handleAction() {
         const text = textarea.value.trim();
         if (!text) {
           showError('Proszę wkleić treść pisma przed wysłaniem.');
@@ -195,14 +161,8 @@
         setLoading(true);
 
         try {
-          if (isPaid) {
-            const data = await sendRequest('/api/create-payment', { text });
-            storePaymentText(data.paymentId, text);
-            showPaymentLink(data.paymentUrl);
-          } else {
-            const data = await sendRequest('/api/explain', { text });
-            showResult(data.explanation || 'Brak wyjaśnienia od serwera.');
-          }
+          const data = await sendRequest('/api/explain', { text });
+          showResult(data.explanation || 'Brak wyjaśnienia od serwera.');
         } catch (error) {
           showError(error.message || 'Wystąpił błąd. Spróbuj ponownie.');
         } finally {
@@ -210,8 +170,7 @@
         }
       }
 
-      freeButton.addEventListener('click', () => handleAction(false));
-      paidButton.addEventListener('click', () => handleAction(true));
+      freeButton.addEventListener('click', handleAction);
     </script>
   </body>
 </html>
