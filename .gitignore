@@ -27,3 +27,6 @@ test-results/
 
 # Vercel
 .vercel
+
+# Local resource uploads and generated images
+resources/
