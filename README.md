@@ -1,6 +1,6 @@
 ﻿# JasnePismo — wyjaśnianie pism urzędowych
 
-Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Zawiera darmowy tryb wyjaśniania i demo płatności 1 zł.
+Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Umożliwia wklejenie tekstu lub przesłanie skanu dokumentu i wygenerowanie prostego wyjaśnienia.
 
 ## Co znajduje się w projekcie
 
@@ -14,11 +14,13 @@ Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Za
 ## Jak używać
 
 1. Otwórz `index.html` w przeglądarce.
-2. Lub opublikuj cały katalog jako statyczną stronę na dowolnym hostingu.
+2. Wklej treść dokumentu lub prześlij obraz/skan dokumentu.
+3. Kliknij przycisk "Wyjaśnij za darmo".
+4. Otrzymasz prostą interpretację oraz sugestie kolejnych kroków.
 
 ## Uwagi
 
-Ten projekt teraz obsługuje prostą wersję backendu na Vercel.
+Ten projekt teraz obsługuje prostą wersję backendu na Vercel i przetwarzanie obrazów OCR w przeglądarce.
 
 ## Uruchomienie z API
 

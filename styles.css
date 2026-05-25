@@ -799,6 +799,33 @@ section:last-of-type {
   color: var(--color-text);
 }
 
+.file-upload-label {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.file-upload-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 24px;
+  background: #fff;
+  color: var(--color-text);
+}
+
+.extracted-text-preview {
+  padding: 1rem 1.2rem;
+  border-radius: 20px;
+  background: #fff9e6;
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  color: var(--color-text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
 .form-actions {
   display: flex;
   align-items: center;

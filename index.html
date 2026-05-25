@@ -77,7 +77,10 @@
         </div>
         <form id="explainForm" class="explain-form">
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
-          <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..." required></textarea>
+          <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..." ></textarea>
+          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu (opcjonalnie)</label>
+          <input id="documentFile" type="file" accept="image/*" class="file-upload-input" />
+          <div id="extractedTextPreview" class="extracted-text-preview" hidden></div>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
             <span id="loader" class="loader" hidden></span>
@@ -111,13 +114,18 @@
       </div>
     </footer>
 
+    <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
+      const documentFile = document.getElementById('documentFile');
+      const extractedTextPreview = document.getElementById('extractedTextPreview');
       const freeButton = document.getElementById('freeButton');
       const loader = document.getElementById('loader');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
+
+      let extractedText = '';
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
@@ -137,6 +145,17 @@
         errorMessage.hidden = true;
       }
 
+      function updateExtractedTextPreview(text) {
+        if (!text) {
+          extractedTextPreview.hidden = true;
+          extractedTextPreview.textContent = '';
+          return;
+        }
+
+        extractedTextPreview.hidden = false;
+        extractedTextPreview.textContent = `Rozpoznany tekst ze skanu: ${text}`;
+      }
+
       async function sendRequest(url, body) {
         const response = await fetch(url, {
           method: 'POST',
@@ -154,15 +173,18 @@
 
       async function handleAction() {
         const text = textarea.value.trim();
-        if (!text) {
-          showError('Proszę wkleić treść pisma przed wysłaniem.');
+        const fileText = extractedText.trim();
+        const finalText = text || fileText;
+
+        if (!finalText) {
+          showError('Proszę wkleić treść pisma lub przesłać skan dokumentu.');
           return;
         }
 
         setLoading(true);
 
         try {
-          const data = await sendRequest('/api/explain', { text });
+          const data = await sendRequest('/api/explain', { text: finalText });
           showResult(data.explanation || 'Brak wyjaśnienia od serwera.');
         } catch (error) {
           showError(error.message || 'Wystąpił błąd. Spróbuj ponownie.');
@@ -170,6 +192,37 @@
           setLoading(false);
         }
       }
+
+      documentFile.addEventListener('change', async (event) => {
+        const file = event.target.files?.[0];
+        extractedText = '';
+        updateExtractedTextPreview('');
+        if (!file) {
+          return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+          showError('Możesz przesłać tylko zdjęcie dokumentu.');
+          documentFile.value = '';
+          return;
+        }
+
+        setLoading(true);
+        errorMessage.hidden = true;
+
+        try {
+          const { data: { text } } = await Tesseract.recognize(file, 'pol');
+          extractedText = text ? text.trim() : '';
+          if (!extractedText) {
+            showError('Nie udało się rozpoznać tekstu ze skanu.');
+          }
+          updateExtractedTextPreview(extractedText);
+        } catch (error) {
+          showError('Błąd OCR. Spróbuj inny skan lub wklej tekst ręcznie.');
+        } finally {
+          setLoading(false);
+        }
+      });
 
       freeButton.addEventListener('click', handleAction);
     </script>
