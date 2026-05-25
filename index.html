@@ -123,6 +123,7 @@
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
@@ -232,6 +233,33 @@
         }
 
         return normalizeExtractedText(bestText);
+      }
+
+      async function extractTextFromDocx(arrayBuffer) {
+        const useMammoth = typeof mammoth !== 'undefined' && mammoth?.extractRawText;
+        if (useMammoth) {
+          try {
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            return normalizeExtractedText(result.value || '');
+          } catch (error) {
+            console.warn('Mammoth DOCX parse failed, falling back to JSZip parser:', error);
+          }
+        }
+
+        try {
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          const documentXml = await zip.file('word/document.xml').async('string');
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(documentXml, 'application/xml');
+          const paragraphs = Array.from(xmlDoc.getElementsByTagName('w:p'));
+          const text = paragraphs.map((paragraph) => {
+            const nodes = Array.from(paragraph.getElementsByTagName('w:t'));
+            return nodes.map((node) => node.textContent || '').join('');
+          }).join('\n');
+          return normalizeExtractedText(text);
+        } catch (error) {
+          throw new Error(error?.message || 'Nie udało się odczytać pliku DOCX.');
+        }
       }
 
       function normalizePdfLine(text) {
@@ -407,8 +435,7 @@
           setStatus('Wczytywanie pliku DOCX...', false);
           try {
             const arrayBuffer = await file.arrayBuffer();
-            const result = await mammoth.extractRawText({ arrayBuffer });
-            extractedText = result.value ? result.value.trim() : '';
+            extractedText = await extractTextFromDocx(arrayBuffer);
             if (!extractedText) {
               showError('Nie udało się odczytać tekstu z pliku DOCX.');
             } else {
@@ -416,7 +443,8 @@
             }
             updateExtractedTextPreview(extractedText);
           } catch (error) {
-            showError('Błąd podczas odczytu pliku DOCX. Spróbuj inny plik.');
+            console.error('DOCX extraction error:', error);
+            showError(error?.message || 'Błąd podczas odczytu pliku DOCX. Spróbuj inny plik.');
           } finally {
             setLoading(false);
           }
