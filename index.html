@@ -157,6 +157,13 @@
         }
       }
 
+      function formatSize(bytes) {
+        if (typeof bytes !== 'number' || Number.isNaN(bytes) || bytes < 0) return '';
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+      }
+
       function setProgress(value) {
         if (!fileProgress) return;
         if (value === 'indeterminate') {
@@ -170,6 +177,21 @@
         }
         fileProgress.hidden = false;
         fileProgress.value = Math.max(0, Math.min(100, value));
+      }
+
+      function updateProgressStatus(percent, loaded, total) {
+        let message = 'Wczytuję dokument DOCX...';
+        if (typeof percent === 'number' && !Number.isNaN(percent)) {
+          message += ` ${Math.round(percent)}%`;
+        }
+        if (typeof loaded === 'number' && loaded >= 0) {
+          message += ` (${formatSize(loaded)}`;
+          if (typeof total === 'number' && total > 0) {
+            message += ` z ${formatSize(total)}`;
+          }
+          message += ')';
+        }
+        setStatus(message);
       }
 
       function setStatus(message, isError = false) {
@@ -300,6 +322,7 @@
 
         let JSZipClass = getJSZipClass();
         if (!JSZipClass) {
+          setStatus('Ładuję bibliotekę JSZip...');
           setProgress(10);
           await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js');
           JSZipClass = getJSZipClass();
@@ -310,14 +333,20 @@
         }
 
         try {
+          setStatus('Wczytuję zawartość pliku DOCX...');
           setProgress(20);
           const zip = await JSZipClass.loadAsync(arrayBuffer, {
             onProgress(metadata) {
-              if (typeof metadata.percent === 'number') {
-                setProgress(metadata.percent);
+              const percent = typeof metadata.percent === 'number' ? metadata.percent : undefined;
+              const loaded = typeof metadata.loaded === 'number' ? metadata.loaded : undefined;
+              const total = typeof metadata.total === 'number' ? metadata.total : undefined;
+              if (typeof percent === 'number') {
+                setProgress(percent);
               }
+              updateProgressStatus(percent, loaded, total);
             }
           });
+          setStatus('Parsuję dokument DOCX...');
           setProgress(90);
           const documentXmlFile = zip.file('word/document.xml');
           if (!documentXmlFile) {
