@@ -822,6 +822,16 @@ section:last-of-type {
   font-size: 0.95rem;
 }
 
+.status-message {
+  margin: 0.5rem 0 0.75rem;
+  color: rgba(17, 17, 17, 0.78);
+  font-size: 0.95rem;
+}
+
+.status-message.error {
+  color: #9b1d1d;
+}
+
 .extracted-text-preview {
   padding: 1rem 1.2rem;
   border-radius: 20px;

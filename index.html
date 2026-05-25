@@ -84,13 +84,16 @@
           <div id="extractedTextPreview" class="extracted-text-preview" hidden></div>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
+            <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść</button>
             <span id="loader" class="loader" hidden></span>
           </div>
+          <p id="statusMessage" class="status-message" hidden></p>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
         <article id="resultCard" class="result-card" hidden>
           <h3>Wyjaśnienie</h3>
           <div id="resultText" class="result-text"></div>
+          <button type="button" id="downloadButton" class="hero-cta hero-cta-secondary" hidden>Pobierz wynik</button>
         </article>
       </section>
 
@@ -122,7 +125,10 @@
       const extractedTextPreview = document.getElementById('extractedTextPreview');
       const textCount = document.getElementById('textCount');
       const freeButton = document.getElementById('freeButton');
+      const clearButton = document.getElementById('clearButton');
+      const downloadButton = document.getElementById('downloadButton');
       const loader = document.getElementById('loader');
+      const statusMessage = document.getElementById('statusMessage');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
@@ -135,18 +141,37 @@
         loader.hidden = !isLoading;
         loader.textContent = isLoading ? 'Przetwarzam…' : '';
         freeButton.disabled = isLoading;
+        clearButton.disabled = isLoading;
+        if (!isLoading) {
+          setStatus('');
+        }
+      }
+
+      function setStatus(message, isError = false) {
+        if (!message) {
+          statusMessage.hidden = true;
+          statusMessage.textContent = '';
+          statusMessage.classList.remove('error');
+          return;
+        }
+        statusMessage.hidden = false;
+        statusMessage.textContent = message;
+        statusMessage.classList.toggle('error', isError);
       }
 
       function showError(message) {
         errorMessage.textContent = message;
         errorMessage.hidden = false;
         resultCard.hidden = true;
+        setStatus('', false);
       }
 
       function showResult(text) {
         resultText.innerHTML = text.replace(/\n/g, '<br>');
         resultCard.hidden = false;
         errorMessage.hidden = true;
+        downloadButton.hidden = false;
+        setStatus('Wyjaśnienie gotowe. Możesz je pobrać lub wprowadzić kolejny dokument.', false);
       }
 
       function updateExtractedTextPreview(text) {
@@ -169,7 +194,8 @@
 
         const data = await response.json();
         if (!response.ok) {
-          throw new Error(data.error || 'Nie udało się przetworzyć żądania.');
+          const message = data.error?.message || data.error?.type || 'Nie udało się przetworzyć żądania.';
+          throw new Error(message);
         }
 
         return data;
@@ -191,6 +217,8 @@
         }
 
         setLoading(true);
+        setStatus('Wysyłam treść do wyjaśnienia...', false);
+        errorMessage.hidden = true;
 
         try {
           const data = await sendRequest('/api/explain', { text: finalText });
@@ -233,6 +261,7 @@
         }
 
         setLoading(true);
+        setStatus('Rozpoznawanie obrazu...', false);
         errorMessage.hidden = true;
 
         try {
@@ -240,6 +269,8 @@
           extractedText = text ? text.trim() : '';
           if (!extractedText) {
             showError('Nie udało się rozpoznać tekstu ze skanu.');
+          } else {
+            setStatus('OCR zakończony. Możesz wysłać rozpoznany tekst do wyjaśnienia.', false);
           }
           updateExtractedTextPreview(extractedText);
         } catch (error) {
@@ -247,6 +278,31 @@
         } finally {
           setLoading(false);
         }
+      });
+
+      clearButton.addEventListener('click', () => {
+        textarea.value = '';
+        textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
+        documentFile.value = '';
+        extractedText = '';
+        updateExtractedTextPreview('');
+        resultCard.hidden = true;
+        downloadButton.hidden = true;
+        errorMessage.hidden = true;
+        setStatus('', false);
+      });
+
+      downloadButton.addEventListener('click', () => {
+        const content = resultText.innerText || resultText.textContent || 'Brak zawartości.';
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'jasnepismo-wyjasnienie.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       });
 
       freeButton.addEventListener('click', handleAction);

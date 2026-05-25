@@ -17,6 +17,7 @@ Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Um
 2. Wklej treść dokumentu lub prześlij obraz/skan dokumentu.
 3. Kliknij przycisk "Wyjaśnij za darmo".
 4. Otrzymasz prostą interpretację oraz sugestie kolejnych kroków.
+5. Możesz pobrać wyjaśnienie jako plik tekstowy.
 
 ## Uwagi
 
