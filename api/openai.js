@@ -1,8 +1,17 @@
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 let lastUsage = null;
 
+function getOpenAIApiKey() {
+  return process.env.OPENAI_API_KEY;
+}
+
+function getOpenAIModel() {
+  return process.env.OPENAI_MODEL || 'gpt-4.1-mini';
+}
+
 async function generateExplanation(text) {
+  const OPENAI_API_KEY = getOpenAIApiKey();
+  const OPENAI_MODEL = getOpenAIModel();
+
   if (!OPENAI_API_KEY) {
     throw new Error('Brak klucza OpenAI API na serwerze.');
   }

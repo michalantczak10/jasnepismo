@@ -1,4 +1,4 @@
-const { generateExplanation } = require('./openai');
+const openai = require('./openai');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,7 +12,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { explanation, usage } = await generateExplanation(text.trim());
+    const { explanation, usage } = await openai.generateExplanation(text.trim());
     return res.status(200).json({ explanation, usage });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Błąd serwera.' });
