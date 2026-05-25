@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Płatność demo JasnePismo</title>
+    <style>
+      body { margin: 0; min-height: 100vh; font-family: 'Segoe UI', Arial, sans-serif; display: grid; place-items: center; background: #f8f2e9; color: #1f1f1f; padding: 24px; }
+      .card { width: min(100%, 680px); border-radius: 28px; padding: 32px; background: #fff; box-shadow: 0 24px 80px rgba(0,0,0,0.08); }
+      h1 { margin-top: 0; color: #b30000; }
+      p { line-height: 1.7; }
+      button { border: none; border-radius: 999px; padding: 1rem 1.8rem; font-size: 1rem; font-weight: 700; background: #b30000; color: #fff; cursor: pointer; }
+      .status { margin-top: 1.5rem; padding: 1rem 1.25rem; background: #fff4d9; border: 1px solid rgba(179,0,0,0.14); border-radius: 20px; }
+      a { color: #b30000; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Płatność demo</h1>
+      <p>To jest testowy proces płatności — po kliknięciu przycisku system wygeneruje wyjaśnienie twojego pisma.</p>
+      <button id="payButton">Zapłać 1 zł</button>
+      <div id="status" class="status" hidden></div>
+      <p id="returnLink" hidden>Po zakończeniu płatności wróć na stronę główną, aby przejrzeć wynik.</p>
+    </div>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const paymentId = params.get('paymentId');
+      const button = document.getElementById('payButton');
+      const status = document.getElementById('status');
+      const returnLink = document.getElementById('returnLink');
+
+      if (!paymentId) {
+        status.hidden = false;
+        status.textContent = 'Brak paymentId w adresie URL. Upewnij się, że otworzyłeś poprawny link do płatności.';
+        button.disabled = true;
+      }
+
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        button.textContent = 'Przetwarzam płatność…';
+
+        try {
+          const response = await fetch('/api/mock-pay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId })
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Błąd podczas symulacji płatności.');
+          }
+
+          status.hidden = false;
+          status.innerHTML = `Płatność zakończona. Możesz zamknąć tę stronę i wrócić do serwisu. <br><strong>Id transakcji:</strong> ${data.paymentId}`;
+          returnLink.hidden = false;
+          button.textContent = 'Zapłacono';
+        } catch (error) {
+          status.hidden = false;
+          status.textContent = error.message || 'Wystąpił błąd.';
+          button.disabled = false;
+          button.textContent = 'Zapłać 1 zł';
+        }
+      });
+    </script>
+  </body>
+</html>

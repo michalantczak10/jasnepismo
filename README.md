@@ -1,6 +1,6 @@
-﻿# Naukazmichalem — Wizytówka
+﻿# JasnePismo — wyjaśnianie pism urzędowych
 
-Prosta, statyczna wizytówka internetowa prezentująca ofertę korepetycji z matematyki i informatyki.
+Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Zawiera darmowy tryb wyjaśniania i demo płatności 1 zł.
 
 ## Co znajduje się w projekcie
 
@@ -18,5 +18,27 @@ Prosta, statyczna wizytówka internetowa prezentująca ofertę korepetycji z mat
 
 ## Uwagi
 
-Ten projekt jest teraz wyłącznie statyczną stroną. Usunięto narzędzia Node.js, pliki konfiguracyjne oraz testy.
+Ten projekt teraz obsługuje prostą wersję backendu na Vercel.
+
+## Uruchomienie z API i płatnościami demo
+
+- `api/explain.js` — endpoint darmowego wyjaśnienia.
+- `api/create-payment.js` — tworzy sesję płatności dla opcji 1 zł.
+- `api/payment-webhook.js` — webhook do potwierdzenia płatności.
+- `api/payment-status.js` — sprawdza status płatności.
+- `api/mock-pay.js` — symuluje zakończenie płatności w trybie demo.
+- `mock-payment.html` — testowy ekran płatności.
+
+## Wymagane zmienne środowiskowe
+
+- `OPENAI_API_KEY` — klucz OpenAI dla endpointu `/api/explain`.
+- `PAYMENT_PROVIDER` — domyślnie `demo`, żeby używać symulowanej płatności.
+- `PAYMENT_WEBHOOK_SECRET` — sekret webhooka płatności (w trybie demo ma wartość `demo-webhook-secret`).
+
+## Jak testować
+
+1. Wdroż repozycję na Vercel.
+2. Ustaw `OPENAI_API_KEY` w ustawieniach środowiska.
+3. Odpal stronę i użyj przycisków "Wyjaśnij za darmo" lub "Wyjaśnij za 1 zł".
+4. W trybie demo płatność zostanie zasymulowana przez `mock-payment.html`.
 
