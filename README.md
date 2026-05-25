@@ -30,6 +30,8 @@ Ten projekt teraz obsługuje prostą wersję backendu na Vercel i przetwarzanie 
 
 - `OPENAI_API_KEY` — klucz OpenAI dla endpointu `/api/explain`.
 - `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
+  - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
+  - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
 
 ## Deployment on Vercel
 
