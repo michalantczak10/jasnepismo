@@ -159,6 +159,11 @@
 
       function setProgress(value) {
         if (!fileProgress) return;
+        if (value === 'indeterminate') {
+          fileProgress.hidden = false;
+          fileProgress.removeAttribute('value');
+          return;
+        }
         if (typeof value !== 'number' || isNaN(value)) {
           fileProgress.hidden = true;
           return;
@@ -273,9 +278,13 @@
 
       async function extractTextFromDocx(arrayBuffer) {
         const useMammoth = typeof mammoth !== 'undefined' && mammoth?.extractRawText;
+        setStatus('Wczytuję dokument DOCX...');
+        setProgress('indeterminate');
+
         if (useMammoth) {
           try {
             const result = await mammoth.extractRawText({ arrayBuffer });
+            setProgress(100);
             return normalizeExtractedText(result.value || '');
           } catch (error) {
             console.warn('Mammoth DOCX parse failed, falling back to JSZip parser:', error);
@@ -291,6 +300,7 @@
 
         let JSZipClass = getJSZipClass();
         if (!JSZipClass) {
+          setProgress(10);
           await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js');
           JSZipClass = getJSZipClass();
         }
@@ -300,7 +310,7 @@
         }
 
         try {
-          setProgress(0);
+          setProgress(20);
           const zip = await JSZipClass.loadAsync(arrayBuffer, {
             onProgress(metadata) {
               if (typeof metadata.percent === 'number') {
