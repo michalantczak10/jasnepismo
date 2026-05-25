@@ -80,7 +80,7 @@
           <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..." required></textarea>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
-            <span id="loader" class="loader" hidden>Przetwarzam…</span>
+            <span id="loader" class="loader" hidden></span>
           </div>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
@@ -121,6 +121,7 @@
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
+        loader.textContent = isLoading ? 'Przetwarzam…' : '';
         freeButton.disabled = isLoading;
       }
 
