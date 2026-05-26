@@ -77,10 +77,11 @@
         </div>
         <form id="explainForm" class="explain-form">
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
-          <textarea id="documentText" name="text" rows="12" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
+          <textarea id="documentText" name="text" rows="12" maxlength="5000" aria-describedby="textCount" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
           <p id="textCount" class="field-note">0 / 5000 znaków</p>
           <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOCX / PDF (opcjonalnie, max 5 MB)</label>
           <input id="documentFile" type="file" accept=".doc,.docx,.pdf,image/*" class="file-upload-input" />
+          <p id="fileDetails" class="field-note file-details" hidden></p>
           <div id="extractedTextContainer" class="extracted-text-preview" hidden>
             <strong>Surowy tekst wczytany z dokumentu</strong>
             <textarea id="extractedTextPreview" class="preview-textarea" rows="8" placeholder="Tutaj pojawi się tekst z dokumentu. Możesz go poprawić przed wysłaniem."></textarea>
@@ -92,7 +93,7 @@
           <div class="loader-container">
             <span id="loader" class="loader" hidden></span>
           </div>
-          <p id="statusMessage" class="status-message" hidden></p>
+          <p id="statusMessage" class="status-message" role="status" aria-live="polite" aria-atomic="true" hidden></p>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
         <article id="resultCard" class="result-card" hidden>
@@ -139,6 +140,7 @@
       const downloadButton = document.getElementById('downloadButton');
       const loader = document.getElementById('loader');
       const statusMessage = document.getElementById('statusMessage');
+      const fileDetails = document.getElementById('fileDetails');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
@@ -218,9 +220,20 @@
       function showResult(text) {
         resultText.innerHTML = text.replace(/\n/g, '<br>');
         resultCard.hidden = false;
+        resultCard.classList.add('fade-in');
         errorMessage.hidden = true;
         downloadButton.hidden = false;
         setStatus('Wyjaśnienie gotowe. Możesz je pobrać lub wprowadzić kolejny dokument.', false);
+      }
+
+      function setFileDetails(message) {
+        if (!message) {
+          fileDetails.hidden = true;
+          fileDetails.textContent = '';
+          return;
+        }
+        fileDetails.hidden = false;
+        fileDetails.textContent = message;
       }
 
       function updateExtractedTextPreview(text) {
@@ -533,7 +546,7 @@
           return;
         }
 
-        if (text.length > MAX_TEXT_LENGTH) {
+        if (finalText.length > MAX_TEXT_LENGTH) {
           showError(`Tekst nie może przekraczać ${MAX_TEXT_LENGTH} znaków.`);
           return;
         }
@@ -571,6 +584,7 @@
         extractedText = '';
         updateExtractedTextPreview('');
         if (!file) {
+          setFileDetails('');
           return;
         }
 
@@ -589,9 +603,11 @@
         if (file.size > MAX_FILE_SIZE) {
           showError('Plik musi mieć maksymalnie 5 MB.');
           documentFile.value = '';
+          setFileDetails('');
           return;
         }
 
+        setFileDetails(`Wybrano: ${file.name} • Rozmiar: ${formatSize(file.size)} • Typ: ${file.type || 'nieznany'}`);
         setLoading(true);
         errorMessage.hidden = true;
 
@@ -671,6 +687,7 @@
         textarea.value = '';
         textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
         documentFile.value = '';
+        setFileDetails('');
         extractedText = '';
         extractedTextPreview.value = '';
         extractedTextContainer.hidden = true;

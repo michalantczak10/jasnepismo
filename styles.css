@@ -840,10 +840,22 @@ section:last-of-type {
   margin: 0.5rem 0 0.75rem;
   color: rgba(17, 17, 17, 0.78);
   font-size: 0.95rem;
+  padding: 0.85rem 1rem;
+  background: #fff8e8;
+  border: 1px solid rgba(255, 204, 0, 0.35);
+  border-radius: 18px;
 }
 
 .status-message.error {
   color: #9b1d1d;
+  background: #fff2f2;
+  border-color: rgba(155, 29, 29, 0.18);
+}
+
+.file-details {
+  margin-top: 0.25rem;
+  color: rgba(17, 17, 17, 0.8);
+  font-size: 0.9rem;
 }
 
 .extracted-text-preview {
@@ -940,6 +952,10 @@ section:last-of-type {
   background: rgba(255, 255, 255, 0.98);
   border: 1px solid rgba(179, 0, 0, 0.14);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+}
+
+.result-card.fade-in {
+  animation: fadeInSlide 0.35s ease-out both;
 }
 
 .result-card h3 {
