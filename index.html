@@ -274,36 +274,47 @@
         return normalizeExtractedText(bestText);
       }
 
-      function loadExternalScript(src) {
-        return new Promise((resolve, reject) => {
-          const existing = document.querySelector(`script[src="${src}"]`);
-          if (existing) {
-            if (existing.getAttribute('data-loaded') === 'true') {
-              return resolve();
-            }
-            const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
-            const jszipReady = src.includes('jszip') && typeof JSZip !== 'undefined';
-            if (alreadyLoaded || jszipReady) {
-              existing.setAttribute('data-loaded', 'true');
-              return resolve();
-            }
-            existing.addEventListener('load', () => {
-              existing.setAttribute('data-loaded', 'true');
-              resolve();
-            });
-            existing.addEventListener('error', () => reject(new Error(`Nie udało się załadować skryptu ${src}`)));
-            return;
-          }
+      async function loadExternalScript(urls) {
+        const sources = Array.isArray(urls) ? urls : [urls];
 
-          const script = document.createElement('script');
-          script.src = src;
-          script.onload = () => {
-            script.setAttribute('data-loaded', 'true');
-            resolve();
-          };
-          script.onerror = () => reject(new Error(`Nie udało się załadować skryptu ${src}`));
-          document.head.appendChild(script);
-        });
+        for (const src of sources) {
+          try {
+            await new Promise((resolve, reject) => {
+              const existing = document.querySelector(`script[src="${src}"]`);
+              if (existing) {
+                if (existing.getAttribute('data-loaded') === 'true') {
+                  return resolve();
+                }
+                const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
+                const jszipReady = src.includes('jszip') && typeof JSZip !== 'undefined';
+                if (alreadyLoaded || jszipReady) {
+                  existing.setAttribute('data-loaded', 'true');
+                  return resolve();
+                }
+                existing.addEventListener('load', () => {
+                  existing.setAttribute('data-loaded', 'true');
+                  resolve();
+                });
+                existing.addEventListener('error', () => reject(new Error(`Nie udało się załadować skryptu ${src}`)));
+                return;
+              }
+
+              const script = document.createElement('script');
+              script.src = src;
+              script.onload = () => {
+                script.setAttribute('data-loaded', 'true');
+                resolve();
+              };
+              script.onerror = () => reject(new Error(`Nie udało się załadować skryptu ${src}`));
+              document.head.appendChild(script);
+            });
+            return;
+          } catch (error) {
+            console.warn('Nie udało się załadować skryptu:', src, error);
+          }
+        }
+
+        throw new Error('Nie udało się załadować biblioteki JSZip z żadnego dostępnego źródła. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
       }
 
       async function extractTextFromDocx(arrayBuffer) {
@@ -332,7 +343,11 @@
         if (!JSZipClass) {
           setStatus('Ładuję bibliotekę JSZip...');
           setProgress('indeterminate');
-          await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js');
+          await loadExternalScript([
+            'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js',
+            'https://cdn.jsdelivr.net/npm/jszip@3.11.1/dist/jszip.min.js',
+            'https://unpkg.com/jszip@3.11.1/dist/jszip.min.js'
+          ]);
           JSZipClass = getJSZipClass();
         }
 
