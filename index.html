@@ -157,6 +157,11 @@
         'https://cdn.jsdelivr.net/npm/mammoth@1.4.17/mammoth.browser.min.js',
         'https://ga.jspm.io/npm:mammoth@1.4.17/mammoth.browser.min.js'
       ];
+      const PDFJS_CDN_SOURCES = [
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js',
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.129/build/pdf.min.js',
+        'https://unpkg.com/pdfjs-dist@3.11.129/build/pdf.min.js'
+      ];
       let extractedText = '';
 
       function setLoading(isLoading) {
@@ -450,6 +455,15 @@
       }
 
       async function extractTextFromPdf(arrayBuffer) {
+        if (typeof pdfjsLib === 'undefined') {
+          setStatus('Ładuję bibliotekę PDF.js...', false);
+          try {
+            await loadExternalScript(PDFJS_CDN_SOURCES, () => typeof pdfjsLib !== 'undefined', 'PDF.js');
+          } catch (error) {
+            console.warn('Nie udało się załadować PDF.js:', error);
+          }
+        }
+
         if (typeof pdfjsLib === 'undefined') {
           throw new Error('Biblioteka PDF.js nie jest dostępna. Odśwież stronę i spróbuj ponownie.');
         }
