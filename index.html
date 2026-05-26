@@ -126,7 +126,7 @@
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
       const documentFile = document.getElementById('documentFile');
@@ -158,9 +158,9 @@
         'https://ga.jspm.io/npm:mammoth@1.4.17/mammoth.browser.min.js'
       ];
       const PDFJS_CDN_SOURCES = [
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js',
-        'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.129/build/pdf.min.js',
-        'https://unpkg.com/pdfjs-dist@3.11.129/build/pdf.min.js'
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+        'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
+        'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
       ];
       let extractedText = '';
 
@@ -468,7 +468,7 @@
           throw new Error('Biblioteka PDF.js nie jest dostępna. Odśwież stronę i spróbuj ponownie.');
         }
 
-        const workerUrl = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.129/build/pdf.worker.min.js';
+        const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
         const parsePdf = async (options) => {
