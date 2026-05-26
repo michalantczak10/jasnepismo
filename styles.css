@@ -830,13 +830,13 @@ section:last-of-type {
 }
 
 .file-upload-input {
-  flex: 1 1 320px;
-  min-width: 220px;
-  padding: 0.9rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 24px;
-  background: #fff;
-  color: var(--color-text);
+  display: none;
+}
+
+.file-upload-button {
+  min-width: 200px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
 }
 
 .file-clear-button {
