@@ -878,6 +878,12 @@ section:last-of-type {
   flex-wrap: wrap;
 }
 
+.loader-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.85rem;
+}
+
 .loader {
   display: inline-flex;
   align-items: center;
