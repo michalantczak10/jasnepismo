@@ -82,6 +82,7 @@
           <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOCX / PDF (opcjonalnie, max 5 MB)</label>
           <input id="documentFile" type="file" accept=".doc,.docx,.pdf,image/*" class="file-upload-input" />
           <p id="fileDetails" class="field-note file-details" hidden></p>
+          <button type="button" id="removeFileButton" class="hero-cta hero-cta-secondary file-clear-button" hidden>Usuń plik</button>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
             <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść</button>
@@ -135,6 +136,7 @@
       const loader = document.getElementById('loader');
       const statusMessage = document.getElementById('statusMessage');
       const fileDetails = document.getElementById('fileDetails');
+      const removeFileButton = document.getElementById('removeFileButton');
       const errorMessage = document.getElementById('errorMessage');
       const resultCard = document.getElementById('resultCard');
       const resultText = document.getElementById('resultText');
@@ -224,10 +226,17 @@
         if (!message) {
           fileDetails.hidden = true;
           fileDetails.textContent = '';
+          removeFileButton.hidden = true;
           return;
         }
         fileDetails.hidden = false;
         fileDetails.textContent = message;
+        removeFileButton.hidden = false;
+      }
+
+      function clearFileSelection() {
+        documentFile.value = '';
+        setFileDetails('');
       }
 
       function fillTextareaWithExtractedText(text) {
@@ -236,6 +245,7 @@
         textarea.dispatchEvent(new Event('input'));
         if (textarea.value) {
           textarea.focus();
+          textarea.select();
           setStatus('Tekst z dokumentu został wczytany powyżej. Możesz go poprawić przed wysłaniem.', false);
         }
       }
@@ -568,8 +578,8 @@
         const file = event.target.files?.[0];
         extractedText = '';
         fillTextareaWithExtractedText('');
+        clearFileSelection();
         if (!file) {
-          setFileDetails('');
           return;
         }
 
@@ -671,8 +681,7 @@
       clearButton.addEventListener('click', () => {
         textarea.value = '';
         textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
-        documentFile.value = '';
-        setFileDetails('');
+        clearFileSelection();
         extractedText = '';
         resultCard.hidden = true;
         downloadButton.hidden = true;
@@ -693,6 +702,7 @@
         URL.revokeObjectURL(url);
       });
 
+      removeFileButton.addEventListener('click', clearFileSelection);
       freeButton.addEventListener('click', handleAction);
     </script>
   </body>

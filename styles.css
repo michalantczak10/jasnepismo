@@ -830,6 +830,14 @@ section:last-of-type {
   color: var(--color-text);
 }
 
+.file-clear-button {
+  display: block;
+  margin: 0.85rem 0 0;
+  width: fit-content;
+  padding: 0.95rem 1.3rem;
+  font-size: 0.95rem;
+}
+
 .field-note {
   margin: 0.25rem 0 0.85rem;
   color: rgba(17, 17, 17, 0.78);
