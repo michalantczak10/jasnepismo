@@ -117,6 +117,7 @@ a {
   color: rgba(255, 255, 255, 0.95);
 }
 
+button,
 .hero-cta {
   display: inline-flex;
   align-items: center;
@@ -131,8 +132,11 @@ a {
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.16), 0 8px 14px rgba(0, 0, 0, 0.08);
   letter-spacing: 0.02em;
   transition: transform 0.24s ease, filter 0.24s ease, box-shadow 0.24s ease, background-color 0.24s ease;
+  border: none;
+  text-decoration: none;
 }
 
+button:hover,
 .hero-cta:hover {
   transform: translateY(-4px) scale(1.02);
   filter: brightness(1.06);
@@ -147,6 +151,16 @@ a {
 
 .hero-cta-secondary:hover {
   background: #fff;
+}
+
+button:disabled,
+button[disabled],
+.hero-cta:disabled,
+.hero-cta[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed !important;
+  transform: none;
+  box-shadow: none;
 }
 
 .hero-cta .button-icon {
