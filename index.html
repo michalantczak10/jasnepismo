@@ -166,7 +166,7 @@
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
-        loader.textContent = isLoading ? 'Przetwarzam…' : '';
+        loader.textContent = isLoading ? 'Proces trwa — proszę czekać…' : '';
         freeButton.disabled = isLoading;
         clearButton.disabled = isLoading;
         if (!isLoading) {
