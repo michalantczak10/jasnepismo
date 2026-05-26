@@ -124,7 +124,6 @@
 
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.129/pdf.min.js"></script>
     <script>
       const textarea = document.getElementById('documentText');
@@ -282,7 +281,16 @@
             if (existing.getAttribute('data-loaded') === 'true') {
               return resolve();
             }
-            existing.addEventListener('load', () => resolve());
+            const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
+            const jszipReady = src.includes('jszip') && typeof JSZip !== 'undefined';
+            if (alreadyLoaded || jszipReady) {
+              existing.setAttribute('data-loaded', 'true');
+              return resolve();
+            }
+            existing.addEventListener('load', () => {
+              existing.setAttribute('data-loaded', 'true');
+              resolve();
+            });
             existing.addEventListener('error', () => reject(new Error(`Nie udało się załadować skryptu ${src}`)));
             return;
           }
@@ -323,7 +331,7 @@
         let JSZipClass = getJSZipClass();
         if (!JSZipClass) {
           setStatus('Ładuję bibliotekę JSZip...');
-          setProgress(10);
+          setProgress('indeterminate');
           await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js');
           JSZipClass = getJSZipClass();
         }
@@ -334,11 +342,15 @@
 
         try {
           setStatus('Wczytuję zawartość pliku DOCX...');
-          setProgress(20);
+          setProgress('indeterminate');
           const zip = await JSZipClass.loadAsync(arrayBuffer, {
             onProgress(metadata) {
-              const percent = typeof metadata.percent === 'number' ? metadata.percent : undefined;
-              const loaded = typeof metadata.loaded === 'number' ? metadata.loaded : undefined;
+              const percent = typeof metadata.percent === 'number'
+                ? metadata.percent
+                : (typeof metadata.current === 'number' && typeof metadata.total === 'number' && metadata.total > 0)
+                  ? (metadata.current / metadata.total) * 100
+                  : undefined;
+              const loaded = typeof metadata.current === 'number' ? metadata.current : (typeof metadata.loaded === 'number' ? metadata.loaded : undefined);
               const total = typeof metadata.total === 'number' ? metadata.total : undefined;
               if (typeof percent === 'number') {
                 setProgress(percent);
