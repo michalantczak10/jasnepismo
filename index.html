@@ -802,7 +802,6 @@
 
       clearButton.addEventListener('click', (event) => {
         event.preventDefault();
-        const currentScroll = window.scrollY;
         textarea.value = '';
         textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
         clearFileSelection();
@@ -811,7 +810,8 @@
         downloadButton.hidden = true;
         errorMessage.hidden = true;
         setStatus('', false);
-        window.scrollTo({ top: currentScroll, behavior: 'auto' });
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
       downloadButton.addEventListener('click', () => {
