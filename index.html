@@ -143,6 +143,18 @@
 
       const MAX_TEXT_LENGTH = 5000;
       const MAX_FILE_SIZE = 5 * 1024 * 1024;
+      const SCRIPT_LOAD_TIMEOUT_MS = 15000;
+      const JSZIP_CDN_SOURCES = [
+        'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js',
+        'https://cdn.jsdelivr.net/npm/jszip@3.11.1/dist/jszip.min.js',
+        'https://unpkg.com/jszip@3.11.1/dist/jszip.min.js',
+        'https://ga.jspm.io/npm:jszip@3.11.1/dist/jszip.min.js'
+      ];
+      const MAMMOTH_CDN_SOURCES = [
+        'https://unpkg.com/mammoth@1.4.17/dist/mammoth.browser.min.js',
+        'https://cdn.jsdelivr.net/npm/mammoth@1.4.17/dist/mammoth.browser.min.js',
+        'https://ga.jspm.io/npm:mammoth@1.4.17/dist/mammoth.browser.min.js'
+      ];
       let extractedText = '';
 
       function setLoading(isLoading) {
@@ -274,39 +286,69 @@
         return normalizeExtractedText(bestText);
       }
 
-      async function loadExternalScript(urls) {
+      async function loadExternalScript(urls, readyCheck) {
         const sources = Array.isArray(urls) ? urls : [urls];
 
         for (const src of sources) {
           try {
             await new Promise((resolve, reject) => {
               const existing = document.querySelector(`script[src="${src}"]`);
-              if (existing) {
-                if (existing.getAttribute('data-loaded') === 'true') {
-                  return resolve();
+              const cleanup = () => {
+                if (script) {
+                  script.onload = null;
+                  script.onerror = null;
                 }
-                const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
-                const jszipReady = src.includes('jszip') && typeof JSZip !== 'undefined';
-                if (alreadyLoaded || jszipReady) {
-                  existing.setAttribute('data-loaded', 'true');
-                  return resolve();
-                }
-                existing.addEventListener('load', () => {
-                  existing.setAttribute('data-loaded', 'true');
-                  resolve();
-                });
-                existing.addEventListener('error', () => reject(new Error(`Nie udało się załadować skryptu ${src}`)));
-                return;
-              }
+              };
+              let script = null;
 
-              const script = document.createElement('script');
-              script.src = src;
-              script.onload = () => {
-                script.setAttribute('data-loaded', 'true');
+              const resolveIfReady = () => {
+                if (typeof readyCheck === 'function' && !readyCheck()) {
+                  return reject(new Error(`Skrypt załadował się, ale nie zainicjował poprawnie: ${src}`));
+                }
                 resolve();
               };
-              script.onerror = () => reject(new Error(`Nie udało się załadować skryptu ${src}`));
+
+              if (existing) {
+                if (existing.getAttribute('data-loaded') === 'true') {
+                  return resolveIfReady();
+                }
+                if (existing.getAttribute('data-failed') === 'true') {
+                  existing.remove();
+                } else {
+                  const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
+                  if (alreadyLoaded) {
+                    existing.setAttribute('data-loaded', 'true');
+                    return resolveIfReady();
+                  }
+                }
+              }
+
+              script = document.createElement('script');
+              script.src = src;
+              script.async = false;
+              script.crossOrigin = 'anonymous';
+              script.onload = () => {
+                script.setAttribute('data-loaded', 'true');
+                if (typeof readyCheck === 'function') {
+                  setTimeout(resolveIfReady, 20);
+                } else {
+                  resolve();
+                }
+              };
+              script.onerror = () => {
+                script.setAttribute('data-failed', 'true');
+                cleanup();
+                reject(new Error(`Nie udało się załadować skryptu ${src}`));
+              };
               document.head.appendChild(script);
+
+              setTimeout(() => {
+                if (script.getAttribute('data-loaded') !== 'true') {
+                  script.setAttribute('data-failed', 'true');
+                  cleanup();
+                  reject(new Error(`Limit czasu przekroczony podczas ładowania skryptu ${src}`));
+                }
+              }, SCRIPT_LOAD_TIMEOUT_MS);
             });
             return;
           } catch (error) {
@@ -314,21 +356,30 @@
           }
         }
 
-        throw new Error('Nie udało się załadować biblioteki JSZip z żadnego dostępnego źródła. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
+        throw new Error('Nie udało się załadować biblioteki z żadnego dostępnego źródła. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
       }
 
       async function extractTextFromDocx(arrayBuffer) {
-        const useMammoth = typeof mammoth !== 'undefined' && mammoth?.extractRawText;
+        const isMammothReady = () => typeof mammoth !== 'undefined' && mammoth?.extractRawText;
         setStatus('Wczytuję dokument DOCX...');
         setProgress('indeterminate');
 
-        if (useMammoth) {
+        if (!isMammothReady()) {
+          setStatus('Ładuję bibliotekę Mammoth...');
+          try {
+            await loadExternalScript(MAMMOTH_CDN_SOURCES, isMammothReady);
+          } catch (error) {
+            console.warn('Nie udało się załadować Mammoth:', error);
+          }
+        }
+
+        if (isMammothReady()) {
           try {
             const result = await mammoth.extractRawText({ arrayBuffer });
             setProgress(100);
             return normalizeExtractedText(result.value || '');
           } catch (error) {
-            console.warn('Mammoth DOCX parse failed, falling back to JSZip parser:', error);
+            console.warn('Mammoth DOCX parse failed, falling back do JSZip parser:', error);
           }
         }
 
@@ -343,11 +394,7 @@
         if (!JSZipClass) {
           setStatus('Ładuję bibliotekę JSZip...');
           setProgress('indeterminate');
-          await loadExternalScript([
-            'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.11.1/jszip.min.js',
-            'https://cdn.jsdelivr.net/npm/jszip@3.11.1/dist/jszip.min.js',
-            'https://unpkg.com/jszip@3.11.1/dist/jszip.min.js'
-          ]);
+          await loadExternalScript(JSZIP_CDN_SOURCES, () => getJSZipClass() !== null);
           JSZipClass = getJSZipClass();
         }
 
