@@ -470,6 +470,8 @@
 
         const workerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
+        setStatus('Parsuję plik PDF...', false);
+        setProgress(0);
 
         const parsePdf = async (options) => {
           const loadingTask = pdfjsLib.getDocument(options);
@@ -479,6 +481,9 @@
           for (let pageIndex = 1; pageIndex <= pdf.numPages; pageIndex += 1) {
             const page = await pdf.getPage(pageIndex);
             const content = await page.getTextContent();
+            const percent = Math.round((pageIndex / pdf.numPages) * 100);
+            setProgress(percent);
+            setStatus(`Parsuję PDF… ${pageIndex} / ${pdf.numPages}`, false);
 
             const lines = [];
             content.items.forEach((item) => {
@@ -510,6 +515,7 @@
             extractedText += `${pageText}\n\n`;
           }
 
+          setProgress(100);
           return normalizeExtractedText(extractedText);
         };
 
@@ -518,7 +524,9 @@
         } catch (error) {
           console.warn('PDF extraction with worker failed, retrying without worker:', error);
           try {
-            return await parsePdf({ data: arrayBuffer, disableWorker: true });
+            const result = await parsePdf({ data: arrayBuffer, disableWorker: true });
+            setProgress(100);
+            return result;
           } catch (fallbackError) {
             console.error('PDF extraction failed:', fallbackError);
             const message = fallbackError?.message || 'Nie udało się odczytać pliku PDF.';
@@ -559,6 +567,7 @@
         }
 
         setLoading(true);
+        setProgress('indeterminate');
         setStatus('Wysyłam treść do wyjaśnienia...', false);
         errorMessage.hidden = true;
 
@@ -613,6 +622,7 @@
         }
 
         setLoading(true);
+        setProgress('indeterminate');
         errorMessage.hidden = true;
 
         if (isImage) {
