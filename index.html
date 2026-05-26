@@ -82,10 +82,6 @@
           <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOCX / PDF (opcjonalnie, max 5 MB)</label>
           <input id="documentFile" type="file" accept=".doc,.docx,.pdf,image/*" class="file-upload-input" />
           <p id="fileDetails" class="field-note file-details" hidden></p>
-          <div id="extractedTextContainer" class="extracted-text-preview" hidden>
-            <strong>Surowy tekst wczytany z dokumentu</strong>
-            <textarea id="extractedTextPreview" class="preview-textarea" rows="8" placeholder="Tutaj pojawi się tekst z dokumentu. Możesz go poprawić przed wysłaniem."></textarea>
-          </div>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
             <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść</button>
@@ -132,8 +128,6 @@
     <script>
       const textarea = document.getElementById('documentText');
       const documentFile = document.getElementById('documentFile');
-      const extractedTextContainer = document.getElementById('extractedTextContainer');
-      const extractedTextPreview = document.getElementById('extractedTextPreview');
       const textCount = document.getElementById('textCount');
       const freeButton = document.getElementById('freeButton');
       const clearButton = document.getElementById('clearButton');
@@ -236,17 +230,14 @@
         fileDetails.textContent = message;
       }
 
-      function updateExtractedTextPreview(text) {
-        if (!text) {
-          extractedTextContainer.hidden = true;
-          extractedTextPreview.value = '';
-          extractedText = '';
-          return;
+      function fillTextareaWithExtractedText(text) {
+        textarea.value = text || '';
+        extractedText = textarea.value.trim();
+        textarea.dispatchEvent(new Event('input'));
+        if (textarea.value) {
+          textarea.focus();
+          setStatus('Tekst z dokumentu został wczytany powyżej. Możesz go poprawić przed wysłaniem.', false);
         }
-
-        extractedTextContainer.hidden = false;
-        extractedTextPreview.value = text;
-        extractedText = text;
       }
 
       function normalizeExtractedText(text) {
@@ -537,9 +528,7 @@
       }
 
       async function handleAction() {
-        const text = textarea.value.trim();
-        const fileText = extractedText.trim();
-        const finalText = text || fileText;
+        const finalText = textarea.value.trim();
 
         if (!finalText) {
           showError('Proszę wkleić treść pisma lub przesłać skan dokumentu.');
@@ -575,14 +564,10 @@
         }
       });
 
-      extractedTextPreview.addEventListener('input', () => {
-        extractedText = extractedTextPreview.value.trim();
-      });
-
       documentFile.addEventListener('change', async (event) => {
         const file = event.target.files?.[0];
         extractedText = '';
-        updateExtractedTextPreview('');
+        fillTextareaWithExtractedText('');
         if (!file) {
           setFileDetails('');
           return;
@@ -621,7 +606,7 @@
             } else {
               setStatus('OCR zakończony. Możesz wysłać rozpoznany tekst do wyjaśnienia.', false);
             }
-            updateExtractedTextPreview(extractedText);
+            fillTextareaWithExtractedText(extractedText);
           } catch (error) {
             showError('Błąd OCR. Spróbuj inny skan lub wklej tekst ręcznie.');
           } finally {
@@ -637,7 +622,7 @@
             } else {
               setStatus('Plik PDF wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
             }
-            updateExtractedTextPreview(extractedText);
+            fillTextareaWithExtractedText(extractedText);
           } catch (error) {
             console.error('PDF extraction error:', error);
             const isEncrypted = /password|secured|encrypted/i.test(error.message || '');
@@ -657,7 +642,7 @@
             } else {
               setStatus('Plik DOCX wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
             }
-            updateExtractedTextPreview(extractedText);
+            fillTextareaWithExtractedText(extractedText);
           } catch (error) {
             console.error('DOCX extraction error:', error);
             showError(error?.message || 'Błąd podczas odczytu pliku DOCX. Spróbuj inny plik.');
@@ -674,7 +659,7 @@
             } else {
               setStatus('Plik DOC wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
             }
-            updateExtractedTextPreview(extractedText);
+            fillTextareaWithExtractedText(extractedText);
           } catch (error) {
             showError('Błąd podczas odczytu pliku DOC. Spróbuj inny plik.');
           } finally {
@@ -689,8 +674,6 @@
         documentFile.value = '';
         setFileDetails('');
         extractedText = '';
-        extractedTextPreview.value = '';
-        extractedTextContainer.hidden = true;
         resultCard.hidden = true;
         downloadButton.hidden = true;
         errorMessage.hidden = true;
