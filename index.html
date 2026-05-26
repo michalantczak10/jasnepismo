@@ -80,9 +80,11 @@
           <textarea id="documentText" name="text" rows="12" maxlength="5000" aria-describedby="textCount" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
           <p id="textCount" class="field-note">0 / 5000 znaków</p>
           <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOTX / DOCX / ODT / PDF / RTF / TXT (opcjonalnie, max 5 MB)</label>
-          <input id="documentFile" type="file" accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,image/*" class="file-upload-input" />
+          <div class="file-upload-row">
+            <input id="documentFile" type="file" accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,image/*" class="file-upload-input" />
+            <button type="button" id="removeFileButton" class="hero-cta hero-cta-secondary file-clear-button" disabled>Usuń plik</button>
+          </div>
           <p id="fileDetails" class="field-note file-details" hidden></p>
-          <button type="button" id="removeFileButton" class="hero-cta hero-cta-secondary file-clear-button" hidden>Usuń plik</button>
           <div class="form-actions">
             <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
             <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść</button>
@@ -226,12 +228,12 @@
         if (!message) {
           fileDetails.hidden = true;
           fileDetails.textContent = '';
-          removeFileButton.hidden = true;
+          removeFileButton.disabled = true;
           return;
         }
         fileDetails.hidden = false;
         fileDetails.textContent = message;
-        removeFileButton.hidden = false;
+        removeFileButton.disabled = false;
       }
 
       function clearFileSelection() {
