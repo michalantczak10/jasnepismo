@@ -136,8 +136,8 @@ button,
   text-decoration: none;
 }
 
-button:hover,
-.hero-cta:hover {
+button:hover:not(:disabled),
+.hero-cta:hover:not(:disabled) {
   transform: translateY(-4px) scale(1.02);
   filter: brightness(1.06);
   box-shadow: 0 24px 40px rgba(0, 0, 0, 0.20), 0 12px 22px rgba(0, 0, 0, 0.12);
