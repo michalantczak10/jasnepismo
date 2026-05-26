@@ -163,6 +163,7 @@
         'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
       ];
       let extractedText = '';
+      let progressInterval = null;
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
@@ -171,6 +172,7 @@
         clearButton.disabled = isLoading;
         if (!isLoading) {
           setStatus('');
+          clearProgressAnimation();
           setProgress(null);
         }
       }
@@ -195,6 +197,29 @@
         }
         fileProgress.hidden = false;
         fileProgress.value = Math.max(0, Math.min(100, value));
+      }
+
+      function startProgressAnimation(start = 10) {
+        clearProgressAnimation();
+        setProgress(Math.max(0, Math.min(90, start)));
+        progressInterval = setInterval(() => {
+          if (!fileProgress || fileProgress.hidden) return;
+          const current = Number(fileProgress.value) || 0;
+          const next = Math.min(90, current + Math.max(1, Math.round((100 - current) / 10)));
+          setProgress(next);
+        }, 600);
+      }
+
+      function clearProgressAnimation() {
+        if (progressInterval) {
+          clearInterval(progressInterval);
+          progressInterval = null;
+        }
+      }
+
+      function completeProgress() {
+        clearProgressAnimation();
+        setProgress(100);
       }
 
       function updateProgressStatus(percent, loaded, total) {
@@ -567,12 +592,13 @@
         }
 
         setLoading(true);
-        setProgress('indeterminate');
+        startProgressAnimation(15);
         setStatus('Wysyłam treść do wyjaśnienia...', false);
         errorMessage.hidden = true;
 
         try {
           const data = await sendRequest('/api/explain', { text: finalText });
+          completeProgress();
           showResult(data.explanation || 'Brak wyjaśnienia od serwera.');
         } catch (error) {
           showError(error.message || 'Wystąpił błąd. Spróbuj ponownie.');
