@@ -286,7 +286,7 @@
         return normalizeExtractedText(bestText);
       }
 
-      async function loadExternalScript(urls, readyCheck) {
+      async function loadExternalScript(urls, readyCheck, libraryName) {
         const sources = Array.isArray(urls) ? urls : [urls];
 
         for (const src of sources) {
@@ -356,7 +356,8 @@
           }
         }
 
-        throw new Error('Nie udało się załadować biblioteki z żadnego dostępnego źródła. Sprawdź połączenie internetowe lub spróbuj ponownie później.');
+        const libraryLabel = libraryName ? `biblioteki ${libraryName}` : 'biblioteki z żadnego dostępnego źródła';
+        throw new Error(`Nie udało się załadować ${libraryLabel}. Sprawdź połączenie internetowe lub spróbuj ponownie później.`);
       }
 
       async function extractTextFromDocx(arrayBuffer) {
@@ -367,7 +368,7 @@
         if (!isMammothReady()) {
           setStatus('Ładuję bibliotekę Mammoth...');
           try {
-            await loadExternalScript(MAMMOTH_CDN_SOURCES, isMammothReady);
+            await loadExternalScript(MAMMOTH_CDN_SOURCES, isMammothReady, 'Mammoth');
           } catch (error) {
             console.warn('Nie udało się załadować Mammoth:', error);
           }
@@ -394,7 +395,7 @@
         if (!JSZipClass) {
           setStatus('Ładuję bibliotekę JSZip...');
           setProgress('indeterminate');
-          await loadExternalScript(JSZIP_CDN_SOURCES, () => getJSZipClass() !== null);
+          await loadExternalScript(JSZIP_CDN_SOURCES, () => getJSZipClass() !== null, 'JSZip');
           JSZipClass = getJSZipClass();
         }
 
