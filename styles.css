@@ -149,14 +149,16 @@ button:hover:not(:disabled),
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.hero-cta-secondary:hover {
+.hero-cta-secondary:hover:not(:disabled) {
   background: #fff;
 }
 
 button:disabled,
 button[disabled],
 .hero-cta:disabled,
-.hero-cta[disabled] {
+.hero-cta[disabled],
+.hero-cta-secondary:disabled,
+.hero-cta-secondary[disabled] {
   opacity: 0.65;
   cursor: not-allowed !important;
   transform: none;
