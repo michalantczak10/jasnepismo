@@ -932,6 +932,16 @@ section:last-of-type {
   white-space: pre-wrap;
 }
 
+.result-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.result-actions .hero-cta {
+  margin: 0;
+}
+
 .payment-info {
   margin-top: 1.5rem;
   padding: 1.25rem 1.3rem;
