@@ -79,8 +79,8 @@
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
           <textarea id="documentText" name="text" rows="12" maxlength="5000" aria-describedby="textCount" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
           <p id="textCount" class="field-note">0 / 5000 znaków</p>
-          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOCX / PDF (opcjonalnie, max 5 MB)</label>
-          <input id="documentFile" type="file" accept=".doc,.docx,.pdf,image/*" class="file-upload-input" />
+          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOTX / DOCX / ODT / PDF / RTF / TXT (opcjonalnie, max 5 MB)</label>
+          <input id="documentFile" type="file" accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,image/*" class="file-upload-input" />
           <p id="fileDetails" class="field-note file-details" hidden></p>
           <button type="button" id="removeFileButton" class="hero-cta hero-cta-secondary file-clear-button" hidden>Usuń plik</button>
           <div class="form-actions">
@@ -258,6 +258,71 @@
           .replace(/[ \t\f\v]+/g, ' ')
           .replace(/\n{3,}/g, '\n\n')
           .trim();
+      }
+
+      function getJSZipClass() {
+        if (typeof JSZip !== 'undefined') return JSZip;
+        if (typeof window !== 'undefined' && window.JSZip) return window.JSZip;
+        if (typeof globalThis !== 'undefined' && globalThis.JSZip) return globalThis.JSZip;
+        return null;
+      }
+
+      async function ensureJSZip() {
+        let JSZipClass = getJSZipClass();
+        if (JSZipClass) return JSZipClass;
+
+        setStatus('Ładuję bibliotekę JSZip...', false);
+        await loadExternalScript(JSZIP_CDN_SOURCES, () => getJSZipClass() !== null, 'JSZip');
+        JSZipClass = getJSZipClass();
+        if (!JSZipClass) {
+          throw new Error('JSZip nie jest dostępny w tej przeglądarce.');
+        }
+        return JSZipClass;
+      }
+
+      async function extractTextFromTxt(file) {
+        const text = await file.text();
+        return normalizeExtractedText(text);
+      }
+
+      function parseRtf(rtf) {
+        return rtf
+          .replace(/\\par[d]? ?/g, '\n')
+          .replace(/\\tab ?/g, '\t')
+          .replace(/\\u(-?\d+)\??/g, (_, value) => {
+            const code = Number(value);
+            return String.fromCharCode(code < 0 ? 65536 + code : code);
+          })
+          .replace(/\\'([0-9a-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+          .replace(/\\[a-zA-Z]+-?\d* ?/g, '')
+          .replace(/[{}]/g, '')
+          .replace(/\n{3,}/g, '\n\n')
+          .replace(/[ \t]+/g, ' ')
+          .trim();
+      }
+
+      function extractTextFromRtf(arrayBuffer) {
+        const rtf = new TextDecoder('utf-8').decode(arrayBuffer);
+        return normalizeExtractedText(parseRtf(rtf));
+      }
+
+      async function extractTextFromOdt(arrayBuffer) {
+        const JSZipClass = await ensureJSZip();
+        const zip = await JSZipClass.loadAsync(arrayBuffer);
+        const contentXmlFile = zip.file('content.xml');
+        if (!contentXmlFile) {
+          throw new Error('Brak pliku content.xml w pliku ODT.');
+        }
+        const contentXml = await contentXmlFile.async('string');
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(contentXml, 'application/xml');
+        const paragraphs = Array.from(xmlDoc.getElementsByTagName('text:p'));
+        const listItems = Array.from(xmlDoc.getElementsByTagName('text:list-item'));
+        const textParts = paragraphs.map((node) => node.textContent || '');
+        listItems.forEach((node) => {
+          if (node.textContent) textParts.push(node.textContent);
+        });
+        return normalizeExtractedText(textParts.join('\n'));
       }
 
       function extractTextFromDoc(arrayBuffer) {
@@ -587,10 +652,14 @@
         const isImage = file.type.startsWith('image/');
         const isPdf = file.type === 'application/pdf' || fileName.endsWith('.pdf');
         const isDocx = fileName.endsWith('.docx');
+        const isDotx = fileName.endsWith('.dotx');
         const isDoc = fileName.endsWith('.doc');
+        const isOdt = fileName.endsWith('.odt');
+        const isRtf = file.type === 'application/rtf' || file.type === 'text/rtf' || fileName.endsWith('.rtf');
+        const isTxt = file.type === 'text/plain' || fileName.endsWith('.txt');
 
-        if (!isImage && !isPdf && !isDocx && !isDoc) {
-          showError('Możesz przesłać tylko obraz, plik PDF, plik DOCX lub plik DOC.');
+        if (!isImage && !isPdf && !isDocx && !isDotx && !isDoc && !isOdt && !isRtf && !isTxt) {
+          showError('Możesz przesłać tylko obraz, plik PDF, DOC / DOTX / DOCX, ODT, RTF lub TXT.');
           documentFile.value = '';
           return;
         }
@@ -642,20 +711,70 @@
           } finally {
             setLoading(false);
           }
-        } else if (isDocx) {
-          setStatus('Wczytywanie pliku DOCX...', false);
+        } else if (isDocx || isDotx) {
+          setStatus('Wczytywanie pliku DOCX / DOTX...', false);
           try {
             const arrayBuffer = await file.arrayBuffer();
             extractedText = await extractTextFromDocx(arrayBuffer);
             if (!extractedText) {
-              showError('Nie udało się odczytać tekstu z pliku DOCX.');
+              showError('Nie udało się odczytać tekstu z pliku DOCX / DOTX.');
             } else {
-              setStatus('Plik DOCX wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+              setStatus('Plik DOCX / DOTX wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
             }
             fillTextareaWithExtractedText(extractedText);
           } catch (error) {
             console.error('DOCX extraction error:', error);
-            showError(error?.message || 'Błąd podczas odczytu pliku DOCX. Spróbuj inny plik.');
+            showError(error?.message || 'Błąd podczas odczytu pliku DOCX / DOTX. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
+        } else if (isOdt) {
+          setStatus('Wczytywanie pliku ODT...', false);
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            extractedText = await extractTextFromOdt(arrayBuffer);
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku ODT.');
+            } else {
+              setStatus('Plik ODT wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            fillTextareaWithExtractedText(extractedText);
+          } catch (error) {
+            console.error('ODT extraction error:', error);
+            showError(error?.message || 'Błąd podczas odczytu pliku ODT. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
+        } else if (isRtf) {
+          setStatus('Wczytywanie pliku RTF...', false);
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            extractedText = extractTextFromRtf(arrayBuffer);
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku RTF.');
+            } else {
+              setStatus('Plik RTF wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            fillTextareaWithExtractedText(extractedText);
+          } catch (error) {
+            console.error('RTF extraction error:', error);
+            showError(error?.message || 'Błąd podczas odczytu pliku RTF. Spróbuj inny plik.');
+          } finally {
+            setLoading(false);
+          }
+        } else if (isTxt) {
+          setStatus('Wczytywanie pliku TXT...', false);
+          try {
+            extractedText = await extractTextFromTxt(file);
+            if (!extractedText) {
+              showError('Nie udało się odczytać tekstu z pliku TXT.');
+            } else {
+              setStatus('Plik TXT wczytany. Możesz wysłać tekst do wyjaśnienia.', false);
+            }
+            fillTextareaWithExtractedText(extractedText);
+          } catch (error) {
+            console.error('TXT extraction error:', error);
+            showError(error?.message || 'Błąd podczas odczytu pliku TXT. Spróbuj inny plik.');
           } finally {
             setLoading(false);
           }
