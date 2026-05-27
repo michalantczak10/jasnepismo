@@ -289,6 +289,13 @@
       function clearFileSelection() {
         documentFile.value = '';
         setFileDetails('');
+        if (extractedText && textarea.value.trim() === extractedText) {
+          textarea.value = '';
+          textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
+          extractedText = '';
+          setStatus('', false);
+        }
+        updateActionButtons();
       }
 
       function fillTextareaWithExtractedText(text) {
