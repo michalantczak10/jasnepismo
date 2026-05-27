@@ -179,6 +179,13 @@
         'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
       ];
       let extractedText = '';
+      let isLoading = false;
+
+      function updateActionButtons() {
+        const hasText = textarea.value.trim().length > 0;
+        freeButton.disabled = isLoading || !hasText;
+        clearButton.disabled = isLoading;
+      }
 
       function openConfirmModal() {
         confirmModal.hidden = false;
@@ -203,15 +210,16 @@
         downloadButton.hidden = true;
         errorMessage.hidden = true;
         setStatus('', false);
+        updateActionButtons();
         textarea.focus();
         textarea.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      function setLoading(isLoading) {
-        loader.hidden = !isLoading;
-        freeButton.disabled = isLoading;
-        clearButton.disabled = isLoading;
-        if (!isLoading) {
+      function setLoading(loading) {
+        isLoading = loading;
+        loader.hidden = !loading;
+        updateActionButtons();
+        if (!loading) {
           setStatus('');
         }
       }
@@ -681,6 +689,7 @@
         } else {
           textCount.style.color = 'rgba(17, 17, 17, 0.78)';
         }
+        updateActionButtons();
       });
 
       documentFile.addEventListener('change', async (event) => {
@@ -876,6 +885,7 @@
 
       removeFileButton.addEventListener('click', clearFileSelection);
       freeButton.addEventListener('click', handleAction);
+      updateActionButtons();
     </script>
   </body>
 </html>
