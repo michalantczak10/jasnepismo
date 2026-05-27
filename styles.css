@@ -159,10 +159,28 @@ button[disabled],
 .hero-cta[disabled],
 .hero-cta-secondary:disabled,
 .hero-cta-secondary[disabled] {
-  opacity: 0.65;
+  opacity: 0.55;
   cursor: not-allowed !important;
   transform: none;
   box-shadow: none;
+  filter: none;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+button:disabled.hero-cta,
+button[disabled].hero-cta,
+.hero-cta:disabled,
+.hero-cta[disabled] {
+  background: var(--color-accent);
+  color: #111;
+}
+
+button:disabled.hero-cta-secondary,
+button[disabled].hero-cta-secondary,
+.hero-cta-secondary:disabled,
+.hero-cta-secondary[disabled] {
+  background: rgba(255, 255, 255, 0.85);
+  color: #111;
 }
 
 .hero-cta .button-icon {
