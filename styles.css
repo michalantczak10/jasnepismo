@@ -869,11 +869,19 @@ section:last-of-type {
   }
 
   section {
-    padding: 32px 14px;
+    padding: 32px 18px;
   }
 }
 
 @media (max-width: 420px) {
+  .hero {
+    padding: 28px 18px;
+  }
+
+  section {
+    padding: 32px 18px;
+  }
+
   .file-upload-row,
   .form-actions,
   .modal-actions {
