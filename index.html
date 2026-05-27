@@ -73,7 +73,7 @@
         <div class="section-header">
           <p class="section-tag">Jak to działa</p>
           <h2 id="app-heading">Szybkie wyjaśnienie urzędowego dokumentu</h2>
-          <p class="section-intro">Wklej treść pisma do pola poniżej i kliknij „Wyjaśnij za darmo”. System wyświetli jasne podsumowanie i praktyczne wskazówki.</p>
+          <p class="section-intro">Wklej treść pisma do pola poniżej i kliknij „Wyjaśnij”. System wyświetli jasne podsumowanie i praktyczne wskazówki.</p>
         </div>
         <form id="explainForm" class="explain-form">
           <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
@@ -87,8 +87,8 @@
           </div>
           <p id="fileDetails" class="field-note file-details" hidden></p>
           <div class="form-actions">
-            <button type="button" id="freeButton" class="hero-cta">Wyjaśnij za darmo</button>
-            <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Resetuj tekst</button>
+            <button type="button" id="freeButton" class="hero-cta">Wyjaśnij</button>
+            <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść tekst</button>
           </div>
           <div class="loader-container">
             <span id="loader" class="loader" hidden></span>
@@ -96,6 +96,18 @@
           <p id="statusMessage" class="status-message" role="status" aria-live="polite" aria-atomic="true" hidden></p>
           <p id="errorMessage" class="error-message" role="alert" hidden></p>
         </form>
+        <div id="confirmModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+          <div class="modal-window">
+            <div class="modal-copy">
+              <h3 id="confirmModalTitle">Wyczyścić tekst?</h3>
+              <p>Czy na pewno chcesz wyczyścić cały tekst w polu? Ta akcja usunie także bieżący wynik.</p>
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="confirmClearButton" class="hero-cta hero-cta-secondary">Tak, wyczyść</button>
+              <button type="button" id="cancelClearButton" class="hero-cta">Anuluj</button>
+            </div>
+          </div>
+        </div>
         <article id="resultCard" class="result-card" hidden>
           <h3>Wyjaśnienie</h3>
           <div id="resultText" class="result-text"></div>
@@ -135,6 +147,9 @@
       const textCount = document.getElementById('textCount');
       const freeButton = document.getElementById('freeButton');
       const clearButton = document.getElementById('clearButton');
+      const confirmModal = document.getElementById('confirmModal');
+      const confirmClearButton = document.getElementById('confirmClearButton');
+      const cancelClearButton = document.getElementById('cancelClearButton');
       const downloadButton = document.getElementById('downloadButton');
       const loader = document.getElementById('loader');
       const statusMessage = document.getElementById('statusMessage');
@@ -164,6 +179,33 @@
         'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
       ];
       let extractedText = '';
+
+      function openConfirmModal() {
+        confirmModal.hidden = false;
+        confirmModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        confirmClearButton.focus();
+      }
+
+      function closeConfirmModal() {
+        confirmModal.hidden = true;
+        confirmModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        clearButton.focus();
+      }
+
+      function performClear() {
+        textarea.value = '';
+        textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
+        clearFileSelection();
+        extractedText = '';
+        resultCard.hidden = true;
+        downloadButton.hidden = true;
+        errorMessage.hidden = true;
+        setStatus('', false);
+        textarea.focus();
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
 
       function setLoading(isLoading) {
         loader.hidden = !isLoading;
@@ -802,16 +844,22 @@
 
       clearButton.addEventListener('click', (event) => {
         event.preventDefault();
-        textarea.value = '';
-        textCount.textContent = `0 / ${MAX_TEXT_LENGTH} znaków`;
-        clearFileSelection();
-        extractedText = '';
-        resultCard.hidden = true;
-        downloadButton.hidden = true;
-        errorMessage.hidden = true;
-        setStatus('', false);
-        textarea.focus();
-        textarea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        openConfirmModal();
+      });
+
+      confirmClearButton.addEventListener('click', () => {
+        performClear();
+        closeConfirmModal();
+      });
+
+      cancelClearButton.addEventListener('click', () => {
+        closeConfirmModal();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (!confirmModal.hidden && event.key === 'Escape') {
+          closeConfirmModal();
+        }
       });
 
       downloadButton.addEventListener('click', () => {
