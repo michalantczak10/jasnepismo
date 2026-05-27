@@ -210,8 +210,7 @@
         downloadButton.hidden = true;
         errorMessage.hidden = true;
         setStatus('', false);
-        updateActionButtons();
-        textarea.focus();
+        textarea.focus({ preventScroll: true });
       }
 
       function setLoading(loading) {
