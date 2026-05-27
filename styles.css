@@ -227,8 +227,9 @@ button[disabled].hero-cta-secondary,
 }
 
 .modal-actions .hero-cta {
-  flex: 1 1 auto;
+  flex: 1 1 140px;
   min-width: 140px;
+  max-width: 220px;
 }
 
 .hero-cta .button-icon {
@@ -256,8 +257,8 @@ button[disabled].hero-cta-secondary,
 
 section {
   width: min(100%, 920px);
-  margin: 0 auto 28px;
-  padding: 40px 24px;
+  margin: 0 auto 38px;
+  padding: 50px 32px;
 }
 
 section:last-of-type {
@@ -869,6 +870,27 @@ section:last-of-type {
 
   section {
     padding: 32px 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .file-upload-row,
+  .form-actions,
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .file-upload-button,
+  .file-clear-button,
+  .hero-cta {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .modal-window {
+    width: min(100%, 96vw);
+    padding: 1.25rem;
   }
 }
 
