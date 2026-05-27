@@ -184,7 +184,7 @@
       function updateActionButtons() {
         const hasText = textarea.value.trim().length > 0;
         freeButton.disabled = isLoading || !hasText;
-        clearButton.disabled = isLoading;
+        clearButton.disabled = isLoading || !hasText;
       }
 
       function openConfirmModal() {
