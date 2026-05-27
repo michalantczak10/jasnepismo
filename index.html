@@ -301,7 +301,7 @@
         extractedText = textarea.value.trim();
         textarea.dispatchEvent(new Event('input'));
         if (textarea.value) {
-          textarea.focus();
+          textarea.focus({ preventScroll: true });
           textarea.select();
           setStatus('Tekst z dokumentu został wczytany powyżej. Możesz go poprawić przed wysłaniem.', false);
         }
@@ -888,7 +888,11 @@
         URL.revokeObjectURL(url);
       });
 
-      removeFileButton.addEventListener('click', clearFileSelection);
+      removeFileButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        clearFileSelection();
+        removeFileButton.blur();
+      });
       freeButton.addEventListener('click', handleAction);
       updateActionButtons();
     </script>
