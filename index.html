@@ -3,15 +3,151 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Primary SVG favicon (chosen variant: document with lines) -->
+    <!-- Primary SVG favicon (chosen variant: simple) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=7" />
     <!-- PNG fallbacks (version bumped) -->
     <link rel="icon" type="image/png" href="/favicon-16x16.png?v=7" sizes="16x16" />
     <link rel="icon" type="image/png" href="/favicon-32x32.png?v=7" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon-192x192.png?v=7" sizes="192x192" />
+    <link rel="icon" type="image/png" href="/favicon-512x512.png?v=7" sizes="512x512" />
+    <link rel="shortcut icon" href="/favicon.ico?v=7" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-192x192.png?v=7" />
+    <link rel="manifest" href="/site.webmanifest?v=7" />
+    <link rel="canonical" href="https://jasnepismo.pl/" />
+    <title>Jasne pismo — wyjaśnij pismo urzędowe prostym językiem</title>
+    <meta name="description" content="Jasne pismo pomaga zrozumieć pismo urzędowe. Wklej treść, kliknij Wyjaśnij i otrzymaj proste podsumowanie krok po kroku." />
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="pismo urzędowe, wyjaśnienie, ai, jasne pismo, dokumenty urzędowe" />
+    <meta name="theme-color" content="#b30000" />
+    <meta name="author" content="Jasne pismo" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jasnepismo.pl/" />
+    <meta property="og:title" content="Jasne pismo — wyjaśnij pismo urzędowe prostym językiem" />
+    <meta property="og:description" content="Wklej treść pisma urzędowego, a model AI wygeneruje proste wyjaśnienie i sugestie kolejnych kroków." />
+    <meta property="og:image" content="/img/hero.jpg" />
+    <meta property="og:image:alt" content="Ilustracja Jasne pismo" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Jasne pismo" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jasne pismo — wyjaśnij pismo urzędowe prostym językiem" />
+    <meta name="twitter:description" content="Wklej treść pisma urzędowego, a system wyjaśni je prostym językiem." />
+    <meta name="twitter:image" content="/img/hero.jpg" />
+    <meta name="twitter:image:alt" content="Ilustracja Jasne pismo" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Jasne pismo",
+      "url": "https://jasnepismo.pl/",
+      "description": "Proste wyjaśnienia pism urzędowych za pomocą modelu AI.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Jasne pismo"
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles.css?v=5" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-bg-svg" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;">
+          <circle cx="0%" cy="20%" r="8%" fill="#fff" fill-opacity="0.09" />
+          <circle cx="25%" cy="40%" r="5%" fill="#fff" fill-opacity="0.11" />
+          <circle cx="50%" cy="60%" r="10%" fill="#fff" fill-opacity="0.10" />
+          <circle cx="75%" cy="80%" r="7%" fill="#fff" fill-opacity="0.09" />
+          <circle cx="100%" cy="50%" r="6%" fill="#fff" fill-opacity="0.08" />
+        </svg>
+      </div>
+      <div class="hero-copy">
+        <p class="section-tag">Jasne pismo</p>
+        <h1>Wyjaśnij pismo urzędowe prostym językiem</h1>
+        <p class="hero-subtitle">Wklej treść pisma, kliknij „Wyjaśnij”, a system zwróci jasne podsumowanie i praktyczne wskazówki.</p>
+      </div>
+    </header>
+    <main>
+      <section class="section section--app fade-in" aria-labelledby="app-heading">
+        <div class="section-header">
+          <p class="section-tag">Jak to działa</p>
+          <h2 id="app-heading">Szybkie wyjaśnienie urzędowego dokumentu</h2>
+          <p class="section-intro">Wklej treść pisma do pola poniżej i kliknij „Wyjaśnij”. System wyświetli jasne podsumowanie i praktyczne wskazówki.</p>
+        </div>
+        <form id="explainForm" class="explain-form">
+          <label class="sr-only" for="documentText">Treść pisma urzędowego</label>
+          <textarea id="documentText" name="text" rows="12" maxlength="5000" aria-describedby="textCount" placeholder="Wklej treść pisma urzędowego tutaj..."></textarea>
+          <p id="textCount" class="field-note">0 / 5000 znaków</p>
+          <label class="file-upload-label" for="documentFile">Prześlij skan dokumentu lub plik DOC / DOTX / DOCX / ODT / PDF / RTF / TXT / JPG / JPEG / PNG / GIF. Tekst zostanie wczytany do pola powyżej i możesz go edytować przed wysłaniem. (opcjonalnie, max 5 MB)</label>
+          <div class="file-upload-row">
+            <input id="documentFile" type="file" accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,.jpg,.jpeg,.png,.gif" class="file-upload-input" />
+            <label for="documentFile" class="hero-cta file-upload-button">Wybierz plik</label>
+            <button type="button" id="removeFileButton" class="hero-cta hero-cta-secondary file-clear-button" disabled>Usuń plik</button>
+          </div>
+          <p id="fileDetails" class="field-note file-details" hidden></p>
+          <div class="form-actions">
+            <button type="button" id="freeButton" class="hero-cta">Wyjaśnij</button>
+            <button type="button" id="clearButton" class="hero-cta hero-cta-secondary">Wyczyść tekst</button>
+          </div>
+          <div class="loader-container">
+            <span id="loader" class="loader" hidden></span>
+          </div>
+          <p id="statusMessage" class="status-message" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+          <p id="errorMessage" class="error-message" role="alert" hidden></p>
+        </form>
+        <div id="confirmModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+          <div class="modal-window">
+            <div class="modal-copy">
+              <h3 id="confirmModalTitle">Wyczyścić tekst?</h3>
+              <p>Czy na pewno chcesz wyczyścić cały tekst w polu? Ta akcja usunie także bieżący wynik.</p>
+            </div>
+            <div class="modal-actions">
+              <button type="button" id="confirmClearButton" class="hero-cta hero-cta-secondary">Tak, wyczyść</button>
+              <button type="button" id="cancelClearButton" class="hero-cta">Anuluj</button>
+            </div>
+          </div>
+        </div>
+        <article id="resultCard" class="result-card" hidden>
+          <h3>Wyjaśnienie</h3>
+          <div id="resultText" class="result-text"></div>
+          <div class="result-actions">
+            <button type="button" id="downloadButton" class="hero-cta hero-cta-secondary" hidden>Pobierz wynik</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="section section--info product fade-in" aria-labelledby="info-heading">
+        <div class="product-inner">
+          <div class="section-header">
+            <p class="section-tag">Bezpieczeństwo</p>
+            <h2 id="info-heading">Twoje pismo nie jest przechowywane</h2>
+            <p class="section-intro">Backend jednorazowo przetwarza tekst i zwraca wynik. Treść pisma nie jest zapisywana ani udostępniana dalej.</p>
+          </div>
+          <ul class="product-features">
+            <li><span class="feature-emoji">🔒</span><strong>Brak logowania</strong><span class="feature-note">Nie zbieramy danych osobowych ani historii dokumentów.</span></li>
+            <li><span class="feature-emoji">⚡</span><strong>Szybkie działanie</strong><span class="feature-note">Wyjaśnienie powstaje w kilka sekund, a wynik jest wyświetlany natychmiast.</span></li>
+            <li><span class="feature-emoji">🌐</span><strong>Bezpieczne połączenie</strong><span class="feature-note">Vercel obsługuje HTTPS, a API jest chronione kluczem serwisowym.</span></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>Jasne pismo — proste wyjaśnienia pism urzędowych w jednym miejscu.</p>
+        <p><a href="polityka-prywatnosci.html">Polityka prywatności</a> • <a href="regulamin.html">Regulamin</a></p>
+      </div>
+    </footer>
+
+    <!-- external libraries (CDN) -->
     <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.4.17/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- application JS (moved out of index.html) -->
     <script defer src="scripts/app.js"></script>
   </body>
 </html>
