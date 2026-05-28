@@ -6,7 +6,8 @@ const sharp = require('sharp');
 (async () => {
   try {
     const root = path.resolve(__dirname, '..');
-    const svgPath = path.join(root, 'favicon-alt-simple.svg');
+    const svgArg = process.argv[2] || 'favicon.svg';
+    const svgPath = path.join(root, svgArg);
     if (!fs.existsSync(svgPath)) {
       console.error('SVG source not found:', svgPath);
       process.exit(1);

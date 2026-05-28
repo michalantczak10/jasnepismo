@@ -3,7 +3,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const expected = [
-  'favicon-doc-lines.svg',
+  'favicon.svg',
   'favicon-16x16.png',
   'favicon-32x32.png',
   'favicon-192x192.png',
