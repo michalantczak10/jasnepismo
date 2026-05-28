@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Shield variant: emphasizes bezpieczeństwo/pewność -->
-  <rect width="64" height="64" rx="12" fill="#dc2626" />
-  <path d="M32 12 L20 18 v10 c0 10 6 18 12 20 6-2 12-10 12-20V18 L32 12z" fill="#fff" />
-  <rect x="24" y="22" width="16" height="2" rx="1" fill="#dc2626" />
-  <rect x="24" y="28" width="12" height="2" rx="1" fill="#dc2626" />
-</svg>
-

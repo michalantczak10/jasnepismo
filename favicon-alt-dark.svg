@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Dark-background variant for light UIs: white icon on dark red rounded square -->
-  <rect width="64" height="64" rx="12" fill="#8b0000" />
-  <rect x="14" y="12" width="36" height="40" rx="4" fill="#fff" />
-  <path d="M22 26 h20" stroke="#8b0000" stroke-width="3" stroke-linecap="round" />
-  <path d="M22 34 h14" stroke="#8b0000" stroke-width="3" stroke-linecap="round" />
-  <circle cx="40" cy="20" r="3" fill="#8b0000" />
-</svg>
-
