@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Verify badge: shield with check inside -->
+  <rect width="64" height="64" rx="12" fill="#dc2626" />
+  <g transform="translate(12,12)">
+    <path d="M20 2 L8 8 v10 c0 8 5 14 12 16 7-2 12-8 12-16 V8 L20 2 z" fill="#fff" />
+    <path d="M14 14 l4 4 l8-8" stroke="#16a34a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </g>
+</svg>
+

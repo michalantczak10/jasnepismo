@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Lightbulb variant: emphasizes clarity/insight -->
+  <rect width="64" height="64" rx="12" fill="#dc2626" />
+  <g transform="translate(16,12)">
+    <path d="M16 0 C8 0 4 6 4 12 C4 17 9 20 9 24 L9 28 h14 v-4 c0-4 5-7 5-12 0-6-4-12-12-12z" fill="#fff" />
+    <rect x="10" y="28" width="12" height="4" rx="2" fill="#fff" />
+    <rect x="12" y="34" width="8" height="4" rx="1.5" fill="#fff" />
+  </g>
+</svg>
+

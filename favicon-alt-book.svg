@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Book variant: guide / documentation -->
+  <rect width="64" height="64" rx="12" fill="#dc2626" />
+  <g transform="translate(10,14)">
+    <path d="M2 6 a2 2 0 0 1 2-2 h28 a2 2 0 0 1 2 2 v28 a2 2 0 0 1 -2 2 H4 a2 2 0 0 1 -2-2 z" fill="#fff" />
+    <path d="M8 8 v24" stroke="#dc2626" stroke-width="2" stroke-linecap="round" />
+    <rect x="12" y="10" width="16" height="2" rx="1" fill="#dc2626" />
+    <rect x="12" y="14" width="12" height="2" rx="1" fill="#dc2626" />
+  </g>
+</svg>
+

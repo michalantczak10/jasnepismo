@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Gear variant: tool / processing emphasis -->
+  <rect width="64" height="64" rx="12" fill="#dc2626" />
+  <g transform="translate(10,10)">
+    <circle cx="22" cy="22" r="8" fill="#fff" />
+    <path d="M22 10 v-6 M30 14 l4-4 M38 22 h6 M30 30 l4 4 M22 38 v6 M14 30 l-4 4 M6 22 h-6 M14 14 l-4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="translate(0,0)" />
+  </g>
+</svg>
+

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Document + magnifier: emphasizes 'analiza' / 'sprawdź' -->
+  <rect width="64" height="64" rx="12" fill="#dc2626" />
+  <rect x="12" y="10" width="32" height="44" rx="4" fill="#fff" />
+  <circle cx="42" cy="40" r="10" fill="#fff" />
+  <circle cx="42" cy="40" r="6" fill="#dc2626" />
+  <rect x="48" y="46" width="10" height="4" rx="2" fill="#fff" transform="rotate(45 48 46)" />
+</svg>
+
