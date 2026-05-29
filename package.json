@@ -5,6 +5,36 @@
   "type": "commonjs",
   "scripts": {
     "test": "node --test",
-    "gen:sitemap": "node scripts/generate-sitemap.js"
+    "gen:sitemap": "node scripts/generate-sitemap.js",
+    "lint": "eslint . --ext .js,.cjs --cache",
+    "lint:fix": "eslint . --ext .js,.cjs --fix",
+    "format": "prettier --write .",
+    "ci": "npm run lint && npm test",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.50.0",
+    "prettier": "^2.8.8",
+    "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0"
+  },
+  "lint-staged": {
+    "*.{js,cjs}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{css,scss,md,html}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
