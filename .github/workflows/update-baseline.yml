@@ -1,0 +1,63 @@
+name: Update visual baseline
+
+# Allow the workflow token to write contents (needed to push commits)
+permissions:
+  contents: write
+
+on:
+  push:
+	branches:
+	  - main
+  workflow_dispatch:
+
+
+jobs:
+		name: Update visual baseline
+
+		# Allow the workflow token to write contents (needed to push commits)
+		permissions:
+		  contents: write
+
+		on:
+		  push:
+			branches: [ main ]
+		  workflow_dispatch:
+
+		jobs:
+		  update-baseline:
+			runs-on: ubuntu-latest
+			steps:
+			  - name: Checkout
+				uses: actions/checkout@v5
+				with:
+				  fetch-depth: 0
+				  persist-credentials: true
+
+			  - name: Setup Node.js
+				uses: actions/setup-node@v5
+				with:
+				  node-version: '18'
+
+			  - name: Install dependencies
+				run: npm ci
+
+			  - name: Install Playwright browsers
+				run: npx playwright install --with-deps
+
+			  - name: Generate baseline screenshots
+				run: node scripts/generate-baseline.js
+
+			  - name: Commit and push if baseline changed
+				env:
+				  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+				run: |
+				  git config user.name "github-actions[bot]"
+				  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+				  if [ -n "$(git status --porcelain e2e/baseline)" ]; then
+					git add e2e/baseline
+					git commit -m "chore: update visual baseline [skip ci]"
+					git push
+				  else
+					echo "No baseline changes"
+				  fi
+
