@@ -170,3 +170,28 @@ curl -X POST https://www.jasnepismo.pl/api/explain \
 
 > Uwaga: OpenAI nie udostępnia przez standardowy endpoint informacji o "pozostałych tokenach" w koncie. Tutaj monitorujemy zużycie tokenów w ostatnim żądaniu. Jeśli chcesz pełniejsze raporty miesięczne, użyj panelu OpenAI lub dedykowanego API do rozliczeń.
 
+## Visual regression tests
+
+We use Playwright + pixelmatch to run visual regression tests for key UI elements.
+
+How to generate baselines locally:
+
+1. Install deps and Playwright browsers:
+
+```bash
+npm ci
+npx playwright install --with-deps
+```
+
+2. Generate baseline images for hero, form, result card and footer:
+
+```bash
+npx playwright test e2e/generate-baseline.spec.js
+```
+
+3. Baseline images are stored in `e2e/baseline/`. If you intentionally changed UI, commit updated baselines and open a PR.
+
+CI support:
+
+- There is a manual workflow `Update visual baselines` (Actions) which runs the baseline generator and opens a PR with changes if baselines were updated.
+- Playwright CI collects screenshots, videos and traces on failure and uploads them as artifacts.
