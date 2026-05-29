@@ -32,6 +32,8 @@ test('generate baseline screenshots for key UI elements', async ({ page }) => {
     { selector: '[data-testid="resultCard"]', name: 'result', viewport: null },
     { selector: '[data-testid="site-footer"]', name: 'footer', viewport: null },
     { selector: '[data-testid="confirmModal"]', name: 'modal', viewport: null, open: true },
+    { selector: '.file-upload-row', name: 'upload', viewport: null },
+    { selector: '[data-testid="resultText"]', name: 'result_long', viewport: null, long: true },
   ];
 
   for (const el of elements) {
@@ -53,6 +55,18 @@ test('generate baseline screenshots for key UI elements', async ({ page }) => {
 
     const outPath = path.join(baselineDir, `${el.name}.png`);
     const node = page.locator(el.selector);
+    if (el.long) {
+      // enforce fixed size for long content to have consistent screenshots
+      await page.evaluate(() => {
+        const rt = document.getElementById('resultText');
+        if (rt) {
+          rt.style.width = '600px';
+          rt.style.height = '400px';
+          rt.style.overflow = 'auto';
+          rt.style.display = 'block';
+        }
+      });
+    }
     await node.screenshot({ path: outPath });
     console.log('Generated baseline:', outPath);
 
