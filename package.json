@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --ext .js,.cjs --fix",
     "format": "prettier --write .",
     "ci": "npm run lint && npm test",
-    "prepare": "husky install"
+    "prepare": "node scripts/prepare-husky.js"
   },
   "dependencies": {
     "png-to-ico": "^3.0.1",
