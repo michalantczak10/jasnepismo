@@ -2,7 +2,9 @@ const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
 const { PNG } = require('pngjs');
-const pixelmatch = require('pixelmatch');
+// pixelmatch v7 may export as a default property when required from CommonJS
+const _pixelmatch = require('pixelmatch');
+const pixelmatch = _pixelmatch && _pixelmatch.default ? _pixelmatch.default : _pixelmatch;
 
 const baselineDir = path.resolve(__dirname, 'baseline');
 const tmpDir = path.resolve(__dirname, 'tmp');

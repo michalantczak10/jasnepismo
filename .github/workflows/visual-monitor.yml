@@ -1,0 +1,58 @@
+name: Visual tests monitor
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # every 6 hours
+  push:
+    branches:
+      - main
+
+jobs:
+  visual-monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright visual tests
+        id: run-tests
+        run: |
+          npm run test:e2e
+        continue-on-error: true
+
+      - name: Upload visual test artifacts (on failure)
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-test-artifacts
+          path: |
+            e2e/tmp
+            test-results || true
+
+      - name: Create GitHub Issue if visual tests failed
+        if: ${{ failure() }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const title = `Visual tests failing on ${process.env.GITHUB_REF.replace('refs/heads/', '')}`;
+            const body = `Playwright visual tests failed.\n\nRun details: ${runUrl}\n\nArtifacts: attached to this run (visual-test-artifacts).\n\nPlease check whether this is a flaky failure or a real regression.`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+            });
+

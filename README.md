@@ -106,6 +106,29 @@ Przykładowa odpowiedź z `/api/explain`:
 1. Otwórz wdrożoną stronę na Vercel.
 2. Wklej tekst pisma urzędowego i wybierz przycisk "Wyjaśnij za darmo".
 
+### Zalecana wersja Node.js dla deweloperów
+
+Projekt działa z Node.js >=18 (zdefiniowane w `package.json`), ale rekomenduję używanie Node.js z rodziny 24.x — to wersja używana lokalnie podczas sprawdzania repozytorium (w moim środowisku: v24.14.0). Aby ułatwić zarządzanie wersją, dodałem plik `.nvmrc` z wartością `24`.
+
+Przykładowe polecenia:
+
+```powershell
+# sprawdź aktualnie zainstalowaną wersję
+node -v
+
+# jeśli używasz nvm (UNIX/macOS)
+nvm install 24; nvm use 24
+
+# jeśli używasz nvm-windows (PowerShell)
+# https://github.com/coreybutler/nvm-windows
+nvm install 24.14.0; nvm use 24.14.0
+
+# jeśli używasz Volta
+volta install node@24
+```
+
+Jeśli chcesz, mogę przygotować plik `engines`/konfigurację dla Volta albo dodać instrukcje CI (np. w workflow GitHub Actions) żeby jawnie ustawić Node 24 w runnerach.
+
 ### Testy jednostkowe
 
 Aby uruchomić testy lokalnie, wpisz:
