@@ -13,4 +13,8 @@ test('index.html loads and has expected title/text', async ({ page }) => {
   // basic content check: look for a main element or hero image
   const main = await page.$('main');
   expect(main).not.toBeNull();
+
+  // check hero heading via data-testid
+  const heroHeading = page.locator('[data-testid="hero-heading"]');
+  await expect(heroHeading).toBeVisible();
 });

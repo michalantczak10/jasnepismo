@@ -3,7 +3,7 @@ const path = require('path');
 
 const indexFileUrl = () => {
   const filePath = path.resolve(__dirname, '..', 'index.html');
-  return 'file://' + filePath.replaceAll('\\\\', '/');
+  return 'file://' + filePath.replaceAll('\\', '/');
 };
 
 test.describe('UI and form behavior', () => {
@@ -12,10 +12,10 @@ test.describe('UI and form behavior', () => {
   });
 
   test('text count updates and buttons enable/disable', async ({ page }) => {
-    const textarea = page.locator('#documentText');
-    const textCount = page.locator('#textCount');
-    const freeButton = page.locator('#freeButton');
-    const clearButton = page.locator('#clearButton');
+    const textarea = page.locator('[data-testid="documentText"]');
+    const textCount = page.locator('[data-testid="textCount"]');
+    const freeButton = page.locator('[data-testid="freeButton"]');
+    const clearButton = page.locator('[data-testid="clearButton"]');
 
     await expect(textCount).toHaveText('0 / 5000 znaków');
     await expect(freeButton).toBeDisabled();
@@ -29,10 +29,10 @@ test.describe('UI and form behavior', () => {
   });
 
   test('clear button opens modal and cancel closes it', async ({ page }) => {
-    const textarea = page.locator('#documentText');
-    const clearButton = page.locator('#clearButton');
-    const confirmModal = page.locator('#confirmModal');
-    const cancelClearButton = page.locator('#cancelClearButton');
+    const textarea = page.locator('[data-testid="documentText"]');
+    const clearButton = page.locator('[data-testid="clearButton"]');
+    const confirmModal = page.locator('[data-testid="confirmModal"]');
+    const cancelClearButton = page.locator('[data-testid="cancelClearButton"]');
 
     await textarea.fill('Test do wyczyszczenia');
     await clearButton.click();
@@ -43,10 +43,10 @@ test.describe('UI and form behavior', () => {
   });
 
   test('confirm clear clears textarea and hides result', async ({ page }) => {
-    const textarea = page.locator('#documentText');
-    const clearButton = page.locator('#clearButton');
-    const confirmClearButton = page.locator('#confirmClearButton');
-    const resultCard = page.locator('#resultCard');
+    const textarea = page.locator('[data-testid="documentText"]');
+    const clearButton = page.locator('[data-testid="clearButton"]');
+    const confirmClearButton = page.locator('[data-testid="confirmClearButton"]');
+    const resultCard = page.locator('[data-testid="resultCard"]');
 
     await textarea.fill('Test do wyczyszczenia');
     // simulate a result being present
@@ -63,9 +63,9 @@ test.describe('UI and form behavior', () => {
   });
 
   test('file input shows file details and remove works', async ({ page }) => {
-    const documentFile = page.locator('#documentFile');
-    const fileDetails = page.locator('#fileDetails');
-    const removeFileButton = page.locator('#removeFileButton');
+    const documentFile = page.locator('[data-testid="documentFile"]');
+    const fileDetails = page.locator('[data-testid="fileDetails"]');
+    const removeFileButton = page.locator('[data-testid="removeFileButton"]');
 
     // initially disabled
     await expect(removeFileButton).toBeDisabled();
@@ -83,7 +83,7 @@ test.describe('UI and form behavior', () => {
   });
 
   test('hero is above main in layout (position)', async ({ page }) => {
-    const hero = page.locator('header.hero');
+    const hero = page.locator('[data-testid="header-hero"]');
     const main = page.locator('main');
 
     const heroBox = await hero.boundingBox();
@@ -96,8 +96,10 @@ test.describe('UI and form behavior', () => {
   });
 
   test('hero copy visible and contains expected heading text', async ({ page }) => {
-    const heroCopy = page.locator('.hero-copy');
+    const heroCopy = page.locator('[data-testid="hero-copy"]');
     await expect(heroCopy).toBeVisible();
-    await expect(heroCopy.locator('h1')).toHaveText(/Wyjaśnij pismo urzędowe/);
+    await expect(page.locator('[data-testid="hero-heading"]')).toHaveText(
+      /Wyjaśnij pismo urzędowe/
+    );
   });
 });
