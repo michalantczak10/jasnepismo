@@ -20,10 +20,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
+      - name: Validate favicons
+        run: node scripts/check-favicons.js
+
+      - name: Lint
+        run: npx eslint . --ext .js,.cjs || true
 
       - name: Run tests
         run: npm test
