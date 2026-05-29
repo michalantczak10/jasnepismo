@@ -9,5 +9,9 @@ module.exports = defineConfig({
     viewport: { width: 1280, height: 720 },
     actionTimeout: 10_000,
     ignoreHTTPSErrors: true,
+    // Capture artifacts for CI: screenshots and videos on failure
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'on-first-retry',
   },
 });
