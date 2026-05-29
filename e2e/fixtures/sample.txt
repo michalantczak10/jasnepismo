@@ -1,0 +1,3 @@
+To jest przykładowy tekst testowy.
+Zawiera kilka linii.
+Koniec.
