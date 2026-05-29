@@ -5,8 +5,15 @@ const targetUrl = process.env.TARGET_URL || 'https://www.jasnepismo.pl';
 function fetchJson(path) {
   return new Promise((resolve, reject) => {
     const url = `${targetUrl}${path}`;
+    const headers = { 'User-Agent': 'JasnePismo-Monitor/1.0' };
+    // If a MONITOR_ADMIN_TOKEN is provided to the monitor (e.g., via CI secret),
+    // include it as X-Admin-Token so protected admin endpoints can be checked.
+    if (process.env.MONITOR_ADMIN_TOKEN) {
+      headers['X-Admin-Token'] = process.env.MONITOR_ADMIN_TOKEN;
+    }
+
     https
-      .get(url, { headers: { 'User-Agent': 'JasnePismo-Monitor/1.0' } }, (res) => {
+      .get(url, { headers }, (res) => {
         let body = '';
         res.on('data', (chunk) => {
           body += chunk;
