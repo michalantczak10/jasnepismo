@@ -1,5 +1,9 @@
 name: Generate sitemap
 
+# Allow the workflow token to write contents (needed to push commits)
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ main ]
