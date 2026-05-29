@@ -1,5 +1,9 @@
 name: CI
 
+# Force JavaScript actions to run on Node.js 24 (opt into future runner behavior)
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   push:
     branches:

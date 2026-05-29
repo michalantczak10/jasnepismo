@@ -1,5 +1,9 @@
 name: Generate sitemap
 
+# Force JavaScript actions to run on Node.js 24 (opt into future runner behavior)
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 # Allow the workflow token to write contents (needed to push commits)
 permissions:
   contents: write
