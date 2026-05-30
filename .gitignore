@@ -30,3 +30,9 @@ test-results/
 
 # Local resource uploads and generated images
 resources/
+
+# Ignore editor / lint caches and e2e temporary images
+.eslintcache
+e2e/tmp/
+.DS_Store
+
