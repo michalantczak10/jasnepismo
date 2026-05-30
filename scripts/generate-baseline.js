@@ -3,7 +3,25 @@ const fs = require('fs');
 
 // Prefer programmatic Playwright API instead of relying on the CLI options
 // (some CLI versions may parse flags differently). This is more robust in CI.
-const { chromium } = require('playwright');
+// Try multiple packages to be resilient to different devDependency setups
+let chromium;
+try {
+  chromium = require('playwright').chromium;
+} catch (err1) {
+  try {
+    chromium = require('playwright-core').chromium;
+  } catch (err2) {
+    try {
+      const pwTest = require('@playwright/test');
+      chromium = pwTest.chromium || (pwTest.playwright && pwTest.playwright.chromium);
+    } catch (err3) {
+      console.error(
+        'Playwright not found. Please install "playwright" or "@playwright/test" as a devDependency.'
+      );
+      process.exit(1);
+    }
+  }
+}
 
 const filePath = path.resolve(__dirname, '..', 'index.html');
 const url = 'file://' + filePath.replaceAll('\\', '/');
