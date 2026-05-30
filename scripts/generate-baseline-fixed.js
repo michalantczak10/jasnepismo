@@ -59,7 +59,8 @@ async function createStaticServer(root) {
       if (stat.isDirectory()) {
         filePath = path.join(safePath, 'index.html');
         try {
-          stat = fs.statSync(filePath);
+          // just ensure index.html exists
+          fs.statSync(filePath);
         } catch (err) {
           res.statusCode = 404;
           res.end('Not found');
