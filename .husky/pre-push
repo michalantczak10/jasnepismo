@@ -1,8 +1,6 @@
-#!/bin/sh
-if [ -f "$(dirname "$0")/_/husky.sh" ]; then
-  . "$(dirname "$0")/_/husky.sh"
-fi
 
-# Run tests before push
+#!/bin/sh
+# Husky pre-push (forward-compatible): avoid sourcing internal husky.sh to prevent
+# deprecation warnings. Run test suite before push to catch regressions locally.
 npm test --silent
 

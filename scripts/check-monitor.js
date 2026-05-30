@@ -1,6 +1,6 @@
 const https = require('https');
 
-const targetUrl = process.env.TARGET_URL || 'https://www.jasnepismo.pl';
+const targetUrl = process.env.TARGET_URL || 'https://jasnepismo.pl';
 
 function fetchJson(path) {
   return new Promise((resolve, reject) => {

@@ -1,8 +1,6 @@
-#!/bin/sh
-if [ -f "$(dirname "$0")/_/husky.sh" ]; then
-  . "$(dirname "$0")/_/husky.sh"
-fi
 
-# Run lint-staged on staged files
+#!/bin/sh
+# Husky hook (forward-compatible): avoid sourcing internal husky.sh to prevent
+# deprecation warnings for future Husky releases. Run lint-staged on staged files.
 npx --no-install lint-staged
 

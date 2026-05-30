@@ -7,7 +7,7 @@ const root = path.resolve(__dirname, '..');
 const outXml = path.join(root, 'sitemap.xml');
 const outGz = outXml + '.gz';
 
-const baseUrl = 'https://jasnepismo.pl';
+const baseUrl = process.env.BASE_URL || 'https://jasnepismo.pl';
 
 function formatDate(d) {
   const yyyy = d.getFullYear();
@@ -33,19 +33,42 @@ function walk(dir, files = []) {
 
 function buildUrls() {
   const htmlFiles = walk(root);
-  const urls = htmlFiles.map(f => {
+  const urls = [];
+  for (const f of htmlFiles) {
     const rel = path.relative(root, f).replace(/\\/g, '/');
-    let loc = baseUrl + '/' + rel;
-    if (loc.endsWith('/index.html')) loc = loc.slice(0, -'index.html'.length);
-    // ensure single trailing slash for root
-    if (loc === baseUrl + '') loc = baseUrl + '/';
+    let loc;
+
+    // Try to read canonical link from the HTML head (if present) and use it
+    try {
+      const content = fs.readFileSync(f, 'utf8');
+      const m = content.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i);
+      if (m && m[1]) {
+        const href = m[1];
+        if (/^https?:\/\//i.test(href)) {
+          loc = href;
+        } else if (href.startsWith('/')) {
+          loc = baseUrl.replace(/\/$/, '') + href;
+        } else {
+          loc = baseUrl.replace(/\/$/, '') + '/' + href;
+        }
+      }
+    } catch (err) {
+      // ignore parse errors and fallback to file-based URL
+    }
+
+    if (!loc) {
+      loc = baseUrl.replace(/\/$/, '') + '/' + rel;
+      if (loc.endsWith('/index.html')) loc = loc.slice(0, -'index.html'.length);
+      if (loc === baseUrl + '') loc = baseUrl + '/';
+    }
+
     const stat = fs.statSync(f);
     const lastmod = formatDate(new Date(stat.mtime));
     const isHome = loc === baseUrl + '/';
     const changefreq = isHome ? 'weekly' : 'monthly';
     const priority = isHome ? '1.0' : '0.5';
-    return { loc, lastmod, changefreq, priority };
-  });
+    urls.push({ loc, lastmod, changefreq, priority });
+  }
   // Deduplicate by loc
   const seen = new Set();
   const uniq = [];
