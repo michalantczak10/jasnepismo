@@ -32,7 +32,8 @@ const outPath = path.join(outDir, 'hero.png');
 console.log('Generating baseline screenshot to', outPath);
 
 (async () => {
-  const browser = await chromium.launch();
+  // Run without sandbox in CI environments (GitHub Actions runner)
+  const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   try {
     const context = await browser.newContext();
     const page = await context.newPage();
