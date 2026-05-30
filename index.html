@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
@@ -69,12 +69,14 @@
         "@type": "Organization",
         "name": "Jasne pismo",
         "url": "https://jasnepismo.pl/",
-        "contactPoint": [{
-          "@type": "ContactPoint",
-          "email": "kontakt@jasnepismo.pl",
-          "contactType": "customer support",
-          "availableLanguage": ["Polish"]
-        }]
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "email": "kontakt@jasnepismo.pl",
+            "contactType": "customer support",
+            "availableLanguage": ["Polish"]
+          }
+        ]
       }
     </script>
 
@@ -291,22 +293,41 @@
         </div>
       </section>
     </main>
-    <section class="contact-section" aria-labelledby="contact-heading" data-testid="section-contact">
+    <section
+      class="contact-section"
+      aria-labelledby="contact-heading"
+      data-testid="section-contact"
+    >
       <div class="contact-panel">
         <div class="section-header">
           <p class="section-tag">Kontakt</p>
           <h2 id="contact-heading">Masz pytanie? Napisz do nas</h2>
-          <p class="section-intro contact-intro">Jeśli masz pytania dotyczące działania serwisu lub ochrony danych, skontaktuj się z nami.</p>
+          <p class="section-intro contact-intro">
+            Jeśli masz pytania dotyczące działania serwisu lub ochrony danych, skontaktuj się z
+            nami.
+          </p>
         </div>
 
         <div class="contact-card contact-card-secondary" role="region" aria-label="Kontakt">
           <div class="contact-mail" data-testid="contact-mail">
-            <a href="mailto:kontakt@jasnepismo.pl" class="contact-mail-link" aria-label="Wyślij maila">
-              <img src="/img/email.svg" alt="Email" width="28" height="28" style="vertical-align:middle;margin-right:0.6rem;" />
+            <a
+              href="mailto:kontakt@jasnepismo.pl"
+              class="contact-mail-link"
+              aria-label="Wyślij maila"
+            >
               <span class="contact-mail-text">kontakt@jasnepismo.pl</span>
+              <img
+                src="/img/email.svg"
+                alt="Email"
+                class="contact-mail-icon"
+                width="44"
+                height="44"
+              />
             </a>
           </div>
-          <p class="contact-note">Zazwyczaj odpowiadamy w ciągu 48 godzin. Nie wysyłaj w wiadomości treści wrażliwych.</p>
+          <p class="contact-note">
+            Zazwyczaj odpowiadamy w ciągu 48 godzin. Nie wysyłaj w wiadomości treści wrażliwych.
+          </p>
         </div>
       </div>
     </section>
@@ -320,13 +341,23 @@
           <a href="privacy-policy.html" data-testid="link-privacy">Polityka prywatności</a> •
           <a href="terms.html" data-testid="link-terms">Regulamin</a>
         </p>
-        <p style="margin-top:0.5rem;">
-          <a href="mailto:kontakt@jasnepismo.pl" class="contact-mail-link" aria-label="Wyślij maila">
-            <img src="/img/email.svg" alt="Email" width="20" height="20" style="vertical-align:middle;margin-right:0.5rem;" />
+        <p style="margin-top: 0.5rem">
+          <a
+            href="mailto:kontakt@jasnepismo.pl"
+            class="contact-mail-link"
+            aria-label="Wyślij maila"
+          >
+            <img
+              src="/img/email.svg"
+              alt="Email"
+              width="20"
+              height="20"
+              style="vertical-align: middle; margin-right: 0.5rem"
+            />
             <span class="contact-mail-text">kontakt@jasnepismo.pl</span>
           </a>
         </p>
-        <p class="footer-meta" style="margin-top:0.35rem;color:#555;font-size:0.9rem;">
+        <p class="footer-meta" style="margin-top: 0.35rem; color: #555; font-size: 0.9rem">
           Ostatnia aktualizacja: <a href="/privacy-policy.html">2026-05-29</a>
         </p>
       </div>

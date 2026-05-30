@@ -53,7 +53,8 @@ a {
   justify-content: center;
   text-align: center;
   gap: 28px;
-  background: radial-gradient(circle at top, rgba(255,255,255,.18), transparent 35%),
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 35%),
     linear-gradient(180deg, #e50000 0%, #8b0000 100%);
   color: #fff;
   overflow: hidden;
@@ -129,9 +130,15 @@ button,
   color: #111;
   font-weight: 800;
   font-size: 1.6rem;
-  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.16), 0 8px 14px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.16),
+    0 8px 14px rgba(0, 0, 0, 0.08);
   letter-spacing: 0.02em;
-  transition: transform 0.24s ease, filter 0.24s ease, box-shadow 0.24s ease, background-color 0.24s ease;
+  transition:
+    transform 0.24s ease,
+    filter 0.24s ease,
+    box-shadow 0.24s ease,
+    background-color 0.24s ease;
   border: none;
   text-decoration: none;
 }
@@ -140,7 +147,9 @@ button:hover:not(:disabled),
 .hero-cta:hover:not(:disabled) {
   transform: translateY(-4px) scale(1.02);
   filter: brightness(1.06);
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.20), 0 12px 22px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 24px 40px rgba(0, 0, 0, 0.2),
+    0 12px 22px rgba(0, 0, 0, 0.12);
 }
 
 .hero-cta-secondary {
@@ -280,7 +289,7 @@ section:last-of-type {
   bottom: -10px;
   width: 64px;
   height: 4px;
-  background: linear-gradient(90deg, rgba(47,128,237,1), rgba(47,128,237,0.35));
+  background: linear-gradient(90deg, rgba(47, 128, 237, 1), rgba(47, 128, 237, 0.35));
   border-radius: 999px;
   transform: translateX(-50%);
 }
@@ -382,7 +391,7 @@ section:last-of-type {
   padding: 0.45rem 0.9rem;
   border-radius: 999px;
   color: #111;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
   width: fit-content;
   white-space: nowrap;
 }
@@ -451,6 +460,20 @@ section:last-of-type {
   margin: 0 0 0.75rem;
   font-size: clamp(1.6rem, 3vw, 2rem);
   font-weight: 800;
+}
+
+/* Styl dla linku e-mail w sekcji Kontakt: ikona pod adresem i powiększona */
+.contact-mail-link {
+  display: inline-block; /* pozwala centrować elementy w kolumnie */
+  text-align: center;
+}
+
+.contact-mail-icon {
+  display: block; /* umieszcza ikonę pod tekstem */
+  margin: 0.5rem auto 0;
+  width: clamp(36px, 6vw, 56px); /* responsywne powiększenie ikony */
+  height: auto;
+  object-fit: contain;
 }
 
 .contact-note {
@@ -587,7 +610,6 @@ section:last-of-type {
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   color: var(--color-primary);
 }
-
 
 .product-features {
   list-style: none;
@@ -802,7 +824,10 @@ section:last-of-type {
 .product-features li,
 .benefit-card,
 .contact-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
 }
 
 .about-highlights li:hover,
@@ -1100,12 +1125,19 @@ section:last-of-type {
 }
 
 @keyframes loader-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes loader-glow {
-  0%, 100% { box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12); }
-  50% { box-shadow: 0 24px 45px rgba(0, 0, 0, 0.18); }
+  0%,
+  100% {
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+  }
+  50% {
+    box-shadow: 0 24px 45px rgba(0, 0, 0, 0.18);
+  }
 }
 
 .loader[hidden] {
