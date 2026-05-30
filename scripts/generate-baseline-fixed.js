@@ -112,8 +112,43 @@ console.log('Generating baseline screenshot to', outPath);
     const { server, port } = serverObj;
     const url = `http://127.0.0.1:${port}/index.html`;
 
-    // Launch Chromium in CI-friendly mode
-    browser = await chromium.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    // Launch Chromium in CI-friendly mode with retries and extra flags that
+    // help in containerized CI environments (reduce /dev/shm crashes etc).
+    const baseArgs = [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu',
+      '--disable-software-rasterizer',
+    ];
+    let launchError = null;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        console.log(`Launching chromium (attempt ${attempt}) with args: ${baseArgs.join(' ')}`);
+        browser = await chromium.launch({ args: baseArgs, headless: true, timeout: 30000 });
+        launchError = null;
+        break;
+      } catch (err) {
+        launchError = err;
+        console.error(
+          `chromium.launch failed on attempt ${attempt}:`,
+          err && err.message ? err.message : err
+        );
+        // On retry, add a single-process flag which sometimes helps in constrained CI
+        baseArgs.push('--single-process');
+      }
+    }
+    if (!browser) {
+      console.error(
+        'Unable to launch chromium after retries:',
+        launchError && launchError.stack ? launchError.stack : launchError
+      );
+      // close server before exiting
+      if (server && typeof server.close === 'function') {
+        await new Promise((res) => server.close(res));
+      }
+      process.exit(1);
+    }
     try {
       // We'll capture several variants: element-only and full-page, at deviceScaleFactor 1 and 2
       const variants = [
