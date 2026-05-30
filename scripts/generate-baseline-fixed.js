@@ -109,76 +109,88 @@ console.log('Generating baseline screenshot to', outPath);
     // Launch Chromium in CI-friendly mode
     browser = await chromium.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     try {
-      const context = await browser.newContext({
-        viewport: { width: 1280, height: 900 },
-        deviceScaleFactor: 1,
-      });
-      const page = await context.newPage();
-
-      page.on('console', (msg) => console.log('PAGE LOG', msg.type(), msg.text()));
-      page.on('pageerror', (err) => console.error('PAGE ERROR', err.message));
-      page.on('requestfailed', (req) =>
-        console.warn('REQUEST FAILED', req.url(), req.failure() && req.failure().errorText)
-      );
-
-      console.log('Navigating to', url);
-      await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-
-      // Disable animations for a stable screenshot
-      await page.addStyleTag({
-        content: '* { transition: none !important; animation: none !important; }',
-      });
-      // When animations are disabled, some elements (e.g. .hero-copy, .hero-image)
-      // may remain at their CSS initial state (opacity: 0). Force the final
-      // visible state for those elements so screenshots include text and CTAs.
-      await page.addStyleTag({
-        content:
-          '.hero-copy, .hero-image, .fade-in, .hero, header, section, .section { opacity: 1 !important; transform: none !important; visibility: visible !important; }',
-      });
-
-      // Wait for fonts to load if supported
-      try {
-        await page.evaluate(() =>
-          document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()
-        );
-      } catch (err) {
-        console.warn('Fonts ready check failed:', err && err.message ? err.message : err);
-      }
+      // We'll capture several variants: element-only and full-page, at deviceScaleFactor 1 and 2
+      const variants = [
+        { dsf: 1, suffix: '' },
+        { dsf: 2, suffix: '@2x' },
+      ];
 
       const selector = '[data-testid="header-hero"]';
 
-      let screenshotTaken = false;
-      const attempts = 2;
-      for (let attempt = 1; attempt <= attempts && !screenshotTaken; attempt++) {
+      for (const v of variants) {
+        console.log(`Capturing screenshots with deviceScaleFactor=${v.dsf}`);
+        const context = await browser.newContext({
+          viewport: { width: 1280, height: 900 },
+          deviceScaleFactor: v.dsf,
+        });
+        const page = await context.newPage();
+
+        page.on('console', (msg) => console.log('PAGE LOG', msg.type(), msg.text()));
+        page.on('pageerror', (err) => console.error('PAGE ERROR', err.message));
+        page.on('requestfailed', (req) =>
+          console.warn('REQUEST FAILED', req.url(), req.failure() && req.failure().errorText)
+        );
+
+        console.log('Navigating to', url);
+        await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+
+        // Disable animations and force visible state for animated elements
+        await page.addStyleTag({
+          content: '* { transition: none !important; animation: none !important; }',
+        });
+        await page.addStyleTag({
+          content:
+            '.hero-copy, .hero-image, .fade-in, .hero, header, section, .section { opacity: 1 !important; transform: none !important; visibility: visible !important; }',
+        });
+
+        try {
+          await page.evaluate(() =>
+            document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()
+          );
+        } catch (err) {
+          console.warn('Fonts ready check failed:', err && err.message ? err.message : err);
+        }
+
+        const elementPath = path.join(outDir, `hero${v.suffix}.png`);
+        const fullPath = path.join(outDir, `hero_full${v.suffix}.png`);
+
+        // Capture element screenshot if present
         try {
           const elCount = await page.locator(selector).count();
           if (elCount > 0) {
-            console.log(`Capturing element ${selector} (attempt ${attempt})`);
-            await page.locator(selector).first().screenshot({ path: outPath });
+            console.log(`Capturing element ${selector} -> ${elementPath}`);
+            await page.locator(selector).first().screenshot({ path: elementPath });
           } else {
-            console.warn(
-              `Selector ${selector} not found (attempt ${attempt}) - capturing full page`
-            );
-            await page.screenshot({ path: outPath, fullPage: true });
+            console.warn(`Selector ${selector} not found - skipping element screenshot`);
           }
-
-          // Ensure file generated and non-empty
-          const stat = fs.statSync(outPath);
-          if (stat && stat.size > 0) {
-            screenshotTaken = true;
-            console.log('Baseline generated:', outPath, 'size', stat.size);
-            break;
-          }
-          throw new Error('Screenshot file empty');
         } catch (err) {
-          console.warn(`Attempt ${attempt} failed:`, err && err.message ? err.message : err);
-          if (attempt < attempts) {
-            // small delay before retry
-            await new Promise((r) => setTimeout(r, 1000));
-            continue;
-          }
-          throw err;
+          console.warn('Element screenshot failed:', err && err.message ? err.message : err);
         }
+
+        // Always capture full page for context
+        try {
+          console.log(`Capturing full page -> ${fullPath}`);
+          await page.screenshot({ path: fullPath, fullPage: true });
+        } catch (err) {
+          console.warn('Full page screenshot failed:', err && err.message ? err.message : err);
+        }
+
+        // Log generated file sizes
+        for (const p of [elementPath, fullPath]) {
+          try {
+            if (fs.existsSync(p)) {
+              const stat = fs.statSync(p);
+              console.log('Generated', p, 'size', stat.size);
+            }
+          } catch (err) {
+            console.error(
+              'Error while checking generated file:',
+              err && err.message ? err.message : err
+            );
+          }
+        }
+
+        await context.close();
       }
 
       await browser.close();
