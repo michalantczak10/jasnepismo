@@ -33,7 +33,12 @@ module.exports = async function handler(req, res) {
         (req.headers.authorization && req.headers.authorization.split(' ')[1]))) ||
     '';
   if (!safeCompareToken(provided, ADMIN_API_TOKEN)) {
-    return res.status(401).json({ error: 'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.' });
+    return res
+      .status(401)
+      .json({
+        error:
+          'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.',
+      });
   }
 
   if (!OPENAI_API_KEY) {

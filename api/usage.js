@@ -33,7 +33,10 @@ module.exports = function handler(req, res) {
   if (!safeCompareToken(provided, ADMIN_API_TOKEN)) {
     return res
       .status(401)
-      .json({ error: 'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.' });
+      .json({
+        error:
+          'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.',
+      });
   }
 
   const usage = getLastUsage();

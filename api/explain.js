@@ -12,7 +12,9 @@ if (process.env.REDIS_URL) {
     usingRedis = true;
     console.log('Rate limiting: using Redis at REDIS_URL');
   } catch (err) {
-    console.warn('ioredis not available or failed to initialize, falling back to in-memory rate limiter');
+    console.warn(
+      'ioredis not available or failed to initialize, falling back to in-memory rate limiter'
+    );
     usingRedis = false;
   }
 }
