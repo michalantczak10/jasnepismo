@@ -7,7 +7,22 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const pixelmatch = require('pixelmatch');
+let pixelmatch;
+try {
+  pixelmatch = require('pixelmatch');
+  // pixelmatch v7 is ESM; when required from CommonJS it may be the default export.
+  if (
+    pixelmatch &&
+    typeof pixelmatch !== 'function' &&
+    pixelmatch.default &&
+    typeof pixelmatch.default === 'function'
+  ) {
+    pixelmatch = pixelmatch.default;
+  }
+} catch (err) {
+  console.error('Failed to load pixelmatch:', err);
+  process.exit(1);
+}
 const PNG = require('pngjs').PNG;
 
 const projectRoot = path.resolve(__dirname, '..');
