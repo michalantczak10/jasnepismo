@@ -29,9 +29,11 @@ function fetchJsonUrl(urlStr, redirects = 0) {
       // Handle redirects by following Location header
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         const location = res.headers.location;
+        const nextUrl = new URL(location, url).toString();
+        // Log redirect path for observability in CI logs
+        console.log(`Redirect ${res.statusCode}: ${url.toString()} -> ${nextUrl}`);
         // Drain response to free socket
         res.resume();
-        const nextUrl = new URL(location, url).toString();
         return resolve(fetchJsonUrl(nextUrl, redirects + 1));
       }
 
