@@ -22,7 +22,13 @@ function fetchJsonUrl(urlStr, redirects = 0) {
     const lib = url.protocol === 'https:' ? https : http;
     const headers = { 'User-Agent': 'JasnePismo-Monitor/1.0' };
     if (process.env.MONITOR_ADMIN_TOKEN) {
-      headers['X-Admin-Token'] = process.env.MONITOR_ADMIN_TOKEN;
+      const token = process.env.MONITOR_ADMIN_TOKEN;
+      // Send both X-Admin-Token (existing server behavior) and Authorization
+      // Bearer <token> to support endpoints that expect an Authorization header.
+      headers['X-Admin-Token'] = token;
+      headers['Authorization'] = token.toLowerCase().startsWith('bearer ')
+        ? token
+        : `Bearer ${token}`;
     }
 
     const req = lib.get(url, { headers }, (res) => {
@@ -75,13 +81,20 @@ function fetchJson(path) {
     console.log(`Model: ${health.model}`);
     console.log(`Last usage: ${JSON.stringify(health.last_usage ?? 'none')}`);
 
-    console.log(`Checking ${targetUrl}/api/usage ...`);
-    const usage = await fetchJson('/api/usage');
-    if (usage.status !== 'ok') {
-      throw new Error(`Usage status not ok: ${JSON.stringify(usage)}`);
+    if (!process.env.MONITOR_ADMIN_TOKEN) {
+      // Local runs often don't have the secret set; don't fail the whole check
+      // just because usage info is unavailable. In CI the secret should be set
+      // and this branch will not run.
+      console.warn('MONITOR_ADMIN_TOKEN is not set — skipping /api/usage check (local run).');
+    } else {
+      console.log(`Checking ${targetUrl}/api/usage ...`);
+      const usage = await fetchJson('/api/usage');
+      if (usage.status !== 'ok') {
+        throw new Error(`Usage status not ok: ${JSON.stringify(usage)}`);
+      }
+      console.log('Usage check passed.');
+      console.log(`Usage data: ${JSON.stringify(usage.last_usage ?? 'none')}`);
     }
-    console.log('Usage check passed.');
-    console.log(`Usage data: ${JSON.stringify(usage.last_usage ?? 'none')}`);
 
     process.exit(0);
   } catch (error) {
