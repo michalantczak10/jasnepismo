@@ -25,7 +25,12 @@ try {
 }
 
 const projectRoot = path.resolve(__dirname, '..');
-const outDir = path.resolve(projectRoot, 'e2e', 'baseline');
+// Allow overriding the output directory via env var (used by CI compare job).
+// If BASELINE_OUTDIR is set it's resolved relative to project root.
+const outDir = path.resolve(
+  projectRoot,
+  process.env.BASELINE_OUTDIR || path.join('e2e', 'baseline')
+);
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 const outPath = path.join(outDir, 'hero.png');
 
@@ -54,7 +59,8 @@ async function createStaticServer(root) {
       if (stat.isDirectory()) {
         filePath = path.join(safePath, 'index.html');
         try {
-          stat = fs.statSync(filePath);
+          // just ensure index.html exists
+          fs.statSync(filePath);
         } catch (err) {
           res.statusCode = 404;
           res.end('Not found');
