@@ -42,10 +42,35 @@ function ensureDir(dir) {
 
 function runGenerator(outDirRel) {
   console.log('Running baseline generator into', outDirRel);
-  execSync('node scripts/generate-baseline-fixed.js', {
-    stdio: 'inherit',
-    env: Object.assign({}, process.env, { BASELINE_OUTDIR: outDirRel }),
-  });
+  // Run generator and capture stdout/stderr to a generator log inside the generated directory
+  try {
+    const out = execSync('node scripts/generate-baseline-fixed.js', {
+      env: Object.assign({}, process.env, { BASELINE_OUTDIR: outDirRel }),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 10 * 60 * 1000,
+    });
+    try {
+      const logPath = path.join(generatedDir, 'generator.log');
+      fs.writeFileSync(logPath, out, 'utf8');
+      console.log('Wrote generator log to', logPath);
+    } catch (e) {
+      console.warn('Failed to write generator log:', e && e.message ? e.message : e);
+    }
+  } catch (err) {
+    // execSync throws on non-zero exit; attempt to persist stdout/stderr if available
+    try {
+      const logPath = path.join(generatedDir, 'generator.log');
+      const stdout = (err && err.stdout) || '';
+      const stderr = (err && err.stderr) || (err && err.message) || '';
+      fs.writeFileSync(logPath, String(stdout) + '\n\n--- STDERR ---\n\n' + String(stderr), 'utf8');
+      console.error('Generator failed; wrote generator log to', logPath);
+    } catch (e) {
+      console.error('Failed to write generator failure log:', e && e.message ? e.message : e);
+    }
+    // Re-throw to let caller observe the failure
+    throw err;
+  }
 }
 
 function comparePair(basePath, genPath, diffOutPath) {
@@ -116,6 +141,21 @@ function comparePair(basePath, genPath, diffOutPath) {
 
     const overallRatio = totalPixels === 0 ? 0 : totalDiff / totalPixels;
     console.log('Overall diff ratio:', overallRatio);
+    // write a machine-readable summary so workflows can always pick up results
+    try {
+      const summary = {
+        results,
+        totalPixels,
+        totalDiff,
+        overallRatio,
+        threshold,
+      };
+      const summaryPath = path.join(generatedDir, 'compare-summary.json');
+      fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), 'utf8');
+      console.log('Wrote compare summary to', summaryPath);
+    } catch (e) {
+      console.warn('Failed to write compare summary:', e && e.message ? e.message : e);
+    }
     if (overallRatio > threshold) {
       console.error(`Visual diff ${overallRatio} exceeds threshold ${threshold}`);
       process.exit(2);
@@ -124,6 +164,19 @@ function comparePair(basePath, genPath, diffOutPath) {
     process.exit(0);
   } catch (err) {
     console.error('Error during visual compare:', err);
+    try {
+      const summary = {
+        error: String(err && err.stack ? err.stack : err),
+        results: [],
+        totalPixels: 0,
+        totalDiff: 0,
+      };
+      const summaryPath = path.join(generatedDir, 'compare-summary.json');
+      fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), 'utf8');
+      console.log('Wrote error compare summary to', summaryPath);
+    } catch (e) {
+      console.warn('Failed to write compare error summary:', e && e.message ? e.message : e);
+    }
     process.exit(3);
   }
 })();
