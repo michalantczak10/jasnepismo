@@ -1,0 +1,41 @@
+name: Visual compare
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  visual-compare:
+    name: Visual comparison on PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Checkout base (target branch)
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: baseline-ref
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run visual comparison
+        env:
+          BASELINE_REF_DIR: baseline-ref/e2e/baseline
+          GENERATED_DIR: e2e/baseline-generated
+          PIXELMATCH_THRESHOLD: '0.02'
+        run: node scripts/compare-baseline.js
+
