@@ -1,9 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "redirects": [
-    { "source": "/(.*)", "has": [{ "type": "host", "value": "www.jasnepismo.pl" }], "destination": "https://jasnepismo.pl/$1", "permanent": true },
 
-  ],
   "headers": [
     {
       "source": "/(.*)",
