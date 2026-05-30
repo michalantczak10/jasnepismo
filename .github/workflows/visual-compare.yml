@@ -38,4 +38,10 @@ jobs:
           GENERATED_DIR: e2e/baseline-generated
           PIXELMATCH_THRESHOLD: '0.02'
         run: node scripts/compare-baseline.js
+      - name: Upload generated artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-compare-output
+          path: e2e/baseline-generated/**
 
