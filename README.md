@@ -150,8 +150,8 @@ Do repozytorium dodano także GitHub Actions, które uruchamiają testy przy pus
 
 Aby zewnętrzny serwis monitorujący przekonał się, że aplikacja działa, możesz podłączyć adres:
 
-  - `https://jasnepismo.pl/api/health`
-  - `https://jasnepismo.pl/api/usage`
+- `https://jasnepismo.pl/api/health`
+- `https://jasnepismo.pl/api/usage`
 
 Ten endpoint zwraca JSON z informacją:
 

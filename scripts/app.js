@@ -26,17 +26,17 @@ const JSZIP_CDN_SOURCES = [
   'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
   'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
   'https://unpkg.com/jszip@3.10.1/dist/jszip.min.js',
-  'https://ga.jspm.io/npm:jszip@3.10.1/dist/jszip.min.js'
+  'https://ga.jspm.io/npm:jszip@3.10.1/dist/jszip.min.js',
 ];
 const MAMMOTH_CDN_SOURCES = [
   'https://unpkg.com/mammoth@1.4.17/mammoth.browser.min.js',
   'https://cdn.jsdelivr.net/npm/mammoth@1.4.17/mammoth.browser.min.js',
-  'https://ga.jspm.io/npm:mammoth@1.4.17/mammoth.browser.min.js'
+  'https://ga.jspm.io/npm:mammoth@1.4.17/mammoth.browser.min.js',
 ];
 const PDFJS_CDN_SOURCES = [
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
   'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
-  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'
+  'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js',
 ];
 let extractedText = '';
 let isLoading = false;
@@ -126,7 +126,7 @@ function showError(message) {
 function escapeHtml(str) {
   if (str == null) return '';
   return String(str).replace(/[&<>"']/g, function (m) {
-    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
   });
 }
 
@@ -172,7 +172,10 @@ function fillTextareaWithExtractedText(text) {
   if (textarea.value) {
     textarea.focus({ preventScroll: true });
     textarea.select();
-    setStatus('Tekst z dokumentu został wczytany powyżej. Możesz go poprawić przed wysłaniem.', false);
+    setStatus(
+      'Tekst z dokumentu został wczytany powyżej. Możesz go poprawić przed wysłaniem.',
+      false
+    );
   }
 }
 
@@ -180,7 +183,8 @@ function normalizeExtractedText(text) {
   return text
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
-    .split('\u0000').join('')
+    .split('\u0000')
+    .join('')
     .replace(/[ \t\f\v]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -311,7 +315,8 @@ async function loadExternalScript(urls, readyCheck, libraryName) {
           if (existing.getAttribute('data-failed') === 'true') {
             existing.remove();
           } else {
-            const alreadyLoaded = existing.readyState === 'loaded' || existing.readyState === 'complete';
+            const alreadyLoaded =
+              existing.readyState === 'loaded' || existing.readyState === 'complete';
             if (alreadyLoaded) {
               existing.setAttribute('data-loaded', 'true');
               return resolveIfReady();
@@ -351,8 +356,12 @@ async function loadExternalScript(urls, readyCheck, libraryName) {
     }
   }
 
-  const libraryLabel = libraryName ? `biblioteki ${libraryName}` : 'biblioteki z żadnego dostępnego źródła';
-  throw new Error(`Nie udało się załadować ${libraryLabel}. Sprawdź połączenie internetowe lub spróbuj ponownie później.`);
+  const libraryLabel = libraryName
+    ? `biblioteki ${libraryName}`
+    : 'biblioteki z żadnego dostępnego źródła';
+  throw new Error(
+    `Nie udało się załadować ${libraryLabel}. Sprawdź połączenie internetowe lub spróbuj ponownie później.`
+  );
 }
 
 async function extractTextFromDocx(arrayBuffer) {
@@ -399,17 +408,25 @@ async function extractTextFromDocx(arrayBuffer) {
     setStatus('Wczytuję zawartość pliku DOCX...');
     const zip = await JSZipClass.loadAsync(arrayBuffer, {
       onProgress(metadata) {
-        const percent = typeof metadata.percent === 'number'
-          ? metadata.percent
-          : (typeof metadata.current === 'number' && typeof metadata.total === 'number' && metadata.total > 0)
-            ? (metadata.current / metadata.total) * 100
-            : undefined;
-        const loaded = typeof metadata.current === 'number' ? metadata.current : (typeof metadata.loaded === 'number' ? metadata.loaded : undefined);
+        const percent =
+          typeof metadata.percent === 'number'
+            ? metadata.percent
+            : typeof metadata.current === 'number' &&
+                typeof metadata.total === 'number' &&
+                metadata.total > 0
+              ? (metadata.current / metadata.total) * 100
+              : undefined;
+        const loaded =
+          typeof metadata.current === 'number'
+            ? metadata.current
+            : typeof metadata.loaded === 'number'
+              ? metadata.loaded
+              : undefined;
         const total = typeof metadata.total === 'number' ? metadata.total : undefined;
         if (typeof percent === 'number') {
           updateProgressStatus(percent, loaded, total);
         }
-      }
+      },
     });
     setStatus('Parsuję dokument DOCX...');
     const documentXmlFile = zip.file('word/document.xml');
@@ -420,10 +437,12 @@ async function extractTextFromDocx(arrayBuffer) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(documentXml, 'application/xml');
     const paragraphs = Array.from(xmlDoc.getElementsByTagName('w:p'));
-    const text = paragraphs.map((paragraph) => {
-      const nodes = Array.from(paragraph.getElementsByTagName('w:t'));
-      return nodes.map((node) => node.textContent || '').join('');
-    }).join('\n');
+    const text = paragraphs
+      .map((paragraph) => {
+        const nodes = Array.from(paragraph.getElementsByTagName('w:t'));
+        return nodes.map((node) => node.textContent || '').join('');
+      })
+      .join('\n');
     return normalizeExtractedText(text);
   } catch (error) {
     throw new Error(error?.message || 'Nie udało się odczytać pliku DOCX.');
@@ -431,9 +450,7 @@ async function extractTextFromDocx(arrayBuffer) {
 }
 
 function normalizePdfLine(text) {
-  return text
-    .replace(/\s+/g, ' ')
-    .trim();
+  return text.replace(/\s+/g, ' ').trim();
 }
 
 async function extractTextFromPdf(arrayBuffer) {
@@ -482,10 +499,11 @@ async function extractTextFromPdf(arrayBuffer) {
 
       lines.sort((a, b) => b.y - a.y);
       const pageText = lines
-        .map((line) => line.items
-          .sort((a, b) => a.x - b.x)
-          .map((item) => item.str)
-          .join(' ')
+        .map((line) =>
+          line.items
+            .sort((a, b) => a.x - b.x)
+            .map((item) => item.str)
+            .join(' ')
         )
         .map(normalizePdfLine)
         .filter(Boolean)
@@ -516,7 +534,7 @@ async function sendRequest(url, body) {
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
 
   const data = await response.json();
@@ -582,7 +600,8 @@ documentFile.addEventListener('change', async (event) => {
   const isDotx = fileName.endsWith('.dotx');
   const isDoc = fileName.endsWith('.doc');
   const isOdt = fileName.endsWith('.odt');
-  const isRtf = file.type === 'application/rtf' || file.type === 'text/rtf' || fileName.endsWith('.rtf');
+  const isRtf =
+    file.type === 'application/rtf' || file.type === 'text/rtf' || fileName.endsWith('.rtf');
   const isTxt = file.type === 'text/plain' || fileName.endsWith('.txt');
 
   if (!isImage && !isPdf && !isDocx && !isDotx && !isDoc && !isOdt && !isRtf && !isTxt) {
@@ -598,14 +617,18 @@ documentFile.addEventListener('change', async (event) => {
     return;
   }
 
-  setFileDetails(`Wybrano: ${file.name} • Rozmiar: ${formatSize(file.size)} • Typ: ${file.type || 'nieznany'}`);
+  setFileDetails(
+    `Wybrano: ${file.name} • Rozmiar: ${formatSize(file.size)} • Typ: ${file.type || 'nieznany'}`
+  );
   setLoading(true);
   errorMessage.hidden = true;
 
   if (isImage) {
     setStatus('Rozpoznawanie obrazu...', false);
     try {
-      const { data: { text } } = await Tesseract.recognize(file, 'pol');
+      const {
+        data: { text },
+      } = await Tesseract.recognize(file, 'pol');
       extractedText = text ? text.trim() : '';
       if (!extractedText) {
         showError('Nie udało się rozpoznać tekstu ze skanu.');
@@ -632,9 +655,11 @@ documentFile.addEventListener('change', async (event) => {
     } catch (error) {
       console.error('PDF extraction error:', error);
       const isEncrypted = /password|secured|encrypted/i.test(error.message || '');
-      showError(isEncrypted
-        ? 'Plik PDF jest zabezpieczony lub wymaga hasła. Spróbuj inny plik.'
-        : (error.message || 'Błąd podczas odczytu pliku PDF. Spróbuj inny plik.'));
+      showError(
+        isEncrypted
+          ? 'Plik PDF jest zabezpieczony lub wymaga hasła. Spróbuj inny plik.'
+          : error.message || 'Błąd podczas odczytu pliku PDF. Spróbuj inny plik.'
+      );
     } finally {
       setLoading(false);
     }
@@ -764,4 +789,3 @@ removeFileButton.addEventListener('click', (event) => {
 });
 freeButton.addEventListener('click', handleAction);
 updateActionButtons();
-

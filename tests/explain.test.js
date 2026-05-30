@@ -28,7 +28,7 @@ function createResponse() {
     },
     getBody() {
       return body;
-    }
+    },
   };
 }
 
@@ -63,7 +63,7 @@ describe('api/explain.js', () => {
   it('returns 200 and explanation when text is provided', async () => {
     openai.generateExplanation = async () => ({
       explanation: 'Testowe wyjaśnienie',
-      usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 }
+      usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 },
     });
 
     const req = { method: 'POST', body: { text: 'Test' } };
@@ -74,7 +74,7 @@ describe('api/explain.js', () => {
     assert.equal(res.getStatus(), 200);
     assert.deepEqual(res.getBody(), {
       explanation: 'Testowe wyjaśnienie',
-      usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 }
+      usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 },
     });
   });
 });

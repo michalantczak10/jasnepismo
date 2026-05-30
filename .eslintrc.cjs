@@ -8,7 +8,7 @@ module.exports = {
     JSZip: 'readonly',
     mammoth: 'readonly',
     pdfjsLib: 'readonly',
-    Tesseract: 'readonly'
+    Tesseract: 'readonly',
   },
   extends: ['eslint:recommended', 'prettier'],
   parserOptions: {
@@ -20,4 +20,3 @@ module.exports = {
     'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
   },
 };
-

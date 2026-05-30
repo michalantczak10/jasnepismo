@@ -1,5 +1,18 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
+const crypto = require('crypto');
+
+function safeCompareToken(provided, expected) {
+  if (!provided || !expected) return false;
+  try {
+    const a = Buffer.from(String(provided));
+    const b = Buffer.from(String(expected));
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch (err) {
+    return false;
+  }
+}
 
 function getTodayDate() {
   return new Date().toISOString().slice(0, 10);
@@ -19,13 +32,8 @@ module.exports = async function handler(req, res) {
       (req.headers['x-admin-token'] ||
         (req.headers.authorization && req.headers.authorization.split(' ')[1]))) ||
     '';
-  if (!provided || provided !== ADMIN_API_TOKEN) {
-    return res
-      .status(401)
-      .json({
-        error:
-          'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.',
-      });
+  if (!safeCompareToken(provided, ADMIN_API_TOKEN)) {
+    return res.status(401).json({ error: 'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.' });
   }
 
   if (!OPENAI_API_KEY) {
