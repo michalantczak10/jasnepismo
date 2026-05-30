@@ -48,8 +48,9 @@ jobs:
         id: compare
         run: |
           set +e
-          node scripts/compare-baseline.js
-          rc=$?
+          mkdir -p e2e/baseline-generated
+          node scripts/compare-baseline.js 2>&1 | tee e2e/baseline-generated/compare.log
+          rc=${PIPESTATUS[0]}
           set -e
           echo "compare_exit_code=$rc" >> $GITHUB_OUTPUT
         continue-on-error: true
