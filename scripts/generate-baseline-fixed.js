@@ -128,6 +128,13 @@ console.log('Generating baseline screenshot to', outPath);
       await page.addStyleTag({
         content: '* { transition: none !important; animation: none !important; }',
       });
+      // When animations are disabled, some elements (e.g. .hero-copy, .hero-image)
+      // may remain at their CSS initial state (opacity: 0). Force the final
+      // visible state for those elements so screenshots include text and CTAs.
+      await page.addStyleTag({
+        content:
+          '.hero-copy, .hero-image, .fade-in, .hero, header, section, .section { opacity: 1 !important; transform: none !important; visibility: visible !important; }',
+      });
 
       // Wait for fonts to load if supported
       try {
