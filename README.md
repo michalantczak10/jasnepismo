@@ -42,19 +42,19 @@ Ten projekt używa backendu Vercel Serverless do obsługi zapytań OpenAI.
 #### Sprawdzenie zdrowia usługi
 
 ```bash
-curl -X GET https://www.jasnepismo.pl/api/health
+curl -X GET https://jasnepismo.pl/api/health
 ```
 
 #### Sprawdzenie użycia tokenów
 
 ```bash
-curl -X GET https://www.jasnepismo.pl/api/usage
+curl -X GET https://jasnepismo.pl/api/usage
 ```
 
 #### Wysłanie żądania do wyjaśnienia
 
 ```bash
-curl -X POST https://www.jasnepismo.pl/api/explain \
+curl -X POST https://jasnepismo.pl/api/explain \
   -H "Content-Type: application/json" \
   -d '{"text":"To jest testowy dokument do wyjaśnienia."}'
 ```
@@ -62,13 +62,13 @@ curl -X POST https://www.jasnepismo.pl/api/explain \
 #### Sprawdzenie rozliczeń OpenAI
 
 ```bash
-curl -X GET https://www.jasnepismo.pl/api/billing
+curl -X GET https://jasnepismo.pl/api/billing
 ```
 
 Możesz też użyć daty w query:
 
 ```bash
-curl -X GET "https://www.jasnepismo.pl/api/billing?date=2026-05-25"
+curl -X GET "https://jasnepismo.pl/api/billing?date=2026-05-25"
 ```
 
 Ten endpoint używa standardowego OpenAI `/v1/usage` i zwraca dane rozliczeniowe dla wybranego dnia.
@@ -92,6 +92,13 @@ Przykładowa odpowiedź z `/api/explain`:
 - `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
   - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
   - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
+
+### Dodatkowe zmienne administracyjne (opcjonalne)
+
+- `ADMIN_API_TOKEN` — token administracyjny wymagany do wywołań chronionych endpointów (`/api/usage`, `/api/billing`). Ustaw go jako sekret w Vercel oraz w innych środowiskach CI.
+- `MONITOR_ADMIN_TOKEN` — opcjonalny sekret używany przez skrypt monitorujący (`scripts/check-monitor.js`) i workflow `monitor.yml`. Jeśli chcesz, aby monitoring sprawdzał prywatne endpointy, ustaw tę wartość na ten sam token co `ADMIN_API_TOKEN`.
+
+Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są przechowywane bezpiecznie jako sekrety środowiskowe.
 
 ## Deployment on Vercel
 
@@ -143,8 +150,8 @@ Do repozytorium dodano także GitHub Actions, które uruchamiają testy przy pus
 
 Aby zewnętrzny serwis monitorujący przekonał się, że aplikacja działa, możesz podłączyć adres:
 
-- `https://www.jasnepismo.pl/api/health`
-- `https://www.jasnepismo.pl/api/usage`
+  - `https://jasnepismo.pl/api/health`
+  - `https://jasnepismo.pl/api/usage`
 
 Ten endpoint zwraca JSON z informacją:
 
@@ -163,7 +170,7 @@ Dodatkowo:
 
 ### Propozycja monitoringu
 
-1. Użyj narzędzia typu UptimeRobot lub Better Uptime i ustaw monitorowanie `GET https://www.jasnepismo.pl/api/health`.
+1. Użyj narzędzia typu UptimeRobot lub Better Uptime i ustaw monitorowanie `GET https://jasnepismo.pl/api/health`.
 2. Sprawdzanie co 5 minut to dobre ustawienie dla serwisu produkcyjnego.
 3. Jeśli monitor zgłosi błąd, to oznacza problem z hostingiem, DNS lub backendem.
 
@@ -184,9 +191,9 @@ Jeśli któreś z nich nie zwróci oczekiwanej odpowiedzi, workflow zakończy si
 ### Przykłady użycia
 
 ```bash
-curl -X GET https://www.jasnepismo.pl/api/health
-curl -X GET https://www.jasnepismo.pl/api/usage
-curl -X POST https://www.jasnepismo.pl/api/explain \
+curl -X GET https://jasnepismo.pl/api/health
+curl -X GET https://jasnepismo.pl/api/usage
+curl -X POST https://jasnepismo.pl/api/explain \
   -H "Content-Type: application/json" \
   -d '{"text":"To jest testowy dokument do wyjaśnienia."}'
 ```

@@ -125,8 +125,8 @@ function showError(message) {
 
 function escapeHtml(str) {
   if (str == null) return '';
-  return String(str).replace(/[&<>\"']/g, function (m) {
-    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', "'": '&#39;' })[m];
+  return String(str).replace(/[&<>"']/g, function (m) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
   });
 }
 
@@ -180,7 +180,7 @@ function normalizeExtractedText(text) {
   return text
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
-    .replace(/\u0000/g, '')
+    .split('\u0000').join('')
     .replace(/[ \t\f\v]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
