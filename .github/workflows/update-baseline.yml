@@ -102,3 +102,7 @@ jobs:
           echo "Compare script exited with unexpected code ${{ steps.compare.outputs.compare_exit_code }}"
           exit 1
         shell: bash
+
+# Automated minor whitespace/comment change to ensure branch differs from main
+# (safe no-op change to trigger PR creation and merge)
+
