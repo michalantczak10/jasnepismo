@@ -524,13 +524,7 @@ section:last-of-type {
   gap: 0.5rem;
 }
 
-@media (min-width: 760px) {
-  .footer-inner {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
+/* Footer pozostaje ułożony kolumnowo na wszystkich szerokościach (klient prosił o układ jeden pod drugim) */
 
 .site-footer {
   padding: 24px 0 32px;
