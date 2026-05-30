@@ -24,6 +24,18 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Verify Playwright installation
+        run: |
+          echo "Playwright CLI version:"
+          npx playwright --version || true
+          echo "Node require check for Playwright modules:"
+          node -e "try{require('playwright'); console.log('playwright: ok')}catch(e){console.log('playwright: not available')}"
+          node -e "try{require('playwright-core'); console.log('playwright-core: ok')}catch(e){console.log('playwright-core: not available')}"
+          node -e "try{require('@playwright/test'); console.log('@playwright/test: ok')}catch(e){console.log('@playwright/test: not available')}"
+          echo "List Playwright cache (if present):"
+          ls -la ~/.cache/ms-playwright || true
+        shell: bash
+
       # Run the visual comparison script. It runs the generator into
       # GENERATED_DIR and compares against BASELINE_REF_DIR. The script
       # exits with code 0 when differences are <= threshold, 2 when
@@ -50,10 +62,8 @@ jobs:
           name: baseline-images
           path: e2e/baseline-generated/**
 
-      # If the compare script reported diffs (exit code 2) prepare a branch
-      # with updated baseline images and open a Pull Request for review
       - name: Prepare baseline update
-        if: steps.compare.outputs.compare_exit_code == '2'
+        if: ${{ steps.compare.outputs.compare_exit_code == '2' }}
         run: |
           echo 'Copying generated images into e2e/baseline to prepare PR'
           mkdir -p e2e/baseline
@@ -63,7 +73,7 @@ jobs:
 
       - name: Create Pull Request for baseline changes
         id: create_pr
-        if: steps.compare.outputs.compare_exit_code == '2'
+        if: ${{ steps.compare.outputs.compare_exit_code == '2' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -78,7 +88,7 @@ jobs:
           labels: automated,visual-baseline
 
       - name: Comment PR with image previews
-        if: steps.compare.outputs.compare_exit_code == '2'
+        if: ${{ steps.compare.outputs.compare_exit_code == '2' }}
         uses: peter-evans/create-or-update-comment@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -97,7 +107,7 @@ jobs:
             Diff images are attached in the PR file changes (or in the workflow artifacts).
 
       - name: Fail on compare error
-        if: steps.compare.outputs.compare_exit_code != '0' && steps.compare.outputs.compare_exit_code != '2'
+        if: ${{ steps.compare.outputs.compare_exit_code != '0' && steps.compare.outputs.compare_exit_code != '2' }}
         run: |
           echo "Compare script exited with unexpected code ${{ steps.compare.outputs.compare_exit_code }}"
           exit 1

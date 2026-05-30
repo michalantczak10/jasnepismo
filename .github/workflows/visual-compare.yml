@@ -32,6 +32,18 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Verify Playwright installation
+        run: |
+          echo "Playwright CLI version:"
+          npx playwright --version || true
+          echo "Node require check for Playwright modules:"
+          node -e "try{require('playwright'); console.log('playwright: ok')}catch(e){console.log('playwright: not available')}"
+          node -e "try{require('playwright-core'); console.log('playwright-core: ok')}catch(e){console.log('playwright-core: not available')}"
+          node -e "try{require('@playwright/test'); console.log('@playwright/test: ok')}catch(e){console.log('@playwright/test: not available')}"
+          echo "List Playwright cache (if present):"
+          ls -la ~/.cache/ms-playwright || true
+        shell: bash
+
       - name: Run visual comparison
         id: compare
         run: |
