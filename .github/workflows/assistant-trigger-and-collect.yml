@@ -2,9 +2,12 @@ name: Assistant — trigger update-baseline and collect artifacts
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ci/cleanup-artifacts
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   trigger-and-collect:
@@ -157,4 +160,32 @@ jobs:
       - name: Print summary locations
         run: |
           echo "Artifacts and logs downloaded to workspace. If the 'compare-files' artifact exists in this run you can download it from the Actions UI."
+
+      - name: Commit collected compare files back to the repository (if any)
+        env:
+          RUN_ID: ${{ env.RUN_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -e
+          echo "Attempting to commit collected compare files back to repo (run $RUN_ID)"
+          BRANCH="collected-compare-${RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # create a branch and copy any found compare files into artifacts/compare/<RUN_ID>
+          git checkout -b "$BRANCH"
+          mkdir -p artifacts/compare/${RUN_ID}
+          cp -r run-${RUN_ID}-logs/**/compare.log artifacts/compare/${RUN_ID}/ 2>/dev/null || true
+          cp -r run-${RUN_ID}-logs/**/compare-summary.json artifacts/compare/${RUN_ID}/ 2>/dev/null || true
+          cp -r downloads/artifacts/**/compare.log artifacts/compare/${RUN_ID}/ 2>/dev/null || true
+          cp -r downloads/artifacts/**/compare-summary.json artifacts/compare/${RUN_ID}/ 2>/dev/null || true
+          # ensure something to commit
+          if [ -n "$(git status --porcelain)" ]; then
+            git add artifacts/compare/${RUN_ID} || true
+            git commit -m "ci: collected compare files from run ${RUN_ID}"
+            echo "Pushing branch $BRANCH to origin"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git" --set-upstream origin "$BRANCH"
+          else
+            echo "No compare files found to commit"
+          fi
 
