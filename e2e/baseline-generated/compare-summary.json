@@ -1,0 +1,40 @@
+{
+  "results": [
+    {
+      "file": "hero.png",
+      "status": "ok",
+      "diffPixels": 17986,
+      "total": 691200,
+      "ratio": 0.026021412037037037
+    },
+    {
+      "file": "hero@2x.png",
+      "status": "ok",
+      "diffPixels": 74258,
+      "total": 2764800,
+      "ratio": 0.02685836226851852
+    },
+    {
+      "file": "hero_full.png",
+      "status": "error",
+      "error": "size-mismatch",
+      "width1": 1280,
+      "height1": 3404,
+      "width2": 1280,
+      "height2": 3397
+    },
+    {
+      "file": "hero_full@2x.png",
+      "status": "error",
+      "error": "size-mismatch",
+      "width1": 2560,
+      "height1": 6808,
+      "width2": 2560,
+      "height2": 6796
+    }
+  ],
+  "totalPixels": 25241600,
+  "totalDiff": 21877844,
+  "overallRatio": 0.8667376077586207,
+  "threshold": 0.02
+}
