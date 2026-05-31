@@ -124,6 +124,28 @@ function comparePair(basePath, genPath, diffOutPath) {
 
     const overallRatio = totalPixels === 0 ? 0 : totalDiff / totalPixels;
     console.log('Overall diff ratio:', overallRatio);
+
+    // Save machine-readable summary for CI debugging
+    try {
+      const pixelmatchThreshold = Math.max(
+        0,
+        Math.min(1, Number(process.env.PIXELMATCH_THRESHOLD || threshold))
+      );
+      const summary = {
+        results,
+        totalDiff,
+        totalPixels,
+        overallRatio,
+        threshold,
+        pixelmatchThreshold,
+      };
+      const outPath = path.join(generatedDir, 'compare-summary.json');
+      fs.writeFileSync(outPath, JSON.stringify(summary, null, 2), 'utf8');
+      console.log('Wrote compare summary to', outPath);
+    } catch (e) {
+      console.warn('Failed to write compare-summary.json:', e && e.message ? e.message : e);
+    }
+
     if (overallRatio > threshold) {
       console.error(`Visual diff ${overallRatio} exceeds threshold ${threshold}`);
       process.exit(2);

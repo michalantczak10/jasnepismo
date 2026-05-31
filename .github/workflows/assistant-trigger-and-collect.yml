@@ -16,23 +16,40 @@ jobs:
       - name: Set dispatch timestamp
         run: echo "DISPATCH_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
-      - name: Dispatch update-baseline workflow
+      - name: Dispatch update-baseline workflow (improved debug)
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
         run: |
           echo "Dispatching .github/workflows/update-baseline.yml on ref=main..."
-          status=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+          resp_file=$(mktemp)
+          http_code=$(curl -s -o "$resp_file" -w "%{http_code}" -X POST \
             -H "Authorization: token $TOKEN" \
             -H "Accept: application/vnd.github+json" \
             -H "Content-Type: application/json" \
             -d '{"ref":"main"}' \
             "https://api.github.com/repos/$REPO/actions/workflows/update-baseline.yml/dispatches")
-          echo "Dispatch HTTP status: $status"
-          if [ "$status" != "204" ]; then
-            echo "Failed to dispatch (HTTP $status)" >&2
-            echo "Response body:" >&2
-            curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows/update-baseline.yml" || true
+          echo "Dispatch HTTP code: $http_code"
+          echo "Dispatch response body:" 
+          cat "$resp_file" || true
+          if [ "$http_code" != "204" ]; then
+            echo "Dispatch failed (HTTP $http_code)" >&2
+            echo "Listing repository workflows for debugging:" >&2
+            curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | "id:\t\(.id)\tpath:\t\(.path)\tstate:\t\(.state)"' >&2 || true
+            # Attempt dispatch by workflow id as a fallback
+            WF_ID=$(curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | select(.path==".github/workflows/update-baseline.yml") | .id' | head -n1)
+            if [ -n "$WF_ID" ]; then
+              echo "Attempting dispatch by workflow id: $WF_ID" >&2
+              http_code2=$(curl -s -o "$resp_file" -w "%{http_code}" -X POST \
+                -H "Authorization: token $TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                -H "Content-Type: application/json" \
+                -d '{"ref":"main"}' \
+                "https://api.github.com/repos/$REPO/actions/workflows/$WF_ID/dispatches")
+              echo "Dispatch HTTP code (by id): $http_code2"
+              echo "Dispatch response body (by id):"
+              cat "$resp_file" || true
+            fi
             exit 1
           fi
 
