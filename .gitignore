@@ -36,3 +36,22 @@ resources/
 e2e/tmp/
 .DS_Store
 
+
+# CI / local generated artifacts and archives
+# ignore workflow/run artifacts and exported zips that were accidentally committed
+*.zip
+actions_run_*
+run-*-logs*
+baseline-images-*
+visual-compare-output-*
+artifacts-*
+artifacts-run-*.json
+jobs-*.json
+runs.json
+check-*.json
+prs-*.json
+
+# local debug / exports
+visual-compare-output*/
+.*/visual-compare-output*/
+

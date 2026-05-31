@@ -225,3 +225,27 @@ CI support:
 
 - There is a manual workflow `Update visual baselines` (Actions) which runs the baseline generator and opens a PR with changes if baselines were updated.
 - Playwright CI collects screenshots, videos and traces on failure and uploads them as artifacts.
+
+## Maintenance: cleaning committed CI artifacts
+
+When CI artifacts (ZIPs, exported images, run logs) were accidentally committed to the repository, they bloat the repo.
+
+To help clean up tracked artifacts we added a helper script `scripts/cleanup-repo.sh` and updated `.gitignore` to ignore common patterns (ZIPs, generated baseline images, run logs, artifacts JSON).
+
+Recommended steps to untrack and remove artifacts from the index (keeps local copies):
+
+1. Review tracked artifact files:
+
+```bash
+bash scripts/cleanup-repo.sh
+```
+
+2. To actually remove them from the git index (but keep local files), run:
+
+```bash
+bash scripts/cleanup-repo.sh --do-remove
+git commit -m "chore(ci): remove committed CI artifacts from repo"
+git push origin <branch>
+```
+
+If you need to permanently remove large files from git history, use `git filter-repo` or `git filter-branch` (advanced / risky) — only do that if you understand the consequences.

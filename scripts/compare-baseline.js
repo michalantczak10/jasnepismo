@@ -64,7 +64,15 @@ function comparePair(basePath, genPath, diffOutPath) {
   }
   const { width, height } = img1;
   const diff = new PNG({ width, height });
-  const diffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, { threshold: 0.1 });
+  // Use configured threshold (from PIXELMATCH_THRESHOLD env) for comparison.
+  // Ensure threshold is a number between 0 and 1.
+  const pmThreshold = Math.max(
+    0,
+    Math.min(1, Number(process.env.PIXELMATCH_THRESHOLD || threshold))
+  );
+  const diffPixels = pixelmatch(img1.data, img2.data, diff.data, width, height, {
+    threshold: pmThreshold,
+  });
   fs.writeFileSync(diffOutPath, PNG.sync.write(diff));
   return { diffPixels, total: width * height, width, height };
 }
