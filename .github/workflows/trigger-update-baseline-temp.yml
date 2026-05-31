@@ -18,5 +18,5 @@ jobs:
       generated_dir: e2e/baseline-generated
       pixelmatch_threshold: '0.02'
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      WORKFLOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
