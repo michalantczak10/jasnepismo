@@ -1,5 +1,8 @@
 name: Visual tests monitor
 
+env:
+  FEATURE_WORKFLOW_VISUAL_MONITOR: ${{ secrets.FEATURE_WORKFLOW_VISUAL_MONITOR }}
+
 on:
   schedule:
     - cron: '0 */6 * * *' # every 6 hours
@@ -9,6 +12,7 @@ on:
 
 jobs:
   visual-monitor:
+    if: ${{ env.FEATURE_WORKFLOW_VISUAL_MONITOR != '0' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

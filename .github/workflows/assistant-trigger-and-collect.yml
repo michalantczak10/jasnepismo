@@ -1,5 +1,8 @@
 name: Assistant — trigger update-baseline and collect artifacts
 
+env:
+  FEATURE_WORKFLOW_ASSISTANT_TRIGGER: ${{ secrets.FEATURE_WORKFLOW_ASSISTANT_TRIGGER }}
+
 on:
   workflow_dispatch:
   push:
@@ -10,90 +13,42 @@ permissions:
   contents: write
 
 jobs:
-  trigger-and-collect:
+  call-update-baseline:
+    if: ${{ env.FEATURE_WORKFLOW_ASSISTANT_TRIGGER != '0' }}
+    uses: ./.github/workflows/update-baseline.yml
+    with:
+      baseline_ref_dir: e2e/baseline
+      generated_dir: e2e/baseline-generated
+      pixelmatch_threshold: '0.02'
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  collect-or-fallback:
+    needs: call-update-baseline
+    if: ${{ env.FEATURE_WORKFLOW_ASSISTANT_TRIGGER != '0' }}
     runs-on: ubuntu-latest
     steps:
       - name: Ensure jq is available
         run: sudo apt-get update && sudo apt-get install -y jq zip unzip || true
 
-      - name: Set dispatch timestamp
-        run: echo "DISPATCH_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
-
-      - name: Dispatch update-baseline workflow (improved debug)
-        env:
-          REPO: ${{ github.repository }}
-          TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
-        run: |
-          # default to false; will be set to true if any dispatch succeeds
-          echo "DISPATCHED=false" >> $GITHUB_ENV
-          echo "Dispatching .github/workflows/update-baseline.yml on ref=main..."
-          resp_file=$(mktemp)
-          http_code=$(curl -s -o "$resp_file" -w "%{http_code}" -X POST \
-            -H "Authorization: token $TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Content-Type: application/json" \
-            -d '{"ref":"main"}' \
-            "https://api.github.com/repos/$REPO/actions/workflows/update-baseline.yml/dispatches")
-          echo "Dispatch HTTP code: $http_code"
-          echo "Dispatch response body:"
-          cat "$resp_file" || true
-          if [ "$http_code" = "204" ]; then
-            echo "Dispatched by workflow file successfully (204)."
-            echo "DISPATCHED=true" >> $GITHUB_ENV
-          else
-            echo "Dispatch by file returned $http_code; attempting fallback by workflow id..." >&2
-            echo "Listing repository workflows for debugging:" >&2
-            curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | "id:\t\(.id)\tpath:\t\(.path)\tstate:\t\(.state)"' >&2 || true
-            WF_ID=$(curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | select(.path==".github/workflows/update-baseline.yml") | .id' | head -n1)
-            if [ -n "$WF_ID" ]; then
-              echo "Attempting dispatch by workflow id: $WF_ID" >&2
-              http_code2=$(curl -s -o "$resp_file" -w "%{http_code}" -X POST \
-                -H "Authorization: token $TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                -H "Content-Type: application/json" \
-                -d '{"ref":"main"}' \
-                "https://api.github.com/repos/$REPO/actions/workflows/$WF_ID/dispatches")
-              echo "Dispatch HTTP code (by id): $http_code2"
-              echo "Dispatch response body (by id):"
-              cat "$resp_file" || true
-              if [ "$http_code2" -ge 200 ] && [ "$http_code2" -lt 300 ]; then
-                echo "Dispatched by workflow id successfully (http_code=$http_code2)."
-                echo "DISPATCHED=true" >> $GITHUB_ENV
-              else
-                echo "Dispatch failed by file and by id (codes: $http_code / $http_code2)." >&2
-                echo "DISPATCHED=false" >> $GITHUB_ENV
-              fi
-            else
-              echo "Workflow id not found; cannot dispatch" >&2
-              echo "DISPATCHED=false" >> $GITHUB_ENV
-            fi
-          fi
-
-      # Fallback: run update-baseline logic locally in this workflow if dispatch failed
-      - name: Checkout repository (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
+      - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Setup Node.js (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
-        uses: actions/setup-node@v5
+      - name: Download baseline-images artifact (if produced)
+        if: ${{ needs.call-update-baseline.result == 'success' }}
+        uses: actions/download-artifact@v4
         with:
-          node-version: '24'
+          name: baseline-images
+          path: downloads/artifacts
 
-      - name: Install dependencies (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
-        run: npm ci
-
-      - name: Install Playwright browsers (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
-        run: npx playwright install --with-deps
-
-      - name: Run visual comparison (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
+      - name: Fallback: run update-baseline logic locally (if call failed)
+        if: ${{ needs.call-update-baseline.result != 'success' }}
         id: compare_fallback
         run: |
           set +e
           mkdir -p e2e/baseline-generated
+          npm ci
+          npx playwright install --with-deps || true
           node scripts/compare-baseline.js 2>&1 | tee e2e/baseline-generated/compare.log
           rc=${PIPESTATUS[0]}
           set -e
@@ -105,61 +60,35 @@ jobs:
           PIXELMATCH_THRESHOLD: '0.02'
         shell: bash
 
-      - name: Upload generated artifacts (fallback)
-        if: ${{ env.DISPATCHED == 'false' }}
+      - name: Upload generated artifacts (always)
         uses: actions/upload-artifact@v4
         with:
           name: baseline-images
           path: e2e/baseline-generated/**
 
-      - name: Prepare baseline update (fallback)
-        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
+      - name: Commit collected compare files back to the repository (if any)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          echo 'Copying generated images into e2e/baseline to prepare PR'
-          mkdir -p e2e/baseline
-          cp -r e2e/baseline-generated/* e2e/baseline/ || true
-          git status --porcelain
-        shell: bash
-
-      - name: Create Pull Request for baseline changes (fallback)
-        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
-        id: create_pr_fallback
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: chore: update visual baseline
-          branch: update-visual-baseline-fallback-${{ github.run_id }}
-          title: chore: update visual baseline (fallback)
-          body: |
-            This PR was opened automatically by CI (fallback) because generated visual
-            baseline images differ from the checked-in baseline. Please review
-            the new images in the `e2e/baseline` folder and merge if acceptable.
-          base: main
-          labels: automated,visual-baseline
-
-      - name: Comment PR with image previews (fallback)
-        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ steps.create_pr_fallback.outputs.pull_request_number }}
-          body: |
-            ✅ New visual baseline images were generated and a PR was created: ${{ steps.create_pr_fallback.outputs.pull_request_url }}
-
-            Preview of generated images (click to open full size):
-
-            ![hero](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero.png)
-            ![hero@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero@2x.png)
-            
-            ![hero_full](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero_full.png)
-            ![hero_full@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero_full@2x.png)
-
-      - name: Fail on compare error (fallback)
-        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code != '0' && steps.compare_fallback.outputs.compare_exit_code != '2' }}
-        run: |
-          echo "Compare script exited with unexpected code ${{ steps.compare_fallback.outputs.compare_exit_code }}"
-          exit 1
-        shell: bash
+          set -e
+          echo "Attempting to commit collected compare files back to repo"
+          BRANCH="collected-compare-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          mkdir -p artifacts/compare
+          cp -r downloads/artifacts/**/compare.log artifacts/compare/ 2>/dev/null || true
+          cp -r downloads/artifacts/**/compare-summary.json artifacts/compare/ 2>/dev/null || true
+          cp -r e2e/baseline-generated/**/compare.log artifacts/compare/ 2>/dev/null || true
+          cp -r e2e/baseline-generated/**/compare-summary.json artifacts/compare/ 2>/dev/null || true
+          if [ -n "$(git status --porcelain)" ]; then
+            git add artifacts/compare || true
+            git commit -m "ci: collected compare files from workflow ${{ github.run_id }}"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git" --set-upstream origin "$BRANCH" || true
+          else
+            echo "No compare files found to commit"
+          fi
 
       - name: Wait for new run to appear
         if: ${{ env.DISPATCHED == 'true' }}

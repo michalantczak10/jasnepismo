@@ -3,6 +3,12 @@
 // Usage: node scripts/list-zip.js <zipfile>
 const fs = require('fs');
 const path = require('path');
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('list-zip')) {
+  console.log('Feature "list-zip" disabled (set FEATURE_LIST_ZIP=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 function readUInt32LE(buf, off) {
   return buf.readUInt32LE(off);
@@ -35,7 +41,7 @@ function listZip(filePath) {
     process.exit(2);
   }
   const totalEntries = readUInt16LE(buf, eocdOff + 10);
-  const centralDirSize = readUInt32LE(buf, eocdOff + 12);
+  // centralDirSize is intentionally not used; we read only the offset and entry count
   const centralDirOffset = readUInt32LE(buf, eocdOff + 16);
   // iterate central dir
   let off = centralDirOffset;

@@ -1,11 +1,15 @@
 name: Visual compare
 
+env:
+  FEATURE_WORKFLOW_VISUAL_COMPARE: ${{ secrets.FEATURE_WORKFLOW_VISUAL_COMPARE }}
+
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   visual-compare:
+    if: ${{ env.FEATURE_WORKFLOW_VISUAL_COMPARE != '0' }}
     name: Visual comparison on PR
     runs-on: ubuntu-latest
 

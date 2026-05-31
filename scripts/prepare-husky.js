@@ -16,6 +16,12 @@ const CI_ENV_VARS = [
 
 const isCI = CI_ENV_VARS.some((name) => Boolean(process.env[name]));
 
+const featureFlags = require('../lib/feature-flags');
+if (!featureFlags.isEnabled('husky-setup')) {
+  console.log('Feature "husky-setup" disabled (set FEATURE_HUSKY_SETUP=0 to disable). Exiting.');
+  process.exit(0);
+}
+
 if (isCI) {
   console.log('prepare-husky: CI environment detected — skipping Husky installation.');
   process.exit(0);

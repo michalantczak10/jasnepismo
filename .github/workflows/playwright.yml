@@ -1,5 +1,8 @@
 name: Playwright E2E
 
+env:
+  FEATURE_WORKFLOW_PLAYWRIGHT: ${{ secrets.FEATURE_WORKFLOW_PLAYWRIGHT }}
+
 on:
   push:
     branches: [ main ]
@@ -8,6 +11,7 @@ on:
 
 jobs:
   e2e:
+    if: ${{ env.FEATURE_WORKFLOW_PLAYWRIGHT != '0' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

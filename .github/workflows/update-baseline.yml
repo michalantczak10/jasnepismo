@@ -1,4 +1,6 @@
 ﻿name: Update visual baseline
+env:
+  FEATURE_WORKFLOW_UPDATE_BASELINE: ${{ secrets.FEATURE_WORKFLOW_UPDATE_BASELINE }}
 on:
   push:
     branches:
@@ -6,10 +8,28 @@ on:
     paths:
       - 'e2e/**'
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      baseline_ref_dir:
+        description: 'Path to baseline ref dir (relative to repo)'
+        required: false
+        default: 'e2e/baseline'
+      generated_dir:
+        description: 'Output dir for generated images (relative to repo)'
+        required: false
+        default: 'e2e/baseline-generated'
+      pixelmatch_threshold:
+        description: 'Pixelmatch threshold (0..1)'
+        required: false
+        default: '0.02'
+    secrets:
+      GITHUB_TOKEN:
+        required: false
 permissions:
   contents: write
 jobs:
   update-baseline:
+    if: ${{ env.FEATURE_WORKFLOW_UPDATE_BASELINE != '0' }}
     name: Update visual baseline
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +56,13 @@ jobs:
           ls -la ~/.cache/ms-playwright || true
         shell: bash
 
+      - name: Prepare env from inputs (supports workflow_call)
+        run: |
+          echo "BASELINE_REF_DIR=${{ github.event_name == 'workflow_call' && inputs.baseline_ref_dir || 'e2e/baseline' }}" >> $GITHUB_ENV
+          echo "GENERATED_DIR=${{ github.event_name == 'workflow_call' && inputs.generated_dir || 'e2e/baseline-generated' }}" >> $GITHUB_ENV
+          echo "PIXELMATCH_THRESHOLD=${{ github.event_name == 'workflow_call' && inputs.pixelmatch_threshold || '0.02' }}" >> $GITHUB_ENV
+        shell: bash
+
       # Run the visual comparison script. It runs the generator into
       # GENERATED_DIR and compares against BASELINE_REF_DIR. The script
       # exits with code 0 when differences are <= threshold, 2 when
@@ -45,8 +72,8 @@ jobs:
         id: compare
         run: |
           set +e
-          mkdir -p e2e/baseline-generated
-          node scripts/compare-baseline.js 2>&1 | tee e2e/baseline-generated/compare.log
+          mkdir -p "$GENERATED_DIR"
+          node scripts/compare-baseline.js 2>&1 | tee "$GENERATED_DIR/compare.log"
           rc=${PIPESTATUS[0]}
           set -e
           echo "compare_exit_code=$rc" >> $GITHUB_OUTPUT
@@ -78,9 +105,9 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: chore: update visual baseline
+          commit-message: "chore: update visual baseline"
           branch: update-visual-baseline-${{ github.run_id }}
-          title: chore: update visual baseline
+          title: "chore: update visual baseline"
           body: |
             This PR was opened automatically by CI because generated visual
             baseline images differ from the checked-in baseline. Please review

@@ -1,4 +1,5 @@
 const openai = require('./openai');
+const featureFlags = require('../lib/feature-flags');
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
@@ -62,6 +63,11 @@ async function checkRateLimit(clientKey) {
 }
 
 module.exports = async function handler(req, res) {
+  if (!featureFlags.isEnabled('explain')) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(503).json({ error: "Funkcja /api/explain jest tymczasowo wyłączona na tym serwerze." });
+  }
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Metoda niedozwolona. Użyj POST.' });

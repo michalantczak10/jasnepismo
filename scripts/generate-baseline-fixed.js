@@ -2,6 +2,12 @@
 const path = require('path');
 const fs = require('fs');
 const http = require('http');
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('baseline-generation')) {
+  console.log('Feature "baseline-generation" disabled (set FEATURE_BASELINE_GENERATION=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 // Prefer programmatic Playwright API instead of relying on the CLI options
 // Try multiple packages to be resilient to different devDependency setups

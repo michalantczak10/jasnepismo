@@ -10,6 +10,12 @@ const expected = [
   'favicon-512x512.png',
   'favicon.ico'
 ];
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('favicons')) {
+  console.log('Feature "favicons" disabled (set FEATURE_FAVICONS=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 let missing = [];
 for (const f of expected) {

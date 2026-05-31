@@ -3,6 +3,7 @@ name: Generate sitemap
 # Force JavaScript actions to run on Node.js 24 (opt into future runner behavior)
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  FEATURE_WORKFLOW_SITEMAP: ${{ secrets.FEATURE_WORKFLOW_SITEMAP }}
 
 # Allow the workflow token to write contents (needed to push commits)
 permissions:
@@ -15,6 +16,7 @@ on:
 
 jobs:
   gen-sitemap:
+    if: ${{ env.FEATURE_WORKFLOW_SITEMAP != '0' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

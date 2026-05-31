@@ -1,6 +1,12 @@
 const { getLastUsage } = require('./openai');
+const featureFlags = require('../lib/feature-flags');
 
 module.exports = function handler(req, res) {
+  if (!featureFlags.isEnabled('health')) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(503).json({ error: "Funkcja /api/health jest wyłączona na tym serwerze." });
+  }
+
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.' });

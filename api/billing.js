@@ -1,5 +1,6 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
+const featureFlags = require('../lib/feature-flags');
 const crypto = require('crypto');
 
 function safeCompareToken(provided, expected) {
@@ -19,6 +20,11 @@ function getTodayDate() {
 }
 
 module.exports = async function handler(req, res) {
+  if (!featureFlags.isEnabled('billing')) {
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(503).json({ error: "Funkcja /api/billing jest wyłączona na tym serwerze." });
+  }
+
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.' });

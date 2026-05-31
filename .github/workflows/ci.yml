@@ -3,6 +3,7 @@ name: CI
 # Force JavaScript actions to run on Node.js 24 (opt into future runner behavior)
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  FEATURE_WORKFLOW_CI: ${{ secrets.FEATURE_WORKFLOW_CI }}
 
 on:
   push:
@@ -15,6 +16,7 @@ on:
 
 jobs:
   test:
+    if: ${{ env.FEATURE_WORKFLOW_CI != '0' }}
     runs-on: ubuntu-latest
 
     steps:

@@ -8,6 +8,12 @@ const outXml = path.join(root, 'sitemap.xml');
 const outGz = outXml + '.gz';
 
 const baseUrl = process.env.BASE_URL || 'https://jasnepismo.pl';
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('sitemap')) {
+  console.log('Feature "sitemap" disabled (set FEATURE_SITEMAP=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 function formatDate(d) {
   const yyyy = d.getFullYear();

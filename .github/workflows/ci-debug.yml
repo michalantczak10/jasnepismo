@@ -1,7 +1,12 @@
 ﻿name: Debug CI
+
+env:
+  FEATURE_WORKFLOW_CI_DEBUG: ${{ secrets.FEATURE_WORKFLOW_CI_DEBUG }}
+
 on: push
 jobs:
   debug:
+    if: ${{ env.FEATURE_WORKFLOW_CI_DEBUG != '0' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

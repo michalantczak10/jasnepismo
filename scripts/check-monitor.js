@@ -2,6 +2,12 @@ const http = require('http');
 const https = require('https');
 
 const targetUrl = process.env.TARGET_URL || 'https://jasnepismo.pl';
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('monitor')) {
+  console.log('Feature "monitor" disabled (set FEATURE_MONITOR=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 // Follow redirects (3xx) up to MAX_REDIRECTS to be resilient to domain-level
 // redirects. Returns parsed JSON for successful 2xx responses.

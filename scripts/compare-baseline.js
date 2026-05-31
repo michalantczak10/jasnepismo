@@ -7,6 +7,12 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('baseline-compare')) {
+  console.log('Feature "baseline-compare" disabled (set FEATURE_BASELINE_COMPARE=0 to disable). Exiting.');
+  process.exit(0);
+}
 let pixelmatch;
 try {
   pixelmatch = require('pixelmatch');

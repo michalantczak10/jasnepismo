@@ -1,6 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('favicons')) {
+  console.log('Feature "favicons" disabled (set FEATURE_FAVICONS=0 to disable). Exiting.');
+  process.exit(0);
+}
 // png-to-ico is ESM; import dynamically below when needed
 
 (async () => {

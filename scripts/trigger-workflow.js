@@ -2,6 +2,12 @@
 // Usage: node scripts/trigger-workflow.js <workflow_file> <GITHUB_PAT> [ref]
 const https = require('https');
 const path = require('path');
+const featureFlags = require('../lib/feature-flags');
+
+if (!featureFlags.isEnabled('workflow-trigger')) {
+  console.log('Feature "workflow-trigger" disabled (set FEATURE_WORKFLOW_TRIGGER=0 to disable). Exiting.');
+  process.exit(0);
+}
 
 const workflowFile = process.argv[2];
 const token = process.argv[3] || process.env.GITHUB_PAT;

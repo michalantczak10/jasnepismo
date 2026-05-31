@@ -1,4 +1,5 @@
 let lastUsage = null;
+const featureFlags = require('../lib/feature-flags');
 
 function getOpenAIApiKey() {
   return process.env.OPENAI_API_KEY;
@@ -9,6 +10,10 @@ function getOpenAIModel() {
 }
 
 async function generateExplanation(text) {
+  if (!featureFlags.isEnabled('openai')) {
+    throw new Error('Funkcja integracji z OpenAI została wyłączona na tym serwerze.');
+  }
+
   const OPENAI_API_KEY = getOpenAIApiKey();
   const OPENAI_MODEL = getOpenAIModel();
 
