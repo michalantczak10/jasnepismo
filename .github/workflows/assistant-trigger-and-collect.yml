@@ -24,6 +24,8 @@ jobs:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
         run: |
+          # default to false; will be set to true if any dispatch succeeds
+          echo "DISPATCHED=false" >> $GITHUB_ENV
           echo "Dispatching .github/workflows/update-baseline.yml on ref=main..."
           resp_file=$(mktemp)
           http_code=$(curl -s -o "$resp_file" -w "%{http_code}" -X POST \
@@ -33,10 +35,11 @@ jobs:
             -d '{"ref":"main"}' \
             "https://api.github.com/repos/$REPO/actions/workflows/update-baseline.yml/dispatches")
           echo "Dispatch HTTP code: $http_code"
-          echo "Dispatch response body:" 
+          echo "Dispatch response body:"
           cat "$resp_file" || true
           if [ "$http_code" = "204" ]; then
             echo "Dispatched by workflow file successfully (204)."
+            echo "DISPATCHED=true" >> $GITHUB_ENV
           else
             echo "Dispatch by file returned $http_code; attempting fallback by workflow id..." >&2
             echo "Listing repository workflows for debugging:" >&2
@@ -55,17 +58,111 @@ jobs:
               cat "$resp_file" || true
               if [ "$http_code2" -ge 200 ] && [ "$http_code2" -lt 300 ]; then
                 echo "Dispatched by workflow id successfully (http_code=$http_code2)."
+                echo "DISPATCHED=true" >> $GITHUB_ENV
               else
                 echo "Dispatch failed by file and by id (codes: $http_code / $http_code2)." >&2
-                exit 1
+                echo "DISPATCHED=false" >> $GITHUB_ENV
               fi
             else
               echo "Workflow id not found; cannot dispatch" >&2
-              exit 1
+              echo "DISPATCHED=false" >> $GITHUB_ENV
             fi
           fi
 
+      # Fallback: run update-baseline logic locally in this workflow if dispatch failed
+      - name: Checkout repository (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Install dependencies (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        run: npm ci
+
+      - name: Install Playwright browsers (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        run: npx playwright install --with-deps
+
+      - name: Run visual comparison (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        id: compare_fallback
+        run: |
+          set +e
+          mkdir -p e2e/baseline-generated
+          node scripts/compare-baseline.js 2>&1 | tee e2e/baseline-generated/compare.log
+          rc=${PIPESTATUS[0]}
+          set -e
+          echo "compare_exit_code=$rc" >> $GITHUB_OUTPUT
+        continue-on-error: true
+        env:
+          BASELINE_REF_DIR: e2e/baseline
+          GENERATED_DIR: e2e/baseline-generated
+          PIXELMATCH_THRESHOLD: '0.02'
+        shell: bash
+
+      - name: Upload generated artifacts (fallback)
+        if: ${{ env.DISPATCHED == 'false' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-images
+          path: e2e/baseline-generated/**
+
+      - name: Prepare baseline update (fallback)
+        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
+        run: |
+          echo 'Copying generated images into e2e/baseline to prepare PR'
+          mkdir -p e2e/baseline
+          cp -r e2e/baseline-generated/* e2e/baseline/ || true
+          git status --porcelain
+        shell: bash
+
+      - name: Create Pull Request for baseline changes (fallback)
+        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
+        id: create_pr_fallback
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: chore: update visual baseline
+          branch: update-visual-baseline-fallback-${{ github.run_id }}
+          title: chore: update visual baseline (fallback)
+          body: |
+            This PR was opened automatically by CI (fallback) because generated visual
+            baseline images differ from the checked-in baseline. Please review
+            the new images in the `e2e/baseline` folder and merge if acceptable.
+          base: main
+          labels: automated,visual-baseline
+
+      - name: Comment PR with image previews (fallback)
+        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code == '2' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.create_pr_fallback.outputs.pull_request_number }}
+          body: |
+            ✅ New visual baseline images were generated and a PR was created: ${{ steps.create_pr_fallback.outputs.pull_request_url }}
+
+            Preview of generated images (click to open full size):
+
+            ![hero](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero.png)
+            ![hero@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero@2x.png)
+            
+            ![hero_full](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero_full.png)
+            ![hero_full@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-fallback-${{ github.run_id }}/e2e/baseline/hero_full@2x.png)
+
+      - name: Fail on compare error (fallback)
+        if: ${{ env.DISPATCHED == 'false' && steps.compare_fallback.outputs.compare_exit_code != '0' && steps.compare_fallback.outputs.compare_exit_code != '2' }}
+        run: |
+          echo "Compare script exited with unexpected code ${{ steps.compare_fallback.outputs.compare_exit_code }}"
+          exit 1
+        shell: bash
+
       - name: Wait for new run to appear
+        if: ${{ env.DISPATCHED == 'true' }}
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
@@ -91,6 +188,7 @@ jobs:
           fi
 
       - name: Poll run until completion
+        if: ${{ env.DISPATCHED == 'true' }}
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
@@ -114,6 +212,7 @@ jobs:
           fi
 
       - name: Download run logs (zip)
+        if: ${{ env.DISPATCHED == 'true' }}
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
@@ -131,6 +230,7 @@ jobs:
           fi
 
       - name: Download artifacts for the run
+        if: ${{ env.DISPATCHED == 'true' }}
         env:
           REPO: ${{ github.repository }}
           TOKEN: ${{ secrets.TEMP_AGENT_PAT }}
@@ -156,6 +256,7 @@ jobs:
           fi
 
       - name: Upload compare files (if present)
+        if: ${{ env.DISPATCHED == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: compare-files
@@ -167,10 +268,12 @@ jobs:
           if-no-files-found: warn
 
       - name: Print summary locations
+        if: ${{ env.DISPATCHED == 'true' }}
         run: |
           echo "Artifacts and logs downloaded to workspace. If the 'compare-files' artifact exists in this run you can download it from the Actions UI."
 
       - name: Commit collected compare files back to the repository (if any)
+        if: ${{ env.DISPATCHED == 'true' }}
         env:
           RUN_ID: ${{ env.RUN_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
