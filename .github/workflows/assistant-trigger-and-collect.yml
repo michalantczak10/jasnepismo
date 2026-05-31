@@ -35,11 +35,12 @@ jobs:
           echo "Dispatch HTTP code: $http_code"
           echo "Dispatch response body:" 
           cat "$resp_file" || true
-          if [ "$http_code" != "204" ]; then
-            echo "Dispatch failed (HTTP $http_code)" >&2
+          if [ "$http_code" = "204" ]; then
+            echo "Dispatched by workflow file successfully (204)."
+          else
+            echo "Dispatch by file returned $http_code; attempting fallback by workflow id..." >&2
             echo "Listing repository workflows for debugging:" >&2
             curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | "id:\t\(.id)\tpath:\t\(.path)\tstate:\t\(.state)"' >&2 || true
-            # Attempt dispatch by workflow id as a fallback
             WF_ID=$(curl -s -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/$REPO/actions/workflows" | jq -r '.workflows[] | select(.path==".github/workflows/update-baseline.yml") | .id' | head -n1)
             if [ -n "$WF_ID" ]; then
               echo "Attempting dispatch by workflow id: $WF_ID" >&2
@@ -52,8 +53,16 @@ jobs:
               echo "Dispatch HTTP code (by id): $http_code2"
               echo "Dispatch response body (by id):"
               cat "$resp_file" || true
+              if [ "$http_code2" -ge 200 ] && [ "$http_code2" -lt 300 ]; then
+                echo "Dispatched by workflow id successfully (http_code=$http_code2)."
+              else
+                echo "Dispatch failed by file and by id (codes: $http_code / $http_code2)." >&2
+                exit 1
+              fi
+            else
+              echo "Workflow id not found; cannot dispatch" >&2
+              exit 1
             fi
-            exit 1
           fi
 
       - name: Wait for new run to appear
@@ -188,4 +197,3 @@ jobs:
           else
             echo "No compare files found to commit"
           fi
-
