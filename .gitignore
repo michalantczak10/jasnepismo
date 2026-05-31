@@ -31,6 +31,9 @@ test-results/
 # Local resource uploads and generated images
 resources/
 
+# Generated baseline images
+e2e/baseline-generated/
+
 # Ignore editor / lint caches and e2e temporary images
 .eslintcache
 e2e/tmp/
