@@ -106,4 +106,20 @@ describe('api/costs.js', () => {
     assert.equal(res.getStatus(), 400);
     assert.deepEqual(res.getBody(), { error: 'Nieprawidłowy format daty. Użyj YYYY-MM-DD.' });
   });
+
+  it('rejects missing admin token before calling OpenAI', async () => {
+    const costs = loadCosts();
+    const req = {
+      method: 'GET',
+      query: { date: '2026-05-25' },
+      headers: {},
+    };
+    const res = createResponse();
+
+    await costs(req, res);
+
+    assert.equal(res.getStatus(), 401);
+    assert.match(res.getBody().error, /Unauthorized/);
+    assert.equal(lastFetch, null);
+  });
 });

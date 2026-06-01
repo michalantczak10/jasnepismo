@@ -77,4 +77,20 @@ describe('api/explain.js', () => {
       usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 },
     });
   });
+
+  it('returns 500 when OpenAI helper fails', async () => {
+    openai.generateExplanation = async () => {
+      throw new Error('boom');
+    };
+
+    const req = { method: 'POST', body: { text: 'Test' } };
+    const res = createResponse();
+
+    await explain(req, res);
+
+    assert.equal(res.getStatus(), 500);
+    assert.deepEqual(res.getBody(), {
+      error: 'Wystąpił błąd serwera. Spróbuj ponownie później.',
+    });
+  });
 });

@@ -45,6 +45,19 @@ describe('api/health.js', () => {
       res.getBody().environment === 'local' || res.getBody().environment === 'vercel',
       true
     );
+    assert.equal(typeof res.getBody().timestamp, 'string');
+    assert.equal(typeof res.getBody().uptime_seconds, 'number');
     assert.equal(Object.prototype.hasOwnProperty.call(res.getBody(), 'last_usage'), false);
+  });
+
+  it('returns 405 for non-GET methods', () => {
+    const req = { method: 'POST' };
+    const res = createResponse();
+
+    health(req, res);
+
+    assert.equal(res.getStatus(), 405);
+    assert.equal(res.getHeaders().Allow, 'GET');
+    assert.deepEqual(res.getBody(), { error: 'Metoda niedozwolona. Użyj GET.' });
   });
 });
