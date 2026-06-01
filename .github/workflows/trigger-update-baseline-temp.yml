@@ -1,0 +1,22 @@
+name: Temp — trigger update-baseline (call reusable)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  call-update-baseline:
+    # Call the reusable workflow in the same repository by relative path.
+    # This workflow file is intended as a short-lived helper to invoke
+    # the `update-baseline.yml` reusable workflow on a branch where that
+    # workflow declares `workflow_call` inputs.
+    uses: ./.github/workflows/update-baseline.yml
+    with:
+      baseline_ref_dir: e2e/baseline
+      generated_dir: e2e/baseline-generated
+      pixelmatch_threshold: '0.02'
+    secrets:
+      WORKFLOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
