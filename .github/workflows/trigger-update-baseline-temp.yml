@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   call-update-baseline:
@@ -17,6 +18,62 @@ jobs:
       baseline_ref_dir: e2e/baseline
       generated_dir: e2e/baseline-generated
       pixelmatch_threshold: '0.02'
+      create_pr: 'false'
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      WORKFLOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  create-pr-if-needed:
+    name: Create PR for baseline changes (if needed)
+    runs-on: ubuntu-latest
+    needs: call-update-baseline
+    if: ${{ needs.call-update-baseline.outputs.compare_exit_code == '2' }}
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Download baseline-images artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: baseline-images
+          path: e2e/baseline-generated
+
+      - name: Prepare baseline update
+        run: |
+          echo 'Copying generated images into e2e/baseline to prepare PR'
+          mkdir -p e2e/baseline
+          cp -r e2e/baseline-generated/* e2e/baseline/ || true
+          git status --porcelain
+        shell: bash
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update visual baseline"
+          branch: update-visual-baseline-${{ github.run_id }}
+          title: "chore: update visual baseline"
+          body: |
+            This PR was opened automatically by the workflow because generated visual baseline images differ from the checked-in baseline. Please review the new images in the `e2e/baseline` folder and merge if acceptable.
+            
+            See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          base: main
+          labels: automated,visual-baseline
+
+      - name: Comment PR with image previews
+        if: ${{ steps.cpr.outputs.pull_request_number != '' }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.cpr.outputs.pull_request_number }}
+          body: |
+            Preview of generated baseline images:
+            
+            ![hero](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero.png)
+            ![hero@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero@2x.png)
+            
+            ![hero_full](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full.png)
+            ![hero_full@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full@2x.png)

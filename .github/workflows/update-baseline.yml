@@ -14,24 +14,33 @@ on:
         description: 'Path to baseline ref dir (relative to repo)'
         required: false
         default: 'e2e/baseline'
+        type: string
       generated_dir:
         description: 'Output dir for generated images (relative to repo)'
         required: false
         default: 'e2e/baseline-generated'
+        type: string
       pixelmatch_threshold:
         description: 'Pixelmatch threshold (0..1)'
         required: false
         default: '0.02'
+        type: string
+      create_pr:
+        description: 'Create a pull request if baseline changes detected (false: skip PR creation, caller will handle it)'
+        required: false
+        default: 'false'
+        type: string
     secrets:
-      GITHUB_TOKEN:
+      WORKFLOW_GITHUB_TOKEN:
         required: false
 permissions:
   contents: write
 jobs:
   update-baseline:
-    if: ${{ env.FEATURE_WORKFLOW_UPDATE_BASELINE != '0' }}
     name: Update visual baseline
     runs-on: ubuntu-latest
+    outputs:
+      compare_exit_code: ${{ steps.compare.outputs.compare_exit_code }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -99,40 +108,40 @@ jobs:
           git status --porcelain
         shell: bash
 
-      - name: Create Pull Request for baseline changes
-        id: create_pr
-        if: ${{ steps.compare.outputs.compare_exit_code == '2' }}
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update visual baseline"
-          branch: update-visual-baseline-${{ github.run_id }}
-          title: "chore: update visual baseline"
-          body: |
-            This PR was opened automatically by CI because generated visual
-            baseline images differ from the checked-in baseline. Please review
-            the new images in the `e2e/baseline` folder and merge if acceptable.
-          base: main
-          labels: automated,visual-baseline
+       - name: Create Pull Request for baseline changes
+         id: create_pr
+         if: ${{ steps.compare.outputs.compare_exit_code == '2' && (github.event_name != 'workflow_call' || inputs.create_pr == 'true') }}
+         uses: peter-evans/create-pull-request@v4
+         with:
+           token: ${{ secrets.WORKFLOW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+           commit-message: "chore: update visual baseline"
+           branch: update-visual-baseline-${{ github.run_id }}
+           title: "chore: update visual baseline"
+           body: |
+             This PR was opened automatically by CI because generated visual
+             baseline images differ from the checked-in baseline. Please review
+             the new images in the `e2e/baseline` folder and merge if acceptable.
+           base: main
+           labels: automated,visual-baseline
 
-      - name: Comment PR with image previews
-        if: ${{ steps.compare.outputs.compare_exit_code == '2' }}
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ steps.create_pr.outputs.pull_request_number }}
-          body: |
-            ✅ New visual baseline images were generated and a PR was created: ${{ steps.create_pr.outputs.pull_request_url }}
+       - name: Comment PR with image previews
+         if: ${{ steps.compare.outputs.compare_exit_code == '2' && (github.event_name != 'workflow_call' || inputs.create_pr == 'true') && steps.create_pr.outputs.pull_request_number != '' }}
+         uses: peter-evans/create-or-update-comment@v3
+         with:
+           token: ${{ secrets.WORKFLOW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+           issue-number: ${{ steps.create_pr.outputs.pull_request_number }}
+           body: |
+             ✅ New visual baseline images were generated and a PR was created: ${{ steps.create_pr.outputs.pull_request_url }}
 
-            Preview of generated images (click to open full size):
+             Preview of generated images (click to open full size):
 
-            ![hero](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero.png)
-            ![hero@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero@2x.png)
-            
-            ![hero_full](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full.png)
-            ![hero_full@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full@2x.png)
+             ![hero](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero.png)
+             ![hero@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero@2x.png)
+             
+             ![hero_full](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full.png)
+             ![hero_full@2x](https://raw.githubusercontent.com/${{ github.repository }}/update-visual-baseline-${{ github.run_id }}/e2e/baseline/hero_full@2x.png)
 
-            Diff images are attached in the PR file changes (or in the workflow artifacts).
+             Diff images are attached in the PR file changes (or in the workflow artifacts).
 
       - name: Fail on compare error
         if: ${{ steps.compare.outputs.compare_exit_code != '0' && steps.compare.outputs.compare_exit_code != '2' }}
