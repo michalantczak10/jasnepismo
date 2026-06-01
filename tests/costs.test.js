@@ -122,4 +122,21 @@ describe('api/costs.js', () => {
     assert.match(res.getBody().error, /Unauthorized/);
     assert.equal(lastFetch, null);
   });
+
+  it('returns 500 when OPENAI_ADMIN_KEY is missing', async () => {
+    process.env.OPENAI_ADMIN_KEY = '';
+    const costs = loadCosts();
+    const req = {
+      method: 'GET',
+      query: { date: '2026-05-25' },
+      headers: { 'x-admin-token': 'admin-token' },
+    };
+    const res = createResponse();
+
+    await costs(req, res);
+
+    assert.equal(res.getStatus(), 500);
+    assert.deepEqual(res.getBody(), { error: 'Brak klucza OpenAI admin API na serwerze.' });
+    assert.equal(lastFetch, null);
+  });
 });

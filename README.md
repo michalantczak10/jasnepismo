@@ -109,7 +109,11 @@ Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są prz
 2. Make sure `vercel.json` is present in the repo root.
 3. Add the environment variable in Vercel:
    - `OPENAI_API_KEY`
-4. Deploy the project. The site is served statically and backend routes are handled by Vercel Serverless Functions in the `api/` folder.
+4. Add the admin variables if you use protected endpoints:
+   - `OPENAI_ADMIN_KEY`
+   - `ADMIN_API_TOKEN`
+   - `MONITOR_ADMIN_TOKEN` (optional, if you want the monitor workflow to hit protected routes)
+5. Deploy the project. The site is served statically and backend routes are handled by Vercel Serverless Functions in the `api/` folder.
 
 ## Jak testować
 

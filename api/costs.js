@@ -1,4 +1,4 @@
-const OPENAI_ADMIN_KEY = process.env.OPENAI_ADMIN_KEY || process.env.OPENAI_API_KEY;
+const OPENAI_ADMIN_KEY = process.env.OPENAI_ADMIN_KEY;
 const ADMIN_API_TOKEN = process.env.ADMIN_API_TOKEN;
 const crypto = require('crypto');
 
