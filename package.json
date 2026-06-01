@@ -14,19 +14,17 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "ioredis": "^5.3.1",
     "png-to-ico": "^3.0.1",
-    "sharp": "^0.34.5",
-    "ioredis": "^5.3.1"
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "eslint": "^8.48.0",
-    "prettier": "^3.8.3",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
-    "@playwright/test": "^1.60.0",
-    "pixelmatch": "^7.2.0",
-    "pngjs": "^7.0.0"
+    "prettier": "^3.8.3"
   },
   "lint-staged": {
     "*.{js,cjs}": [

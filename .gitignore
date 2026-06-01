@@ -34,5 +34,7 @@ resources/
 # Ignore editor / lint caches and e2e temporary images
 .eslintcache
 e2e/tmp/
+e2e/baseline-generated/
+e2e/.rerun
 .DS_Store
 
