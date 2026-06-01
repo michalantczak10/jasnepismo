@@ -33,7 +33,9 @@ module.exports = async function handler(req, res) {
   }
 
   if (!ADMIN_API_TOKEN) {
-    return res.status(503).json({ error: 'Admin token not configured on server.' });
+    return res
+      .status(503)
+      .json({ error: 'Token administracyjny nie jest skonfigurowany na serwerze.' });
   }
   const provided =
     (req.headers &&
@@ -43,7 +45,7 @@ module.exports = async function handler(req, res) {
   if (!safeCompareToken(provided, ADMIN_API_TOKEN)) {
     return res.status(401).json({
       error:
-        'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.',
+        'Brak autoryzacji. Podaj poprawny token administracyjny w nagłówku X-Admin-Token lub Authorization: Bearer <token>.',
     });
   }
 

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Polityka prywatności | Jasne pismo</title>
     <link rel="stylesheet" href="styles.css?v=5" />
-    <link rel="canonical" href="/privacy-policy.html" />
+    <link rel="canonical" href="https://jasnepismo.pl/privacy-policy.html" />
   </head>
   <body>
     <main class="section section--app fade-in legal-page" aria-labelledby="privacy-heading">
@@ -22,25 +22,33 @@
 
         <h2>2. Zakres i cel przetwarzania</h2>
         <p>
-          Serwis przetwarza jedynie tekst, który użytkownik wprowadza do formularza, wyłącznie w
-          celu wygenerowania prostego wyjaśnienia treści dokumentu. Przetwarzanie ma charakter
-          jednorazowy — tekst jest używany do wygenerowania odpowiedzi i nie jest długoterminowo
-          przechowywany w bazie danych.
+          Serwis przetwarza tekst, który użytkownik wprowadza do formularza lub który zostanie
+          odczytany z przesłanego pliku (np. PDF/DOCX) w przeglądarce użytkownika, wyłącznie w celu
+          wygenerowania prostego wyjaśnienia treści dokumentu.
+        </p>
+        <p>
+          Aby wygenerować wyjaśnienie, treść przekazywana jest do zewnętrznego dostawcy usługi AI
+          (OpenAI). Nie tworzymy kont użytkowników ani nie budujemy historii dokumentów.
         </p>
 
         <h2>3. Podstawa prawna</h2>
         <p>
-          Podstawą prawną przetwarzania jest zgoda użytkownika oraz niezbędność przetwarzania do
-          wykonania usługi na żądanie użytkownika (art. 6 pkt 1 lit. a i b RODO). W zakresie logów
-          serwera podstawą jest uzasadniony interes administratora (np. potrzeby operacyjne i
-          bezpieczeństwo).
+          Podstawą prawną przetwarzania jest niezbędność przetwarzania do wykonania usługi na
+          żądanie użytkownika (art. 6 ust. 1 lit. b RODO). W zakresie logów technicznych podstawą
+          jest uzasadniony interes administratora (art. 6 ust. 1 lit. f RODO) — np. potrzeby
+          operacyjne i bezpieczeństwo.
         </p>
 
         <h2>4. Okres przechowywania</h2>
         <p>
-          Wprowadzone treści są przetwarzane jednorazowo i nie są przechowywane długoterminowo.
-          Podstawowe logi techniczne (np. logi serwera) mogą być przechowywane przez krótki okres w
-          celach diagnostycznych i bezpieczeństwa; nie służą do profilowania użytkowników.
+          Wprowadzone treści są przetwarzane na potrzeby wygenerowania odpowiedzi i nie są przez nas
+          zapisywane w bazie danych jako historia użytkownika. Możemy jednak przetwarzać podstawowe
+          logi techniczne (np. logi serwera/hostingu) przez ograniczony czas w celach
+          diagnostycznych i bezpieczeństwa; nie służą one do profilowania użytkowników.
+        </p>
+        <p>
+          Dostawcy zewnętrzni (np. OpenAI) mogą przetwarzać dane zgodnie ze swoimi zasadami i
+          okresami retencji — szczegóły wynikają z dokumentacji i ustawień dostawcy.
         </p>
 
         <h2>5. Prawa użytkownika</h2>
@@ -60,10 +68,23 @@
 
         <h2>6. Cookies i usługi zewnętrzne</h2>
         <p>
-          Serwis minimalnie korzysta z cookie niezbędnych do działania sesji. Nie stosujemy narzędzi
-          analitycznych identyfikujących użytkowników bez ich zgody. Jeżeli w przyszłości
-          wykorzystamy zewnętrzne usługi (np. narzędzia analityczne lub CDN), informacje o tym
-          zostaną opisane w tej polityce.
+          Serwis nie wykorzystuje własnych plików cookies do prowadzenia kont użytkowników. W
+          zależności od środowiska (hosting, przeglądarka, dostawcy CDN) mogą jednak pojawić się
+          techniczne cookies lub nagłówki związane z bezpieczeństwem i poprawnym dostarczaniem
+          zasobów.
+        </p>
+        <p>Korzystamy z usług zewnętrznych w celu działania serwisu, w szczególności:</p>
+        <ul>
+          <li>OpenAI — przetwarzanie treści w celu wygenerowania wyjaśnienia.</li>
+          <li>Vercel — hosting strony i funkcji API.</li>
+          <li>
+            CDN (np. unpkg, cdnjs, jsDelivr) — dostarczanie bibliotek używanych do odczytu plików i
+            OCR w przeglądarce.
+          </li>
+        </ul>
+        <p>
+          Nie stosujemy narzędzi analitycznych identyfikujących użytkowników bez ich zgody. Jeżeli w
+          przyszłości dodamy analitykę lub inne usługi, zaktualizujemy tę politykę.
         </p>
 
         <h2>7. Bezpieczeństwo</h2>

@@ -1,6 +1,6 @@
 ﻿# Jasne pismo — wyjaśnianie pism urzędowych
 
-Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Umożliwia wklejenie tekstu lub przesłanie skanu dokumentu i wygenerowanie prostego wyjaśnienia.
+Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Umożliwia wklejenie tekstu lub przesłanie skanu/dokumentu i wygenerowanie prostego wyjaśnienia (treść jest wysyłana do OpenAI wyłącznie w celu wygenerowania odpowiedzi).
 
 ## Co znajduje się w projekcie
 
@@ -13,10 +13,10 @@ Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Um
 
 ## Jak używać
 
-1. Otwórz `index.html` w przeglądarce.
-2. Wklej treść dokumentu lub prześlij obraz/skan dokumentu.
-3. Kliknij przycisk "Wyjaśnij za darmo".
-4. Otrzymasz prostą interpretację oraz sugestie kolejnych kroków.
+1. Otwórz wdrożoną stronę (np. na Vercel) albo uruchom projekt lokalnie.
+2. Wklej treść dokumentu lub prześlij plik (obraz/PDF/DOC/DOCX/DOTX/ODT/RTF/TXT).
+3. Kliknij przycisk "Wyjaśnij".
+4. Otrzymasz proste wyjaśnienie oraz sugestie kolejnych kroków.
 5. Możesz pobrać wyjaśnienie jako plik tekstowy.
 
 ## Uwagi
@@ -118,7 +118,7 @@ Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są prz
 ## Jak testować
 
 1. Otwórz wdrożoną stronę na Vercel.
-2. Wklej tekst pisma urzędowego i wybierz przycisk "Wyjaśnij za darmo".
+2. Wklej tekst pisma urzędowego i wybierz przycisk "Wyjaśnij".
 
 ### Zalecana wersja Node.js dla deweloperów
 

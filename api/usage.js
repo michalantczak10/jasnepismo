@@ -22,7 +22,9 @@ module.exports = function handler(req, res) {
   }
 
   if (!ADMIN_API_TOKEN) {
-    return res.status(503).json({ error: 'Admin token not configured on server.' });
+    return res
+      .status(503)
+      .json({ error: 'Token administracyjny nie jest skonfigurowany na serwerze.' });
   }
 
   const provided =
@@ -31,12 +33,10 @@ module.exports = function handler(req, res) {
         (req.headers.authorization && req.headers.authorization.split(' ')[1]))) ||
     '';
   if (!safeCompareToken(provided, ADMIN_API_TOKEN)) {
-    return res
-      .status(401)
-      .json({
-        error:
-          'Unauthorized. Provide valid admin token in X-Admin-Token header or Authorization: Bearer <token>.',
-      });
+    return res.status(401).json({
+      error:
+        'Brak autoryzacji. Podaj poprawny token administracyjny w nagłówku X-Admin-Token lub Authorization: Bearer <token>.',
+    });
   }
 
   const usage = getLastUsage();

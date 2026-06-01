@@ -119,7 +119,7 @@ describe('api/costs.js', () => {
     await costs(req, res);
 
     assert.equal(res.getStatus(), 401);
-    assert.match(res.getBody().error, /Unauthorized/);
+    assert.match(res.getBody().error, /Brak autoryzacji/);
     assert.equal(lastFetch, null);
   });
 
