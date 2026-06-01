@@ -612,15 +612,6 @@ section:last-of-type {
   margin-right: auto;
 }
 
-.legal-page h2 {
-  text-align: left;
-}
-
-.legal-page h2::after {
-  left: 0;
-  transform: none;
-}
-
 .legal-page .content-block p {
   margin-left: 0;
   margin-right: 0;
