@@ -598,6 +598,13 @@ section:last-of-type {
   font-size: 1rem;
 }
 
+.legal-page .section-header {
+  text-align: left;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .legal-page .content-block {
   text-align: left;
   max-width: 720px;
@@ -621,6 +628,13 @@ section:last-of-type {
 .legal-page .content-block li {
   margin: 0.35rem 0;
   line-height: 1.8;
+}
+
+.legal-page .content-actions {
+  justify-content: flex-start;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .legal-page .nowrap {
