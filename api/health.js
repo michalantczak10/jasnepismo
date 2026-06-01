@@ -1,5 +1,3 @@
-const { getLastUsage } = require('./openai');
-
 module.exports = function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -14,7 +12,6 @@ module.exports = function handler(req, res) {
     model: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
     timestamp: new Date().toISOString(),
     uptime_seconds: uptimeSeconds,
-    last_usage: getLastUsage(),
   };
 
   res.setHeader('Content-Type', 'application/json');

@@ -31,9 +31,11 @@ Ten projekt używa backendu Vercel Serverless do obsługi zapytań OpenAI.
 
 - `GET /api/health`
   - Sprawdza, czy usługa działa.
-  - Zwraca JSON z informacją o statusie, czasie działania i ostatnim użyciu tokenów.
+  - Zwraca JSON z informacją o statusie, czasie działania i środowisku.
 - `GET /api/usage`
   - Zwraca dane o ostatnim użyciu tokenów z wywołania `/api/explain`.
+- `GET /api/billing`
+  - Pobiera dzienne dane kosztów OpenAI z endpointu organizacyjnego.
 - `POST /api/explain`
   - Przyjmuje JSON z polem `text` i zwraca wyjaśnienie plus informacje o zużyciu tokenów.
 
@@ -71,7 +73,7 @@ Możesz też użyć daty w query:
 curl -X GET "https://jasnepismo.pl/api/billing?date=2026-05-25"
 ```
 
-Ten endpoint używa standardowego OpenAI `/v1/usage` i zwraca dane rozliczeniowe dla wybranego dnia.
+Ten endpoint używa OpenAI `/v1/organization/costs` i zwraca dzienne dane kosztów dla wybranego dnia.
 
 Przykładowa odpowiedź z `/api/explain`:
 
@@ -92,6 +94,7 @@ Przykładowa odpowiedź z `/api/explain`:
 - `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
   - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
   - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
+- `OPENAI_ADMIN_KEY` — adminowy klucz OpenAI wymagany do `/api/billing`. Może być inny niż `OPENAI_API_KEY`.
 
 ### Dodatkowe zmienne administracyjne (opcjonalne)
 
@@ -160,13 +163,12 @@ Ten endpoint zwraca JSON z informacją:
 - `uptime_seconds`: czas działania funkcji serwera
 - `environment`: np. `vercel`
 - `model`: używany model OpenAI
-- `last_usage`: dane o ostatnim użyciu tokenów w formacie OpenAI
 
 Dodatkowo:
 
 - `POST /api/explain` zwraca pole `usage` wraz z wyjaśnieniem, co pozwala monitorować zużycie tokenów przy każdym żądaniu.
 - `GET /api/usage` zwraca ostatnie użycie tokenów z wywołania `/api/explain`.
-- `GET /api/billing` pobiera aktualne dane rozliczeniowe OpenAI dla bieżącego miesiąca.
+- `GET /api/billing` pobiera dzienne dane kosztów OpenAI dla bieżącego dnia lub podanej daty.
 
 ### Propozycja monitoringu
 
