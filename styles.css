@@ -623,6 +623,10 @@ section:last-of-type {
   line-height: 1.8;
 }
 
+.legal-page .nowrap {
+  white-space: nowrap;
+}
+
 .product-inner {
   background: linear-gradient(180deg, #fff8c1 0%, #fffef2 80%);
   border: 1px solid rgba(255, 204, 0, 0.35);
