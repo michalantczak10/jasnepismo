@@ -30,12 +30,12 @@ function createResponse() {
   };
 }
 
-function loadBilling() {
-  delete require.cache[require.resolve('../api/billing.js')];
-  return require('../api/billing.js');
+function loadCosts() {
+  delete require.cache[require.resolve('../api/costs.js')];
+  return require('../api/costs.js');
 }
 
-describe('api/billing.js', () => {
+describe('api/costs.js', () => {
   const originalEnv = {
     ADMIN_API_TOKEN: process.env.ADMIN_API_TOKEN,
     OPENAI_ADMIN_KEY: process.env.OPENAI_ADMIN_KEY,
@@ -69,7 +69,7 @@ describe('api/billing.js', () => {
   });
 
   it('returns daily costs for a valid admin request', async () => {
-    const billing = loadBilling();
+    const costs = loadCosts();
     const req = {
       method: 'GET',
       query: { date: '2026-05-25' },
@@ -77,7 +77,7 @@ describe('api/billing.js', () => {
     };
     const res = createResponse();
 
-    await billing(req, res);
+    await costs(req, res);
 
     assert.equal(res.getStatus(), 200);
     assert.equal(res.getBody().status, 'ok');
@@ -93,7 +93,7 @@ describe('api/billing.js', () => {
   });
 
   it('rejects invalid dates before calling OpenAI', async () => {
-    const billing = loadBilling();
+    const costs = loadCosts();
     const req = {
       method: 'GET',
       query: { date: 'not-a-date' },
@@ -101,7 +101,7 @@ describe('api/billing.js', () => {
     };
     const res = createResponse();
 
-    await billing(req, res);
+    await costs(req, res);
 
     assert.equal(res.getStatus(), 400);
     assert.deepEqual(res.getBody(), { error: 'Nieprawidłowy format daty. Użyj YYYY-MM-DD.' });

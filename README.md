@@ -34,7 +34,7 @@ Ten projekt używa backendu Vercel Serverless do obsługi zapytań OpenAI.
   - Zwraca JSON z informacją o statusie, czasie działania i środowisku.
 - `GET /api/usage`
   - Zwraca dane o ostatnim użyciu tokenów z wywołania `/api/explain`.
-- `GET /api/billing`
+- `GET /api/costs`
   - Pobiera dzienne dane kosztów OpenAI z endpointu organizacyjnego.
 - `POST /api/explain`
   - Przyjmuje JSON z polem `text` i zwraca wyjaśnienie plus informacje o zużyciu tokenów.
@@ -61,16 +61,16 @@ curl -X POST https://jasnepismo.pl/api/explain \
   -d '{"text":"To jest testowy dokument do wyjaśnienia."}'
 ```
 
-#### Sprawdzenie rozliczeń OpenAI
+#### Sprawdzenie kosztów OpenAI
 
 ```bash
-curl -X GET https://jasnepismo.pl/api/billing
+curl -X GET https://jasnepismo.pl/api/costs
 ```
 
 Możesz też użyć daty w query:
 
 ```bash
-curl -X GET "https://jasnepismo.pl/api/billing?date=2026-05-25"
+curl -X GET "https://jasnepismo.pl/api/costs?date=2026-05-25"
 ```
 
 Ten endpoint używa OpenAI `/v1/organization/costs` i zwraca dzienne dane kosztów dla wybranego dnia.
@@ -94,11 +94,11 @@ Przykładowa odpowiedź z `/api/explain`:
 - `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
   - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
   - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
-- `OPENAI_ADMIN_KEY` — adminowy klucz OpenAI wymagany do `/api/billing`. Może być inny niż `OPENAI_API_KEY`.
+- `OPENAI_ADMIN_KEY` — adminowy klucz OpenAI wymagany do `/api/costs`. Może być inny niż `OPENAI_API_KEY`.
 
 ### Dodatkowe zmienne administracyjne (opcjonalne)
 
-- `ADMIN_API_TOKEN` — token administracyjny wymagany do wywołań chronionych endpointów (`/api/usage`, `/api/billing`). Ustaw go jako sekret w Vercel oraz w innych środowiskach CI.
+- `ADMIN_API_TOKEN` — token administracyjny wymagany do wywołań chronionych endpointów (`/api/usage`, `/api/costs`). Ustaw go jako sekret w Vercel oraz w innych środowiskach CI.
 - `MONITOR_ADMIN_TOKEN` — opcjonalny sekret używany przez skrypt monitorujący (`scripts/check-monitor.js`) i workflow `monitor.yml`. Jeśli chcesz, aby monitoring sprawdzał prywatne endpointy, ustaw tę wartość na ten sam token co `ADMIN_API_TOKEN`.
 
 Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są przechowywane bezpiecznie jako sekrety środowiskowe.
@@ -168,7 +168,7 @@ Dodatkowo:
 
 - `POST /api/explain` zwraca pole `usage` wraz z wyjaśnieniem, co pozwala monitorować zużycie tokenów przy każdym żądaniu.
 - `GET /api/usage` zwraca ostatnie użycie tokenów z wywołania `/api/explain`.
-- `GET /api/billing` pobiera dzienne dane kosztów OpenAI dla bieżącego dnia lub podanej daty.
+- `GET /api/costs` pobiera dzienne dane kosztów OpenAI dla bieżącego dnia lub podanej daty.
 
 ### Propozycja monitoringu
 
@@ -202,28 +202,15 @@ curl -X POST https://jasnepismo.pl/api/explain \
 
 > Uwaga: OpenAI nie udostępnia przez standardowy endpoint informacji o "pozostałych tokenach" w koncie. Tutaj monitorujemy zużycie tokenów w ostatnim żądaniu. Jeśli chcesz pełniejsze raporty miesięczne, użyj panelu OpenAI lub dedykowanego API do rozliczeń.
 
-## Visual regression tests
+## End-to-end tests
 
-We use Playwright + pixelmatch to run visual regression tests for key UI elements.
+Playwright tests cover the main page and interactive UI behaviors:
 
-How to generate baselines locally:
+- `e2e/index.spec.js` — basic page load and hero checks
+- `e2e/ui.spec.js` — form, modal and file input behavior
 
-1. Install deps and Playwright browsers:
-
-```bash
-npm ci
-npx playwright install --with-deps
-```
-
-2. Generate baseline images for hero, form, result card and footer:
+Run them locally with:
 
 ```bash
-npx playwright test e2e/generate-baseline.spec.js
+npm run test:e2e
 ```
-
-3. Baseline images are stored in `e2e/baseline/`. If you intentionally changed UI, commit updated baselines and open a PR.
-
-CI support:
-
-- There is a manual workflow `Update visual baselines` (Actions) which runs the baseline generator and opens a PR with changes if baselines were updated.
-- Playwright CI collects screenshots, videos and traces on failure and uploads them as artifacts.

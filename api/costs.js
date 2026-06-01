@@ -14,10 +14,6 @@ function safeCompareToken(provided, expected) {
   }
 }
 
-function getTodayDate() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function getDayRange(dateInput) {
   const day = dateInput ? new Date(String(dateInput)) : new Date();
   if (Number.isNaN(day.getTime())) {
@@ -55,34 +51,34 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Brak klucza OpenAI admin API na serwerze.' });
   }
 
-  const requestedDate = req.query?.date || getTodayDate();
+  const requestedDate = req.query?.date || new Date().toISOString().slice(0, 10);
   const dayRange = getDayRange(requestedDate);
   if (!dayRange) {
     return res.status(400).json({ error: 'Nieprawidłowy format daty. Użyj YYYY-MM-DD.' });
   }
 
-  const usageUrl =
+  const costsUrl =
     `https://api.openai.com/v1/organization/costs` +
     `?start_time=${dayRange.start}` +
     `&end_time=${dayRange.end}` +
     `&bucket_width=1d&limit=1`;
 
   try {
-    const usageResp = await fetch(usageUrl, {
+    const costsResp = await fetch(costsUrl, {
       headers: {
         Authorization: `Bearer ${OPENAI_ADMIN_KEY}`,
       },
     });
 
-    const usageData = await usageResp.json();
-    if (!usageResp.ok) {
-      return res.status(usageResp.status).json({ error: usageData.error || usageData });
+    const costsData = await costsResp.json();
+    if (!costsResp.ok) {
+      return res.status(costsResp.status).json({ error: costsData.error || costsData });
     }
 
     return res.status(200).json({
       status: 'ok',
       date: dayRange.date,
-      costs: usageData,
+      costs: costsData,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Błąd serwera.' });

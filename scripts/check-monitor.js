@@ -79,7 +79,6 @@ function fetchJson(path) {
     console.log('Health check passed.');
     console.log(`Environment: ${health.environment}`);
     console.log(`Model: ${health.model}`);
-    console.log(`Last usage: ${JSON.stringify(health.last_usage ?? 'none')}`);
 
     if (!process.env.MONITOR_ADMIN_TOKEN) {
       // Local runs often don't have the secret set; don't fail the whole check
