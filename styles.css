@@ -516,15 +516,13 @@ section:last-of-type {
   margin: 0 auto;
 }
 
-/* Ulepszenie układu stopki: kolumnowo na małych ekranach, w rzędzie na szerokich */
+/* Stopka: zawsze kolumnowo (na prośbę klienta) */
 .footer-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
-
-/* Footer pozostaje ułożony kolumnowo na wszystkich szerokościach (klient prosił o układ jeden pod drugim) */
 
 .site-footer {
   padding: 24px 0 32px;
@@ -542,6 +540,39 @@ section:last-of-type {
   color: var(--color-primary);
   font-weight: 700;
   text-decoration: underline;
+  cursor: pointer !important;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.footer-sep {
+  opacity: 0.6;
+}
+
+.footer-contact {
+  font-style: normal; /* address domyślnie jest kursywą */
+  margin: 0.25rem 0 0;
+}
+
+.footer-email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-email-icon {
+  display: inline-block;
+}
+
+.footer-legal {
+  margin-top: 0.35rem;
+  opacity: 0.8;
 }
 
 .content-block {
