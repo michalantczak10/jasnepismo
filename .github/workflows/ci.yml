@@ -27,12 +27,12 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Validate favicons
         run: node scripts/check-favicons.js
 
       - name: Lint
-        run: npx eslint . --ext .js,.cjs || true
+        run: npx eslint . --ext .js,.cjs
 
       - name: Run tests
         run: npm test
