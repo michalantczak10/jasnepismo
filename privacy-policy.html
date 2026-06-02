@@ -115,9 +115,19 @@
         </p>
       </div>
       <div class="content-actions">
-        <a class="hero-cta" href="index.html">Powrót do strony głównej</a>
+        <a class="hero-cta" href="/" data-home-link>Powrót do strony głównej</a>
       </div>
     </main>
+
+    <script>
+      // In e2e tests we open files directly via file://, where href="/" points to the filesystem root.
+      // On production (https://jasnepismo.pl/) we want the canonical home URL: "/".
+      if (location.protocol === 'file:') {
+        document.querySelectorAll('[data-home-link]').forEach((a) => {
+          a.setAttribute('href', 'index.html');
+        });
+      }
+    </script>
 
     <footer class="site-footer" data-testid="site-footer">
       <div class="footer-inner">
