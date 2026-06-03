@@ -90,7 +90,7 @@ describe('api/explain.js', () => {
 
     assert.equal(res.getStatus(), 500);
     assert.deepEqual(res.getBody(), {
-      error: 'Wystąpił błąd serwera. Spróbuj ponownie później.',
+      error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
     });
   });
 });
