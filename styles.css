@@ -8,14 +8,20 @@
 
 * {
   box-sizing: border-box;
-  cursor: default !important;
 }
 
 .hero-cta,
-.hero-cta:hover,
 .contact-card a,
-.contact-card a:hover {
-  cursor: pointer !important;
+input,
+button,
+textarea,
+select,
+label[for] {
+  cursor: pointer;
+}
+
+[disabled] {
+  cursor: not-allowed;
 }
 
 html {
@@ -1092,6 +1098,12 @@ section:last-of-type {
   line-height: 1.75;
   background: #fff;
   color: var(--color-text);
+}
+
+.explain-form textarea:focus {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -1px;
+  border-color: transparent;
 }
 
 .file-upload-label {
