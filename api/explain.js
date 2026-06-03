@@ -92,6 +92,24 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     // Log full error on the server for debugging, but return a generic message to the client
     console.error('Error in /api/explain:', error);
-    return res.status(500).json({ error: 'Wystąpił błąd serwera. Spróbuj ponownie później.' });
+
+    const isRateLimit =
+      error.message &&
+      (error.message.includes('Too Many Requests') ||
+        error.message.includes('rate limit') ||
+        error.message.includes('429'));
+
+    if (isRateLimit) {
+      res.setHeader('Retry-After', '60');
+      return res
+        .status(429)
+        .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.' });
+    }
+
+    return res
+      .status(500)
+      .json({
+        error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
+      });
   }
 };

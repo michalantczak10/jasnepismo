@@ -5,7 +5,7 @@ function getOpenAIApiKey() {
 }
 
 function getOpenAIModel() {
-  return process.env.OPENAI_MODEL || 'gpt-4.1-mini';
+  return process.env.OPENAI_MODEL || 'gpt-4o-mini';
 }
 
 async function generateExplanation(text) {
@@ -25,17 +25,20 @@ ${text.trim()}
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${OPENAI_API_KEY}`
+      Authorization: `Bearer ${OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
       model: OPENAI_MODEL,
       messages: [
-        { role: 'system', content: 'Jesteś asystentem, który tłumaczy pisma urzędowe na prosty język.' },
-        { role: 'user', content: prompt }
+        {
+          role: 'system',
+          content: 'Jesteś asystentem, który tłumaczy pisma urzędowe na prosty język.',
+        },
+        { role: 'user', content: prompt },
       ],
       temperature: 0.2,
-      max_tokens: 900
-    })
+      max_tokens: 900,
+    }),
   });
 
   const data = await response.json();
@@ -58,5 +61,5 @@ function getLastUsage() {
 
 module.exports = {
   generateExplanation,
-  getLastUsage
+  getLastUsage,
 };
