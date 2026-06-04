@@ -787,3 +787,49 @@ removeFileButton.addEventListener('click', (event) => {
 });
 freeButton.addEventListener('click', handleAction);
 updateActionButtons();
+
+// Adjust footer button width so all footer buttons match the contact email button width
+(function adjustFooterButtonWidth() {
+  function updateFooterButtonWidth() {
+    try {
+      const email = document.querySelector('.footer-email-link');
+      if (!email) return;
+
+      // Temporarily unset inline width to measure natural content width
+      const prevInlineWidth = email.style.width || '';
+      email.style.width = 'auto';
+
+      // Measure the element's rendered width
+      const rect = email.getBoundingClientRect();
+      let measured = Math.ceil(rect.width || 0);
+
+      // Small buffer for borders/padding
+      measured += 4;
+
+      // Constrain measured width to sensible bounds
+      const maxAllowed = Math.min(window.innerWidth - 40, 920);
+      const minAllowed = 220; // keep buttons usable on narrow screens
+      const finalWidth = Math.max(minAllowed, Math.min(measured, maxAllowed));
+
+      // Apply as CSS variable so other buttons using --button-width match this width
+      document.documentElement.style.setProperty('--button-width', finalWidth + 'px');
+
+      // Restore previous inline width (let CSS variable control widths)
+      email.style.width = prevInlineWidth;
+    } catch (err) {
+      // ignore measurement errors
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateFooterButtonWidth);
+  } else {
+    updateFooterButtonWidth();
+  }
+  window.addEventListener('load', updateFooterButtonWidth);
+  let resizeTimer = null;
+  window.addEventListener('resize', function () {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateFooterButtonWidth, 150);
+  });
+})();
