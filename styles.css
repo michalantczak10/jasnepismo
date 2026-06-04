@@ -542,6 +542,16 @@ section:last-of-type {
   font-size: 0.95rem;
 }
 
+.footer-subtitle {
+  margin: 0.25rem 0 0.6rem;
+  color: rgba(17, 17, 17, 0.85);
+  font-size: 0.98rem;
+  font-weight: 600;
+  max-width: 860px;
+  margin-inline: auto;
+  text-align: center;
+}
+
 /* Stopka: linki mniej "krzykliwe" niż w innych miejscach */
 .site-footer a {
   color: var(--color-primary);
