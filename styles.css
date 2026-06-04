@@ -646,16 +646,28 @@ section:last-of-type {
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
 }
 
-/* use emoji-based icon for guaranteed color contrast */
+/* replace emoji with inline svg icons */
 .footer-email-icon {
-  display: none;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  vertical-align: middle;
+  stroke: currentColor;
+  fill: none;
 }
 .footer-email-link::before {
-  content: '✉️';
+  content: none;
+}
+.footer-nav .nav-icon {
   display: inline-block;
-  font-size: 1.05rem;
-  line-height: 1;
-  transform: translateY(-1px);
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin-right: 0.6rem;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: middle;
 }
 
 .footer-legal {
