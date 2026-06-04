@@ -529,6 +529,13 @@ section:last-of-type {
   text-align: center;
 }
 
+.footer-legal-note {
+  margin: 0 0 12px;
+  color: rgba(17, 17, 17, 0.8);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
 .site-footer p {
   margin: 0;
   color: rgba(17, 17, 17, 0.9);
