@@ -11,7 +11,6 @@ const confirmModal = document.getElementById('confirmModal');
 const confirmClearButton = document.getElementById('confirmClearButton');
 const cancelClearButton = document.getElementById('cancelClearButton');
 const downloadButton = document.getElementById('downloadButton');
-const loader = document.getElementById('loader');
 const statusMessage = document.getElementById('statusMessage');
 const fileDetails = document.getElementById('fileDetails');
 const removeFileButton = document.getElementById('removeFileButton');
@@ -75,11 +74,9 @@ function performClear() {
 
 function setLoading(loading) {
   isLoading = loading;
-  loader.hidden = !loading;
+  statusMessage.classList.toggle('is-loading', loading);
+  statusMessage.setAttribute('aria-busy', loading ? 'true' : 'false');
   updateActionButtons();
-  if (!loading) {
-    setStatus('');
-  }
 }
 
 function formatSize(bytes) {
@@ -104,16 +101,17 @@ function updateProgressStatus(percent, loaded, total) {
   setStatus(message);
 }
 
-function setStatus(message, isError = false) {
+function setStatus(message, isError = false, isSuccess = false) {
   if (!message) {
     statusMessage.hidden = true;
     statusMessage.textContent = '';
-    statusMessage.classList.remove('error');
+    statusMessage.classList.remove('error', 'is-success');
     return;
   }
   statusMessage.hidden = false;
   statusMessage.textContent = message;
   statusMessage.classList.toggle('error', isError);
+  statusMessage.classList.toggle('is-success', isSuccess && !isError);
 }
 
 function showError(message) {
@@ -138,7 +136,7 @@ function showResult(text) {
   resultCard.classList.add('fade-in');
   errorMessage.hidden = true;
   downloadButton.hidden = false;
-  setStatus('Wyjaśnienie gotowe. Możesz je pobrać lub wprowadzić kolejny dokument.', false);
+  setStatus('Wyjaśnienie gotowe. Możesz je pobrać lub wprowadzić kolejny dokument.', false, true);
 }
 
 function setFileDetails(message) {
