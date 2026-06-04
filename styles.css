@@ -555,6 +555,8 @@ section:last-of-type {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: var(--button-width);
+  max-width: 100%;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.85);
@@ -562,6 +564,7 @@ section:last-of-type {
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
   color: #111;
   font-weight: 700;
+  margin-inline: auto;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -588,6 +591,8 @@ section:last-of-type {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
+  width: var(--button-width);
+  max-width: 100%;
   padding: 0.55rem 0.9rem;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.85);
@@ -595,6 +600,7 @@ section:last-of-type {
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
   color: #111;
   font-weight: 700;
+  margin-inline: auto;
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -971,6 +977,8 @@ section:last-of-type {
   .result-actions,
   .contact-actions,
   .form-feedback,
+  .footer-nav a,
+  .footer-email-link,
   button,
   .hero-cta {
     width: 100%;
