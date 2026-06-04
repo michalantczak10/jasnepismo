@@ -14,6 +14,7 @@
   --radius-pill: 999px;
   --radius-card: 24px;
   --control-width: min(340px, 100%);
+  --button-width: var(--control-width);
   --shadow-button: 0 14px 28px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
   --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.06);
 }
@@ -136,8 +137,8 @@ button,
   align-items: center;
   justify-content: center;
   gap: 0.85rem;
-  width: var(--control-width);
-  max-width: 340px;
+  width: var(--button-width);
+  max-width: 100%;
   padding: 1.15rem 1.75rem;
   border-radius: var(--radius-pill);
   background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
@@ -211,8 +212,9 @@ button[disabled],
 .contact-email a.hero-cta,
 .result-actions .hero-cta,
 .result-actions button {
-  width: 100%;
-  max-width: none;
+  width: var(--button-width);
+  max-width: 100%;
+  margin-inline: auto;
 }
 
 .modal {
