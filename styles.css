@@ -1191,6 +1191,43 @@ section:last-of-type {
 
   .footer-inner {
     padding: 0 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .footer-branding,
+  .footer-nav,
+  .footer-contact-card {
+    width: 100%;
+    max-width: 860px;
+    margin: 0.4rem auto;
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .footer-nav a {
+    width: auto;
+    padding: 0.55rem 0.85rem;
+    margin-inline: auto;
+  }
+
+  .footer-contact-card {
+    justify-content: center;
+  }
+
+  .footer-cta,
+  .footer-email-link {
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
   }
 
   .modal-window {
