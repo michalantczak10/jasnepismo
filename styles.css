@@ -670,6 +670,16 @@ section:last-of-type {
   vertical-align: middle;
 }
 
+/* CTA variant classes - two options to preview */
+.footer-email-link.cta-warm {
+  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  color: #fff;
+}
+.footer-email-link.cta-blue {
+  background: linear-gradient(90deg, #2f80ed, #1a73e8);
+  color: #fff;
+}
+
 .footer-legal {
   margin-top: 0.45rem;
   opacity: 0.8;
