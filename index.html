@@ -264,13 +264,33 @@
         <div class="product-inner">
           <div class="section-header">
             <p class="section-tag" data-testid="section-info-tag">Bezpieczeństwo</p>
-            <h2 id="info-heading">Bezpieczeństwo — w skrócie</h2>
-            <p class="section-intro">
-              Wklejony tekst używamy tylko raz, żeby przygotować wyjaśnienie. Nie przechowujemy
-              Twojego pisma jako historii.
-              <a href="bezpieczenstwo.html">Czytaj więcej o bezpieczeństwie</a>.
+            <h2 id="info-heading" data-testid="info-heading">Twoje pismo nie jest przechowywane</h2>
+            <p class="section-intro" data-testid="section-info-intro">
+              Backend jednorazowo przetwarza tekst i zwraca wynik. Treść jest przesyłana do dostawcy
+              usługi AI wyłącznie w celu wygenerowania odpowiedzi i nie jest przez nas zapisywana
+              jako historia użytkownika.
             </p>
           </div>
+          <ul class="product-features">
+            <li>
+              <span class="feature-emoji">🔒</span><strong>Brak logowania</strong
+              ><span class="feature-note"
+                >Nie zbieramy danych osobowych ani historii dokumentów.</span
+              >
+            </li>
+            <li>
+              <span class="feature-emoji">⚡</span><strong>Szybkie działanie</strong
+              ><span class="feature-note"
+                >Wyjaśnienie powstaje w kilka sekund, a wynik jest wyświetlany natychmiast.</span
+              >
+            </li>
+            <li>
+              <span class="feature-emoji">🌐</span><strong>Bezpieczne połączenie</strong
+              ><span class="feature-note"
+                >Vercel obsługuje HTTPS, a endpointy administracyjne API są chronione tokenem.</span
+              >
+            </li>
+          </ul>
         </div>
       </section>
     </main>
