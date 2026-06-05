@@ -103,10 +103,12 @@
       </div>
       <div class="hero-copy" data-testid="hero-copy">
         <p class="section-tag" data-testid="hero-section-tag">Jasne pismo</p>
-        <h1 data-testid="hero-heading">Wyjaśnij pismo urzędowe prostym językiem</h1>
+        <h1 data-testid="hero-heading">
+          Masz pismo? Wklej tekst — wyjaśnimy prosto, krok po kroku.
+        </h1>
         <p class="hero-subtitle" data-testid="hero-subtitle">
-          Wklej treść pisma, kliknij „Wyjaśnij”, a system zwróci jasne podsumowanie i praktyczne
-          wskazówki.
+          Wklej tekst i kliknij „Wyjaśnij”. Otrzymasz krótkie wyjaśnienie oraz jasne wskazówki, co
+          zrobić dalej.
         </p>
       </div>
     </header>
@@ -122,8 +124,8 @@
             Szybkie wyjaśnienie urzędowego dokumentu
           </h2>
           <p class="section-intro" data-testid="section-app-intro">
-            Wklej treść pisma do pola poniżej i kliknij „Wyjaśnij”. System wyświetli jasne
-            podsumowanie i praktyczne wskazówki.
+            Wklej treść pisma i kliknij „Wyjaśnij”. Otrzymasz krótkie wyjaśnienie i jasne kroki, co
+            robić dalej.
           </p>
         </div>
         <form id="explainForm" class="explain-form" data-testid="form-explain">
@@ -138,11 +140,10 @@
             data-testid="documentText"
           ></textarea>
           <p id="textCount" class="field-note" data-testid="textCount">0 / 5000 znaków</p>
-          <label class="file-upload-label" for="documentFile" data-testid="file-upload-label"
-            >Prześlij skan dokumentu lub plik DOC / DOTX / DOCX / ODT / PDF / RTF / TXT / JPG / JPEG
-            / PNG / GIF. Tekst zostanie wczytany do pola powyżej i możesz go edytować przed
-            wysłaniem. (opcjonalnie, max 5 MB)</label
-          >
+          <label class="file-upload-label" for="documentFile" data-testid="file-upload-label">
+            Możesz też wysłać skan lub plik (np. PDF, JPG). Tekst pojawi się w polu i możesz go
+            poprawić. (opcjonalnie, max 5 MB)
+          </label>
           <div class="file-upload-row">
             <input
               id="documentFile"
@@ -263,33 +264,13 @@
         <div class="product-inner">
           <div class="section-header">
             <p class="section-tag" data-testid="section-info-tag">Bezpieczeństwo</p>
-            <h2 id="info-heading" data-testid="info-heading">Twoje pismo nie jest przechowywane</h2>
-            <p class="section-intro" data-testid="section-info-intro">
-              Backend jednorazowo przetwarza tekst i zwraca wynik. Treść jest przesyłana do dostawcy
-              usługi AI wyłącznie w celu wygenerowania odpowiedzi i nie jest przez nas zapisywana
-              jako historia użytkownika.
+            <h2 id="info-heading">Bezpieczeństwo — w skrócie</h2>
+            <p class="section-intro">
+              Wklejony tekst używamy tylko raz, żeby przygotować wyjaśnienie. Nie przechowujemy
+              Twojego pisma jako historii.
+              <a href="bezpieczenstwo.html">Czytaj więcej o bezpieczeństwie</a>.
             </p>
           </div>
-          <ul class="product-features">
-            <li>
-              <span class="feature-emoji">🔒</span><strong>Brak logowania</strong
-              ><span class="feature-note"
-                >Nie zbieramy danych osobowych ani historii dokumentów.</span
-              >
-            </li>
-            <li>
-              <span class="feature-emoji">⚡</span><strong>Szybkie działanie</strong
-              ><span class="feature-note"
-                >Wyjaśnienie powstaje w kilka sekund, a wynik jest wyświetlany natychmiast.</span
-              >
-            </li>
-            <li>
-              <span class="feature-emoji">🌐</span><strong>Bezpieczne połączenie</strong
-              ><span class="feature-note"
-                >Vercel obsługuje HTTPS, a endpointy administracyjne API są chronione tokenem.</span
-              >
-            </li>
-          </ul>
         </div>
       </section>
     </main>
