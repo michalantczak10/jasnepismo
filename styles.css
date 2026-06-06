@@ -1579,20 +1579,22 @@ section:last-of-type {
   }
 }
 
-/* Emoji icons in footer nav & contact */
+/* Icon and label spacing - unified sizes */
 .nav-emoji,
-.footer-emoji {
+.footer-emoji,
+.hero-cta .button-icon,
+.footer-cta .button-icon {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  font-size: 1.35rem; /* slightly smaller to save space */
-  margin-right: 0.6rem;
+  font-size: 1.15rem; /* slightly smaller to save space */
+  margin-right: 0.35rem; /* reduced gap between icon and label */
   line-height: 1;
   vertical-align: middle;
 }
 
-/* Button label: keep text on single line, allow flex shrink and ellipsis */
+/* Button label: consistent size and single-line behavior */
 .hero-cta .btn-label,
 .footer-cta .btn-label,
 .hero-cta .footer-email-text,
@@ -1603,16 +1605,9 @@ section:last-of-type {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: inherit;
-  line-height: inherit;
-}
-
-.hero-cta .button-icon,
-.footer-cta .button-icon,
-.hero-cta .nav-emoji,
-.footer-emoji {
-  flex: 0 0 auto;
-  margin-right: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 /* Global responsive enhancements (2026-06-06)
