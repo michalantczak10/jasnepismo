@@ -110,7 +110,15 @@
 
   function applyWidths(buttons, widths, fontPx) {
     buttons.forEach((btn, i) => {
-      const w = Math.min(widths[i], Math.max(64, getAvailable(btn)));
+      // calculate available space and current CSS width (after inline widths were cleared)
+      const available = Math.max(64, getAvailable(btn));
+      const cssWidth =
+        btn.clientWidth && btn.clientWidth > 0
+          ? btn.clientWidth
+          : parseFloat(getComputedStyle(btn).width) || 0;
+      // prefer the larger of the measured required width and the CSS-defined width so we don't shrink buttons
+      const desired = Math.max(widths[i], cssWidth);
+      const w = Math.min(desired, available);
       btn.style.width = w + 'px';
       const label =
         btn.querySelector('.btn-label') || btn.querySelector('.footer-email-text') || btn;
