@@ -524,7 +524,7 @@ section:last-of-type {
 }
 
 .site-footer {
-  padding: 36px 0 46px;
+  padding: 36px 32px 46px;
   background: linear-gradient(180deg, #fffdf2 0%, #fff7e6 100%);
   text-align: center;
   position: relative;
