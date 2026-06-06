@@ -859,14 +859,14 @@ section:last-of-type {
 
 .legal-page .section-header {
   text-align: center;
-  max-width: 720px;
+  max-width: 840px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .legal-page .content-block {
   text-align: left;
-  max-width: 720px;
+  max-width: 840px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -874,14 +874,12 @@ section:last-of-type {
 .legal-page .content-block p {
   margin-left: 0;
   margin-right: 0;
-  max-width: 70ch;
 }
 
 .legal-page .content-block ul,
 .legal-page .content-block ol {
   margin: 1rem 0 1.25rem;
   padding-left: 1.25rem;
-  max-width: 70ch;
 }
 
 .legal-page .content-block li {
@@ -891,7 +889,7 @@ section:last-of-type {
 
 .legal-page .content-actions {
   justify-content: center;
-  max-width: 720px;
+  max-width: 840px;
   margin-left: auto;
   margin-right: auto;
 }
