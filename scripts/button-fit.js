@@ -1,6 +1,6 @@
 /* scripts/button-fit.js
-   Small helper to shrink button text so it stays on a single line.
-   Runs on DOMContentLoaded and on resize. Falls back to ellipsis when minimum reached.
+   Wraps button text nodes into a .btn-label and shrinks the label to fit the available space.
+   Accounts for icons (nav-emoji / button-icon) and uses ellipsis when minimum reached.
 */
 (function () {
   'use strict';
@@ -17,57 +17,90 @@
   const STEP_PX = 1;
   const DEBOUNCE_MS = 120;
 
-  function fitElement(el) {
-    if (!el || !el.offsetWidth) return;
-    const text = el.textContent.trim();
-    if (!text) return;
+  function ensureLabel(container) {
+    if (!container) return;
+    if (container.querySelector('.btn-label') || container.querySelector('.footer-email-text'))
+      return;
+    const nodes = Array.from(container.childNodes);
+    nodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+        const span = document.createElement('span');
+        span.className = 'btn-label';
+        span.textContent = node.textContent.trim();
+        container.replaceChild(span, node);
+      }
+    });
+  }
 
-    const cs = window.getComputedStyle(el);
-    // Save original font-size once
-    if (!el.dataset.origFont) el.dataset.origFont = cs.fontSize;
+  function fitLabel(container) {
+    if (!container || !container.offsetWidth) return;
+    ensureLabel(container);
+    const label =
+      container.querySelector('.btn-label') ||
+      container.querySelector('.footer-email-text') ||
+      container;
+    if (!label || !label.offsetWidth) return;
 
-    // Reset to original before measuring
-    el.style.fontSize = el.dataset.origFont;
+    // Compute available width inside the container (subtract paddings and icon widths)
+    const containerStyle = window.getComputedStyle(container);
+    const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+    const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+    let available = Math.max(0, container.clientWidth - paddingLeft - paddingRight);
 
-    // Temporarily force single-line for measurement
+    const icon = container.querySelector('.button-icon, .nav-emoji, .footer-emoji');
+    if (icon) {
+      const iconStyle = window.getComputedStyle(icon);
+      const iconWidth = icon.offsetWidth + (parseFloat(iconStyle.marginRight) || 0);
+      available = Math.max(0, available - iconWidth);
+    }
+
+    // Apply max-width to label so measurement uses the right box
+    label.style.maxWidth = available + 'px';
+    label.style.display = 'inline-block';
+
+    // Save previous inline styles to restore some if needed
     const prev = {
-      whiteSpace: el.style.whiteSpace,
-      overflow: el.style.overflow,
-      textOverflow: el.style.textOverflow,
+      whiteSpace: label.style.whiteSpace,
+      overflow: label.style.overflow,
+      textOverflow: label.style.textOverflow,
     };
-    el.style.whiteSpace = 'nowrap';
-    el.style.overflow = 'visible';
-    el.style.textOverflow = 'clip';
 
-    let fontPx = parseFloat(window.getComputedStyle(el).fontSize);
+    label.style.whiteSpace = 'nowrap';
+    label.style.overflow = 'visible';
+    label.style.textOverflow = 'clip';
+
+    // Save original font-size if not already
+    const cs = window.getComputedStyle(label);
+    if (!label.dataset.origFont) label.dataset.origFont = cs.fontSize;
+    label.style.fontSize = label.dataset.origFont;
+
+    let fontPx = parseFloat(window.getComputedStyle(label).fontSize);
     const minFont =
       parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue('--min-button-font-size')
       ) || MIN_FONT_PX;
 
-    while (el.scrollWidth > el.clientWidth && fontPx > minFont) {
+    while (label.scrollWidth > label.clientWidth && fontPx > minFont) {
       fontPx = Math.max(minFont, fontPx - STEP_PX);
-      el.style.fontSize = fontPx + 'px';
+      label.style.fontSize = fontPx + 'px';
     }
 
-    if (el.scrollWidth > el.clientWidth) {
-      // fallback to ellipsis if it still doesn't fit
-      el.style.overflow = 'hidden';
-      el.style.textOverflow = 'ellipsis';
+    if (label.scrollWidth > label.clientWidth) {
+      label.style.overflow = 'hidden';
+      label.style.textOverflow = 'ellipsis';
     } else {
-      el.style.overflow = prev.overflow;
-      el.style.textOverflow = prev.textOverflow;
+      label.style.overflow = prev.overflow;
+      label.style.textOverflow = prev.textOverflow;
     }
 
-    // keep single-line appearance
-    el.style.whiteSpace = 'nowrap';
+    label.style.whiteSpace = 'nowrap';
   }
 
   function adjustAll() {
     const els = document.querySelectorAll(SELECTORS.join(','));
     els.forEach((el) => {
       try {
-        fitElement(el);
+        fitLabel(el);
       } catch (e) {
         /* ignore measurement errors */
       }

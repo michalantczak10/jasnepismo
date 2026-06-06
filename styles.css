@@ -1582,11 +1582,37 @@ section:last-of-type {
 /* Emoji icons in footer nav & contact */
 .nav-emoji,
 .footer-emoji {
-  display: inline-block;
-  font-size: 1.6rem; /* larger in buttons for readability */
-  margin-right: 0.9rem;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem; /* slightly smaller to save space */
+  margin-right: 0.6rem;
   line-height: 1;
   vertical-align: middle;
+}
+
+/* Button label: keep text on single line, allow flex shrink and ellipsis */
+.hero-cta .btn-label,
+.footer-cta .btn-label,
+.hero-cta .footer-email-text,
+.footer-email-link .footer-email-text {
+  display: inline-block;
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.hero-cta .button-icon,
+.footer-cta .button-icon,
+.hero-cta .nav-emoji,
+.footer-emoji {
+  flex: 0 0 auto;
+  margin-right: 0.6rem;
 }
 
 /* Global responsive enhancements (2026-06-06)
