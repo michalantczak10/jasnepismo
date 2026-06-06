@@ -711,6 +711,20 @@ section:last-of-type {
   align-self: start;
 }
 
+/* Prominent red variant used for the "48h" status in the footer */
+.footer-badge--prominent {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  background: transparent;
+  border-radius: 999px;
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: 800;
+  border: none;
+  align-self: center;
+  margin-top: 0.35rem;
+}
+
 @media (min-width: 880px) {
   .footer-inner {
     display: flex;
