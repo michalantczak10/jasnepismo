@@ -1588,3 +1588,73 @@ section:last-of-type {
   line-height: 1;
   vertical-align: middle;
 }
+
+/* Global responsive enhancements (2026-06-06)
+   - improve tablet grid behavior
+   - make CTAs fill small screens and reduce large paddings
+   - prefer-reduced-motion support
+*/
+@media (max-width: 1200px) {
+  .benefit-grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+  }
+  .product-inner {
+    padding: 32px 28px;
+  }
+}
+
+@media (max-width: 960px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-copy {
+    padding-inline: 12px;
+  }
+  .section {
+    padding: 36px 18px;
+  }
+  .hero-actions {
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --control-width: calc(100% - 28px);
+  }
+  .hero-cta,
+  button {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.95rem 1rem !important;
+    font-size: 1.05rem !important;
+  }
+  .hero-cta .button-icon {
+    font-size: 1.15rem;
+  }
+  .benefit-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-highlights li {
+    padding: 14px;
+  }
+  .section {
+    padding: 28px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Ensure images and svgs don't overflow */
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
