@@ -118,7 +118,7 @@
       label.style.whiteSpace = 'nowrap';
       label.style.overflow = 'visible';
       label.style.textOverflow = 'clip';
-      label.style.display = 'block';
+      label.style.display = 'inline-block';
     });
   }
 

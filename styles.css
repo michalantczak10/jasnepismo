@@ -1582,7 +1582,7 @@ section:last-of-type {
 /* Icon and label spacing - unified sizes and CSS vars */
 :root {
   --button-label-font-size: 1.05rem;
-  --min-button-font-size: 12px;
+  --min-button-font-size: 10px;
 }
 
 .nav-emoji,
@@ -1604,8 +1604,8 @@ section:last-of-type {
 .footer-cta .btn-label,
 .hero-cta .footer-email-text,
 .footer-email-link .footer-email-text {
-  display: block;
-  flex: 1 1 0;
+  display: inline-block;
+  flex: 0 0 auto;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -1621,6 +1621,33 @@ section:last-of-type {
 .footer-cta {
   align-items: center;
   gap: 0.25rem; /* ensure small consistent gap */
+}
+
+/* Additional tight/compact button variants used by button-fit.js when space is constrained */
+.hero-cta.button-fit-tight,
+.footer-cta.button-fit-tight {
+  padding: 0.9rem 1.05rem;
+}
+
+.hero-cta.button-fit-tight .button-icon,
+.footer-cta.button-fit-tight .button-icon,
+.hero-cta.button-fit-tight .nav-emoji,
+.footer-cta.button-fit-tight .nav-emoji {
+  font-size: 1rem;
+  margin-right: 0.18rem;
+}
+
+.hero-cta.button-fit-compact,
+.footer-cta.button-fit-compact {
+  padding: 0.72rem 0.9rem;
+}
+
+.hero-cta.button-fit-compact .button-icon,
+.footer-cta.button-fit-compact .button-icon,
+.hero-cta.button-fit-compact .nav-emoji,
+.footer-cta.button-fit-compact .nav-emoji {
+  font-size: 0.9rem;
+  margin-right: 0.12rem;
 }
 
 /* Global responsive enhancements (2026-06-06)
