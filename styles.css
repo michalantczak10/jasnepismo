@@ -1578,3 +1578,13 @@ section:last-of-type {
     margin: 0 auto;
   }
 }
+
+/* Emoji icons in footer nav & contact */
+.nav-emoji,
+.footer-emoji {
+  display: inline-block;
+  font-size: 1.05rem; /* aligns with icon size */
+  margin-right: 0.6rem;
+  line-height: 1;
+  vertical-align: middle;
+}
