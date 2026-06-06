@@ -141,7 +141,7 @@ button,
   max-width: min(100%, 680px);
   padding: 1.15rem 1.75rem;
   border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
   color: #fff;
   font-weight: 800;
   font-size: 1.25rem;
@@ -177,7 +177,7 @@ button[disabled],
   transform: none;
   box-shadow: none;
   filter: none;
-  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
   color: #fff;
   border-color: rgba(0, 0, 0, 0.06);
 }
@@ -803,7 +803,7 @@ section:last-of-type {
 
 /* CTA variant classes - two options to preview */
 .footer-email-link.cta-warm {
-  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
   color: #fff;
 }
 .footer-email-link.cta-blue {
