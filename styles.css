@@ -141,8 +141,8 @@ button,
   max-width: min(100%, 680px);
   padding: 1.15rem 1.75rem;
   border-radius: var(--radius-pill);
-  background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
-  color: #111;
+  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  color: #fff;
   font-weight: 800;
   font-size: 1.25rem;
   line-height: 1.25;
@@ -155,7 +155,7 @@ button,
     filter 0.24s ease,
     box-shadow 0.24s ease,
     background-color 0.24s ease;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   text-decoration: none;
 }
 
@@ -177,9 +177,9 @@ button[disabled],
   transform: none;
   box-shadow: none;
   filter: none;
-  background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
-  color: #111;
-  border-color: rgba(255, 255, 255, 0.42);
+  background: linear-gradient(90deg, var(--color-primary), #ff6b6b);
+  color: #fff;
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .button-stack,
