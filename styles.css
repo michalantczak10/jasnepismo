@@ -1583,8 +1583,8 @@ section:last-of-type {
 .nav-emoji,
 .footer-emoji {
   display: inline-block;
-  font-size: 1.05rem; /* aligns with icon size */
-  margin-right: 0.6rem;
+  font-size: 1.3rem; /* increased size for better visibility */
+  margin-right: 0.8rem;
   line-height: 1;
   vertical-align: middle;
 }
