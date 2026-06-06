@@ -1198,6 +1198,29 @@ section:last-of-type {
     text-align: center;
   }
 
+  /* Force vertical footer layout across all screen sizes */
+  .site-footer .footer-inner,
+  .footer-inner,
+  .footer-branding,
+  .footer-nav,
+  .footer-contact-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    text-align: center !important;
+  }
+
+  .footer-nav a,
+  .footer-cta,
+  .footer-contact-card,
+  .footer-branding {
+    width: 100% !important;
+    max-width: 680px !important;
+    margin-inline: auto !important;
+    box-sizing: border-box !important;
+  }
+
   .footer-branding,
   .footer-nav,
   .footer-contact-card {
