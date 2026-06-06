@@ -1,10 +1,15 @@
 /* scripts/button-fit.js
-   Compute a single, shared font-size for all button labels so they look consistent.
+   Compute a single, shared font-size for all button labels so they look consistent,
+   and avoid truncation where possible.
+
    Strategy:
-   1) Wrap text nodes into .btn-label (unless .footer-email-text exists).
-   2) For each button, find the largest font-size that fits the available label space.
-   3) Set all labels to the minimum of those font-sizes (but not below CSS --min-button-font-size).
-   This avoids per-button size differences and keeps a single-line appearance with ellipsis fallback.
+   - Wrap text nodes into .btn-label if missing.
+   - For each button compute available width for label (subtract paddings and icon width).
+   - Find max font that fits for each label. Pick the minimum across buttons as globalPx.
+   - Verify that globalPx actually fits all labels; if not, iteratively decrease until it does
+     or until --min-button-font-size is reached.
+   - If at minimum font some labels still overflow, allow those labels to wrap onto multiple lines
+     (white-space: normal) so the label is never cut off.
 */
 (function () {
   'use strict';
@@ -20,6 +25,7 @@
   const DEBOUNCE_MS = 120;
   const CSS_MIN_VAR = '--min-button-font-size';
   const CSS_LABEL_VAR = '--button-label-font-size';
+  const TOLERANCE = 1; // px tolerance for overflow checks
 
   function cssMinFont() {
     const v = getComputedStyle(document.documentElement).getPropertyValue(CSS_MIN_VAR);
@@ -78,16 +84,31 @@
     return Math.max(minFont, Math.round(fontPx));
   }
 
+  function setLabelSize(label, sizePx, available, nowrap = true) {
+    if (!label) return;
+    label.style.fontSize = sizePx + 'px';
+    label.style.maxWidth = available + 'px';
+    label.style.display = 'block';
+    if (nowrap) {
+      label.style.whiteSpace = 'nowrap';
+      label.style.overflow = 'hidden';
+      label.style.textOverflow = 'ellipsis';
+    } else {
+      label.style.whiteSpace = 'normal';
+      label.style.overflow = 'visible';
+      label.style.textOverflow = 'clip';
+    }
+  }
+
   function adjustAll() {
     const nodes = Array.from(document.querySelectorAll(SELECTORS.join(','))).filter(
       (n) => n && n.offsetWidth > 0
     );
     if (!nodes.length) return;
 
-    // Ensure labels exist
     nodes.forEach(ensureLabel);
 
-    // Compute the best font for each label
+    // Compute best per-button font
     const candidates = [];
     nodes.forEach((container) => {
       const label =
@@ -102,22 +123,36 @@
       candidates.push(best);
     });
 
-    // Choose a single font-size for all buttons (minimum of candidates)
-    const globalPx = Math.max(cssMinFont(), Math.min(...candidates));
+    const minFont = cssMinFont();
+    let globalPx = Math.max(minFont, Math.min(...candidates));
 
-    // Apply global size and final clamp/ellipsis
+    // Verify and reduce until no button overflows or we hit minFont
+    let iterationSafety = 0;
+    while (iterationSafety < 40) {
+      let anyOverflow = false;
+      nodes.forEach((container) => {
+        const label =
+          container.querySelector('.btn-label') || container.querySelector('.footer-email-text');
+        const available = getAvailableWidth(container);
+        setLabelSize(label, globalPx, available, true);
+        if (label.scrollWidth > label.clientWidth + TOLERANCE) anyOverflow = true;
+      });
+      if (!anyOverflow) break;
+      if (globalPx <= minFont) break;
+      globalPx = Math.max(minFont, globalPx - 1);
+      iterationSafety++;
+    }
+
+    // Apply final sizes; if still overflowing (at minFont), allow wrapping for those labels
     nodes.forEach((container) => {
       const label =
         container.querySelector('.btn-label') || container.querySelector('.footer-email-text');
-      if (!label) return;
       const available = getAvailableWidth(container);
-      label.style.fontSize = globalPx + 'px';
-      label.style.maxWidth = available + 'px';
-      label.style.whiteSpace = 'nowrap';
-      label.style.overflow = 'hidden';
-      label.style.textOverflow = 'ellipsis';
-      // keep display as block so flex sizing works
-      label.style.display = 'block';
+      // If label still overflows at globalPx, allow wrap
+      setLabelSize(label, globalPx, available, true);
+      if (label.scrollWidth > label.clientWidth + TOLERANCE) {
+        setLabelSize(label, globalPx, available, false);
+      }
     });
   }
 
@@ -131,7 +166,9 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     adjustAll();
+    // sometimes fonts or images load later
     setTimeout(adjustAll, 300);
+    setTimeout(adjustAll, 800);
   });
 
   window.addEventListener('resize', debounce(adjustAll, DEBOUNCE_MS));
