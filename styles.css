@@ -750,7 +750,7 @@ section:last-of-type {
     box-sizing: border-box;
   }
   .footer-contact-card {
-    width: calc(100% - 32px);
+    width: calc(100% - 48px);
     max-width: none;
     padding: 1rem;
   }
@@ -1215,11 +1215,11 @@ section:last-of-type {
   }
 
   .site-footer {
-    padding: 24px 22px 32px;
+    padding: 24px 32px 32px;
   }
 
   .footer-inner {
-    padding: 0 22px;
+    padding: 0 32px;
     display: flex;
     flex-direction: column;
     align-items: center;
