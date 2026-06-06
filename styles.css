@@ -262,7 +262,7 @@ button[disabled],
   width: 1.05em;
   height: 1.05em;
   aspect-ratio: 1 / 1;
-  font-size: 1rem;
+  font-size: 1em;
   line-height: 1;
   overflow: visible;
   transform: translateY(0.12em);
