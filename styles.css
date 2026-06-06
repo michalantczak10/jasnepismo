@@ -138,7 +138,7 @@ button,
   justify-content: center;
   gap: 0.85rem;
   width: var(--button-width);
-  max-width: 100%;
+  max-width: min(100%, 680px);
   padding: 1.15rem 1.75rem;
   border-radius: var(--radius-pill);
   background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
