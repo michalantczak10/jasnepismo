@@ -1,6 +1,10 @@
 /* scripts/button-fit.js
-   Wraps button text nodes into a .btn-label and shrinks the label to fit the available space.
-   Accounts for icons (nav-emoji / button-icon) and uses ellipsis when minimum reached.
+   Compute a single, shared font-size for all button labels so they look consistent.
+   Strategy:
+   1) Wrap text nodes into .btn-label (unless .footer-email-text exists).
+   2) For each button, find the largest font-size that fits the available label space.
+   3) Set all labels to the minimum of those font-sizes (but not below CSS --min-button-font-size).
+   This avoids per-button size differences and keeps a single-line appearance with ellipsis fallback.
 */
 (function () {
   'use strict';
@@ -13,9 +17,15 @@
     '.hero-cta',
     '.footer-cta',
   ];
-  const MIN_FONT_PX = 12;
-  const STEP_PX = 1;
   const DEBOUNCE_MS = 120;
+  const CSS_MIN_VAR = '--min-button-font-size';
+  const CSS_LABEL_VAR = '--button-label-font-size';
+
+  function cssMinFont() {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(CSS_MIN_VAR);
+    const parsed = parseFloat(v);
+    return Number.isFinite(parsed) ? parsed : 12;
+  }
 
   function ensureLabel(container) {
     if (!container) return;
@@ -32,78 +42,82 @@
     });
   }
 
-  function fitLabel(container) {
-    if (!container || !container.offsetWidth) return;
-    ensureLabel(container);
-    const label =
-      container.querySelector('.btn-label') ||
-      container.querySelector('.footer-email-text') ||
-      container;
-    if (!label || !label.offsetWidth) return;
-
-    // Compute available width inside the container (subtract paddings and icon widths)
-    const containerStyle = window.getComputedStyle(container);
-    const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
-    const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+  function getAvailableWidth(container) {
+    const cs = window.getComputedStyle(container);
+    const paddingLeft = parseFloat(cs.paddingLeft) || 0;
+    const paddingRight = parseFloat(cs.paddingRight) || 0;
     let available = Math.max(0, container.clientWidth - paddingLeft - paddingRight);
-
     const icon = container.querySelector('.button-icon, .nav-emoji, .footer-emoji');
     if (icon) {
-      const iconStyle = window.getComputedStyle(icon);
-      const iconWidth = icon.offsetWidth + (parseFloat(iconStyle.marginRight) || 0);
+      const iconCS = window.getComputedStyle(icon);
+      const iconWidth = icon.offsetWidth + (parseFloat(iconCS.marginRight) || 0);
       available = Math.max(0, available - iconWidth);
     }
+    return Math.floor(available);
+  }
 
-    // Apply max-width to label so measurement uses the right box
-    label.style.maxWidth = available + 'px';
+  function findMaxFontForLabel(label, available, startPx) {
+    if (!label) return cssMinFont();
     label.style.display = 'inline-block';
-
-    // Save previous inline styles to restore some if needed
-    const prev = {
-      whiteSpace: label.style.whiteSpace,
-      overflow: label.style.overflow,
-      textOverflow: label.style.textOverflow,
-    };
-
     label.style.whiteSpace = 'nowrap';
+    label.style.maxWidth = available + 'px';
     label.style.overflow = 'visible';
     label.style.textOverflow = 'clip';
 
-    // Save original font-size if not already
     const cs = window.getComputedStyle(label);
     if (!label.dataset.origFont) label.dataset.origFont = cs.fontSize;
-    label.style.fontSize = label.dataset.origFont;
+    let fontPx = parseFloat(label.dataset.origFont) || startPx || 16;
+    const minFont = cssMinFont();
 
-    let fontPx = parseFloat(window.getComputedStyle(label).fontSize);
-    const minFont =
-      parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue('--min-button-font-size')
-      ) || MIN_FONT_PX;
-
-    while (label.scrollWidth > label.clientWidth && fontPx > minFont) {
-      fontPx = Math.max(minFont, fontPx - STEP_PX);
+    // Decrease until it fits or until minFont
+    while (label.scrollWidth > available && fontPx > minFont) {
+      fontPx = Math.max(minFont, fontPx - 1);
       label.style.fontSize = fontPx + 'px';
     }
 
-    if (label.scrollWidth > label.clientWidth) {
-      label.style.overflow = 'hidden';
-      label.style.textOverflow = 'ellipsis';
-    } else {
-      label.style.overflow = prev.overflow;
-      label.style.textOverflow = prev.textOverflow;
-    }
-
-    label.style.whiteSpace = 'nowrap';
+    return Math.max(minFont, Math.round(fontPx));
   }
 
   function adjustAll() {
-    const els = document.querySelectorAll(SELECTORS.join(','));
-    els.forEach((el) => {
-      try {
-        fitLabel(el);
-      } catch (e) {
-        /* ignore measurement errors */
-      }
+    const nodes = Array.from(document.querySelectorAll(SELECTORS.join(','))).filter(
+      (n) => n && n.offsetWidth > 0
+    );
+    if (!nodes.length) return;
+
+    // Ensure labels exist
+    nodes.forEach(ensureLabel);
+
+    // Compute the best font for each label
+    const candidates = [];
+    nodes.forEach((container) => {
+      const label =
+        container.querySelector('.btn-label') || container.querySelector('.footer-email-text');
+      const csLabel = label ? window.getComputedStyle(label) : null;
+      const startPx = csLabel
+        ? parseFloat(csLabel.fontSize)
+        : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(CSS_LABEL_VAR)) ||
+          16;
+      const available = getAvailableWidth(container);
+      const best = findMaxFontForLabel(label, available, startPx);
+      candidates.push(best);
+    });
+
+    // Choose a single font-size for all buttons (minimum of candidates)
+    const globalPx = Math.max(cssMinFont(), Math.min(...candidates));
+
+    // Apply global size and final clamp/ellipsis
+    nodes.forEach((container) => {
+      const label =
+        container.querySelector('.btn-label') || container.querySelector('.footer-email-text');
+      if (!label) return;
+      const available = getAvailableWidth(container);
+      label.style.fontSize = globalPx + 'px';
+      label.style.maxWidth = available + 'px';
+      label.style.whiteSpace = 'nowrap';
+      label.style.overflow = 'hidden';
+      label.style.textOverflow = 'ellipsis';
+      // keep display as block so flex sizing works
+      label.style.display = 'block';
     });
   }
 
@@ -117,7 +131,6 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     adjustAll();
-    // sometimes fonts or images load later
     setTimeout(adjustAll, 300);
   });
 

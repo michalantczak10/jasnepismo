@@ -1579,7 +1579,12 @@ section:last-of-type {
   }
 }
 
-/* Icon and label spacing - unified sizes */
+/* Icon and label spacing - unified sizes and CSS vars */
+:root {
+  --button-label-font-size: 1.05rem;
+  --min-button-font-size: 12px;
+}
+
 .nav-emoji,
 .footer-emoji,
 .hero-cta .button-icon,
@@ -1589,7 +1594,7 @@ section:last-of-type {
   align-items: center;
   justify-content: center;
   font-size: 1.15rem; /* slightly smaller to save space */
-  margin-right: 0.35rem; /* reduced gap between icon and label */
+  margin-right: 0.25rem; /* reduced gap between icon and label */
   line-height: 1;
   vertical-align: middle;
 }
@@ -1599,15 +1604,23 @@ section:last-of-type {
 .footer-cta .btn-label,
 .hero-cta .footer-email-text,
 .footer-email-link .footer-email-text {
-  display: inline-block;
+  display: block;
   flex: 1 1 0;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1.05rem;
+  font-size: var(--button-label-font-size);
   font-weight: 800;
   line-height: 1.1;
+  text-align: center; /* keep label centered inside pill */
+}
+
+/* Keep pill content vertically centered and small gap */
+.hero-cta,
+.footer-cta {
+  align-items: center;
+  gap: 0.25rem; /* ensure small consistent gap */
 }
 
 /* Global responsive enhancements (2026-06-06)
