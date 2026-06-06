@@ -759,13 +759,13 @@ section:last-of-type {
 }
 @media (max-width: 879px) {
   .footer-cta {
-    width: 100%;
+    width: 100% !important;
     justify-content: center;
     box-sizing: border-box;
-    padding: 1.15rem 1.6rem;
-    border-radius: 28px;
-    font-size: 1.18rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    padding: 1.15rem 1.6rem !important;
+    border-radius: 28px !important;
+    font-size: 1.18rem !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
   }
   .footer-nav {
     width: 100%;
@@ -775,17 +775,20 @@ section:last-of-type {
     align-items: center;
   }
   .footer-nav a.hero-cta {
-    width: calc(100% - 48px);
-    max-width: 520px;
-    padding: 1rem 1.15rem;
-    font-size: 1.08rem;
-    border-radius: 28px;
-    background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
-    color: #111;
-    box-shadow: 0 20px 50px rgba(255, 190, 0, 0.12);
+    width: calc(100% - 48px) !important;
+    max-width: 520px !important;
+    padding: 1rem 1.15rem !important;
+    font-size: 1.08rem !important;
+    border-radius: 28px !important;
+    background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%) !important;
+    color: #111 !important;
+    box-shadow: 0 20px 50px rgba(255, 190, 0, 0.12) !important;
+    display: block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
   }
   .footer-contact-card {
-    width: calc(100% - 48px);
+    width: calc(100% - 48px) !important;
     max-width: none;
     padding: 1rem;
   }
@@ -818,13 +821,16 @@ section:last-of-type {
   .footer-cta.footer-email-link,
   .footer-email-link.cta-warm,
   .hero-cta.footer-cta {
-    width: calc(100% - 48px);
-    max-width: 520px;
-    background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
-    color: #fff;
-    padding: 1.15rem 1.4rem;
-    border-radius: 28px;
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
+    width: calc(100% - 48px) !important;
+    max-width: 520px !important;
+    background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
+    color: #fff !important;
+    padding: 1.15rem 1.4rem !important;
+    border-radius: 28px !important;
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18) !important;
+    display: block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
   }
 }
 @media (min-width: 880px) {
