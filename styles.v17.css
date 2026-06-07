@@ -821,15 +821,19 @@ section:last-of-type {
   .footer-cta.footer-email-link,
   .footer-email-link.cta-warm,
   .hero-cta.footer-cta {
-    width: calc(100% - 48px) !important;
-    max-width: 520px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    width: auto !important;
+    max-width: min(720px, 92%) !important;
+    box-sizing: border-box !important;
+    margin: 0.6rem auto !important;
+    padding: 0.9rem 1.6rem !important;
+    border-radius: 999px !important;
     background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
     color: #fff !important;
-    padding: 1.15rem 1.4rem !important;
-    border-radius: 28px !important;
     box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18) !important;
-    display: block !important;
-    margin: 0 auto !important;
     text-align: center !important;
   }
 }
@@ -907,15 +911,18 @@ section:last-of-type {
 /* Main-page CTA styles to match reference screenshot */
 .section--app .hero-cta.cta-warm,
 .legal-page .content-actions .hero-cta.cta-warm {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: nowrap !important;
   width: min(760px, 92%) !important;
   max-width: 860px !important;
-  display: block !important;
   margin: 0 auto 1.2rem !important;
-  padding: 1.25rem 2rem !important;
-  border-radius: 40px !important;
+  padding: 1.05rem 2.2rem !important;
+  border-radius: 999px !important;
   background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
   color: #fff !important;
-  font-size: clamp(1.1rem, 2vw, 1.3rem) !important;
+  font-size: clamp(1.05rem, 2vw, 1.25rem) !important;
   font-weight: 800 !important;
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24) !important;
   text-align: center !important;
