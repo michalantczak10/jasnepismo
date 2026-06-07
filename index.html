@@ -355,6 +355,89 @@
           </ul>
         </div>
       </section>
+
+      <section id="about-section" class="section fade-in" aria-labelledby="about-heading">
+        <div class="section-header">
+          <p class="section-tag">O nas</p>
+          <h2 id="about-heading">Dlaczego Jasne pismo?</h2>
+          <p class="section-intro">
+            Pomagamy zrozumieć oficjalne pisma prostym językiem i bez prawniczego żargonu.
+          </p>
+        </div>
+        <div class="content-block">
+          <p>
+            Jasne pismo to niezależny, przyjazny projekt, którego celem jest ułatwienie zrozumienia
+            oficjalnych pism i dokumentów. Wklej treść dokumentu, kliknij „Wyjaśnij”, a system
+            zwróci proste podsumowanie i praktyczne wskazówki.
+          </p>
+          <p>
+            Chcemy pomagać w sprawach codziennych — pismach urzędowych, spółdzielni, szkoły i innych
+            instytucji. To, co piszemy, to informacje i nie zastępują porady prawnika.
+          </p>
+        </div>
+      </section>
+
+      <section id="privacy-section" class="section fade-in" aria-labelledby="privacy-heading">
+        <div class="section-header">
+          <p class="section-tag">Polityka prywatności</p>
+          <h2 id="privacy-heading">Jak przetwarzamy dane</h2>
+          <p class="section-intro">
+            Używamy treści wyłącznie do przygotowania odpowiedzi i nie tworzymy historii dokumentów.
+          </p>
+        </div>
+        <div class="content-block">
+          <h3>W skrócie</h3>
+          <ul>
+            <li>Wklejony tekst służy tylko do wygenerowania wyjaśnienia.</li>
+            <li>Do wygenerowania odpowiedzi korzystamy z usług zewnętrznych (np. OpenAI).</li>
+            <li>Możemy utrzymywać krótkie logi techniczne do diagnostyki i bezpieczeństwa.</li>
+            <li>
+              Kontakt w sprawie danych:
+              <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+            </li>
+          </ul>
+          <h3>Podstawa i cel przetwarzania</h3>
+          <p>
+            Przetwarzanie odbywa się w celu wykonania usługi na żądanie użytkownika (art. 6 ust. 1
+            lit. b RODO), a dla logów technicznych na podstawie uzasadnionego interesu
+            administratora (art. 6 ust. 1 lit. f RODO).
+          </p>
+          <h3>Prawa użytkownika</h3>
+          <p>
+            Przysługuje Ci prawo dostępu, sprostowania, usunięcia, ograniczenia przetwarzania,
+            przenoszenia danych oraz wniesienia sprzeciwu.
+          </p>
+        </div>
+      </section>
+
+      <section id="terms-section" class="section fade-in" aria-labelledby="terms-heading">
+        <div class="section-header">
+          <p class="section-tag">Regulamin</p>
+          <h2 id="terms-heading">Zasady korzystania z serwisu</h2>
+          <p class="section-intro">
+            Usługa ma charakter informacyjny i nie zastępuje porady prawnej.
+          </p>
+        </div>
+        <div class="content-block">
+          <h3>Najważniejsze zasady</h3>
+          <ul>
+            <li>Serwis wyjaśnia treść pism urzędowych prostym językiem.</li>
+            <li>Wynik ma charakter informacyjny i może zawierać uproszczenia.</li>
+            <li>Nie przesyłaj danych szczególnie wrażliwych.</li>
+            <li>Korzystaj z serwisu zgodnie z prawem i dobrymi obyczajami.</li>
+          </ul>
+          <h3>Odpowiedzialność</h3>
+          <p>
+            Użytkownik korzysta z serwisu na własną odpowiedzialność. W razie wątpliwości należy
+            zweryfikować informacje w źródłowym piśmie lub skonsultować się ze specjalistą.
+          </p>
+          <h3>Kontakt</h3>
+          <p>
+            W sprawach dotyczących serwisu napisz na:
+            <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+          </p>
+        </div>
+      </section>
     </main>
     <footer class="site-footer" data-testid="site-footer">
       <div class="footer-inner">
@@ -403,13 +486,13 @@
         </div>
 
         <nav class="footer-nav" aria-label="Stopka">
-          <a href="about.html" class="hero-cta cta-warm" data-testid="link-about"
+          <a href="#about-section" class="hero-cta cta-warm" data-testid="link-about"
             ><span class="nav-emoji" aria-hidden="true">ℹ️</span> O nas</a
           >
-          <a href="privacy-policy.html" class="hero-cta cta-warm" data-testid="link-privacy"
+          <a href="#privacy-section" class="hero-cta cta-warm" data-testid="link-privacy"
             ><span class="nav-emoji" aria-hidden="true">🔒</span> Polityka prywatności</a
           >
-          <a href="terms.html" class="hero-cta cta-warm" data-testid="link-terms"
+          <a href="#terms-section" class="hero-cta cta-warm" data-testid="link-terms"
             ><span class="nav-emoji" aria-hidden="true">📜</span> Regulamin</a
           >
         </nav>
