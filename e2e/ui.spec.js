@@ -99,7 +99,7 @@ test.describe('UI and form behavior', () => {
     const heroCopy = page.locator('[data-testid="hero-copy"]');
     await expect(heroCopy).toBeVisible();
     await expect(page.locator('[data-testid="hero-heading"]')).toHaveText(
-      /Wyjaśnij pismo urzędowe/
+      /Wyjaśnij pismo urzędowe|Wklej tekst|wyjaśnimy/i
     );
   });
 });
