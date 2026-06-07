@@ -941,6 +941,42 @@ section:last-of-type {
 .site-footer .hero-cta.footer-cta,
 .site-footer .footer-email-link {
   width: min(640px, 92%) !important;
+}
+
+/* Main page form primary CTA: match footer/terms yellow pill */
+.form-actions .hero-cta.cta-warm,
+.form-actions button.hero-cta.cta-warm {
+  width: min(420px, 86%) !important;
+  max-width: 520px !important;
+  display: block !important;
+  margin: 0.9rem auto !important;
+  padding: 1rem 1.4rem !important;
+  border-radius: 36px !important;
+  background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
+  color: #111 !important;
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  text-align: center !important;
+}
+
+.form-actions .hero-cta.cta-warm .nav-emoji,
+.form-actions .hero-cta.cta-warm .button-icon {
+  background: #2f80ed !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 0.06rem 0.25rem !important;
+  font-size: 1rem !important;
+  margin-right: 0.6rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 1.6rem !important;
+  width: 1.6rem !important;
+}
+.site-footer .hero-cta.footer-cta,
+.site-footer .footer-email-link {
+  width: min(640px, 92%) !important;
   max-width: 720px !important;
   display: block !important;
   margin: 1rem auto !important;
