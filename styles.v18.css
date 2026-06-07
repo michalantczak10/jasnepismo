@@ -280,8 +280,8 @@ button[disabled],
 
 section {
   width: min(100%, 920px);
-  margin: 0 auto 24px;
-  padding: 38px 32px;
+  margin: 0 auto 16px;
+  padding: 28px 28px;
 }
 
 section:last-of-type {
@@ -313,7 +313,7 @@ section:last-of-type {
   max-width: 100%;
   overflow-x: hidden;
   position: relative;
-  padding: clamp(36px, 5vw, 56px) 0;
+  padding: clamp(24px, 4vw, 40px) 0;
   background: linear-gradient(180deg, #fff2b8 0%, #fff9e0 55%, #f9f1d4 100%);
 }
 
@@ -1848,7 +1848,7 @@ section:last-of-type {
     padding-inline: 12px;
   }
   .section {
-    padding: 30px 18px;
+    padding: 22px 16px;
   }
   .hero-actions {
     gap: 0.9rem;
@@ -1876,7 +1876,7 @@ section:last-of-type {
     padding: 14px;
   }
   .section {
-    padding: 22px 14px;
+    padding: 16px 12px;
   }
 }
 
