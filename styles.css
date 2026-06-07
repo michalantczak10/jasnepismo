@@ -904,6 +904,63 @@ section:last-of-type {
   line-height: 1.8;
 }
 
+/* Main-page CTA styles to match reference screenshot */
+.section--app .hero-cta.cta-warm,
+.legal-page .content-actions .hero-cta.cta-warm {
+  width: min(760px, 92%) !important;
+  max-width: 860px !important;
+  display: block !important;
+  margin: 0 auto 1.2rem !important;
+  padding: 1.25rem 2rem !important;
+  border-radius: 40px !important;
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
+  color: #fff !important;
+  font-size: clamp(1.1rem, 2vw, 1.3rem) !important;
+  font-weight: 800 !important;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24) !important;
+  text-align: center !important;
+}
+
+/* Yellow stacked buttons in the footer (centered pills) */
+.site-footer .footer-nav a.hero-cta {
+  width: min(420px, 86%) !important;
+  max-width: 520px !important;
+  display: block !important;
+  margin: 0.9rem auto !important;
+  padding: 1rem 1.4rem !important;
+  border-radius: 36px !important;
+  background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
+  color: #111 !important;
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  text-align: center !important;
+}
+
+/* Prominent red contact button styling */
+.site-footer .hero-cta.footer-cta,
+.site-footer .footer-email-link {
+  width: min(640px, 92%) !important;
+  max-width: 720px !important;
+  display: block !important;
+  margin: 1rem auto !important;
+  padding: 1.15rem 2rem !important;
+  border-radius: 40px !important;
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
+  color: #fff !important;
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25) !important;
+  text-align: center !important;
+}
+
+/* Slightly enlarge the emoji in contact CTA */
+.site-footer .footer-email-link .footer-emoji,
+.site-footer .hero-cta .footer-emoji {
+  font-size: 1.1rem !important;
+  margin-right: 0.6rem !important;
+}
+
 .content-actions {
   padding-bottom: 3rem;
 }
