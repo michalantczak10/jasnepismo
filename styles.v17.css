@@ -1908,8 +1908,8 @@ section:last-of-type {
 .section--app .form-actions .hero-cta,
 .section--app .file-upload-row button,
 .section--app .form-actions button {
-  width: min(420px, 86%) !important;
-  max-width: 520px !important;
+  width: 100% !important;
+  max-width: 100% !important;
   display: block !important;
   margin: 0.9rem auto !important;
   padding: 1rem 1.4rem !important;
@@ -1943,8 +1943,9 @@ section:last-of-type {
   align-items: center !important;
   justify-content: center !important;
   flex-wrap: wrap !important;
-  width: min(520px, calc(100% - 48px)) !important;
-  max-width: 520px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   min-height: 64px !important;
   padding: 0.95rem 1.2rem !important;
   border-radius: 999px !important;
@@ -1974,8 +1975,9 @@ section:last-of-type {
   align-items: center !important;
   justify-content: center !important;
   flex-wrap: wrap !important;
-  width: min(620px, calc(100% - 48px)) !important;
-  max-width: 620px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   min-height: 72px !important;
   padding: 1.05rem 1.4rem !important;
   border-radius: 999px !important;
@@ -1994,7 +1996,7 @@ section:last-of-type {
 
 @media (max-width: 560px) {
   .site-footer .footer-nav a.hero-cta {
-    width: calc(100% - 24px) !important;
+    width: 100% !important;
     max-width: none !important;
     min-height: 62px !important;
     font-size: 1rem !important;
@@ -2003,7 +2005,7 @@ section:last-of-type {
   }
 
   .site-footer .hero-cta.footer-cta {
-    width: calc(100% - 24px) !important;
+    width: 100% !important;
     max-width: none !important;
     min-height: 76px !important;
     padding: 0.95rem 1rem !important;
