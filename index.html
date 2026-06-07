@@ -80,7 +80,7 @@
       }
     </script>
 
-    <link rel="stylesheet" href="styles.v16.css" />
+    <link rel="stylesheet" href="styles.v17.css" />
     <style>
       /* Inline override: Homepage CTAs (highest priority) */
       /* Placed after external stylesheet to immediately override cached or CDN-served CSS */
@@ -452,6 +452,40 @@
     <script src="/scripts/button-fit.js" defer></script>
     <script src="https://unpkg.com/mammoth@1.4.17/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      // Hard enforce homepage CTA style in case stale stylesheet rules still win in some clients.
+      (function () {
+        const selectors = [
+          '#freeButton',
+          '#clearButton',
+          '#removeFileButton',
+          '#confirmClearButton',
+          '#cancelClearButton',
+          '.section--app .file-upload-button',
+        ];
+
+        function apply() {
+          const buttons = document.querySelectorAll(selectors.join(','));
+          buttons.forEach((el) => {
+            el.style.setProperty(
+              'background',
+              'linear-gradient(180deg,#ffda5c,#ffd000)',
+              'important'
+            );
+            el.style.setProperty('color', '#111', 'important');
+            el.style.setProperty('border', 'none', 'important');
+            el.style.setProperty('border-radius', '999px', 'important');
+            el.style.setProperty('box-shadow', '0 20px 40px rgba(0,0,0,0.12)', 'important');
+            el.style.setProperty('font-weight', '800', 'important');
+          });
+        }
+
+        document.addEventListener('DOMContentLoaded', apply);
+        window.addEventListener('load', apply);
+        setTimeout(apply, 350);
+        setTimeout(apply, 900);
+      })();
+    </script>
 
     <!-- application JS (moved out of index.html) -->
     <script defer src="scripts/app.js"></script>
