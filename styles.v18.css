@@ -289,7 +289,7 @@ section:last-of-type {
 }
 
 .section h2 {
-  margin: 0 0 24px;
+  margin: 0 0 16px;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   color: var(--color-primary);
   position: relative;
@@ -324,7 +324,7 @@ section:last-of-type {
 
 .section-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .about-grid {
@@ -912,7 +912,7 @@ section:last-of-type {
 .content-block {
   max-width: 840px;
   margin: 0 auto;
-  padding: 1.5rem 0 2.5rem;
+  padding: 0.75rem 0 1.75rem;
 }
 
 .content-block p {
