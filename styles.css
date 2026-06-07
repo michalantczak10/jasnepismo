@@ -957,8 +957,8 @@ section:last-of-type {
 /* Slightly enlarge the emoji in contact CTA */
 .site-footer .footer-email-link .footer-emoji,
 .site-footer .hero-cta .footer-emoji {
-  font-size: 1.1rem !important;
-  margin-right: 0.6rem !important;
+  font-size: 1.4rem !important;
+  margin-right: 0.75rem !important;
 }
 
 .content-actions {
@@ -1713,8 +1713,8 @@ section:last-of-type {
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem; /* slightly smaller to save space */
-  margin-right: 0.25rem; /* reduced gap between icon and label */
+  font-size: 1.4rem; /* increased for visibility */
+  margin-right: 0.6rem; /* increased gap between icon and label */
   line-height: 1;
   vertical-align: middle;
 }
