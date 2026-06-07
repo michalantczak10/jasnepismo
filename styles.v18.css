@@ -643,6 +643,10 @@ section:last-of-type {
   margin: 0.35rem 0 0;
 }
 
+.footer-contact-section-tag {
+  margin: 0 auto 0.65rem;
+}
+
 .footer-contact-title {
   margin: 0 0 0.35rem;
   color: var(--color-primary);
