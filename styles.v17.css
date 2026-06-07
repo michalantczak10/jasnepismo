@@ -1911,7 +1911,7 @@ section:last-of-type {
   width: 100% !important;
   max-width: 100% !important;
   display: block !important;
-  margin: 0.9rem auto !important;
+  margin: 0.45rem auto !important;
   padding: 1rem 1.4rem !important;
   border-radius: 36px !important;
   background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
@@ -1954,6 +1954,7 @@ section:last-of-type {
   font-size: 1.08rem !important;
   line-height: 1.2 !important;
   gap: 0.45rem !important;
+  margin: 0.3rem 0 !important;
 }
 
 .site-footer .footer-nav .nav-emoji,
@@ -1985,6 +1986,7 @@ section:last-of-type {
   text-align: center !important;
   line-height: 1.2 !important;
   gap: 0.45rem !important;
+  margin: 0.35rem 0 0 !important;
 }
 
 .site-footer .footer-nav a.hero-cta .btn-label,
