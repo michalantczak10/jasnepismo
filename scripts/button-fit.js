@@ -55,6 +55,7 @@
   function visibleButtons() {
     return Array.from(document.querySelectorAll(SELECTORS.join(','))).filter((el) => {
       try {
+        if (el.closest('.section--app')) return false;
         return el.offsetWidth > 0 && el.offsetHeight > 0 && getComputedStyle(el).display !== 'none';
       } catch (e) {
         return false;
@@ -135,6 +136,23 @@
   }
 
   function adjustAll() {
+    // Keep homepage form buttons fully controlled by CSS (no inline sizing from this script).
+    const homepageButtons = Array.from(
+      document.querySelectorAll(
+        '.section--app .hero-cta, .section--app button.hero-cta, .section--app .file-upload-button'
+      )
+    );
+    homepageButtons.forEach((btn) => {
+      btn.style.width = '';
+      const label =
+        btn.querySelector('.btn-label') || btn.querySelector('.footer-email-text') || btn;
+      label.style.fontSize = '';
+      label.style.whiteSpace = '';
+      label.style.overflow = '';
+      label.style.textOverflow = '';
+      label.style.display = '';
+    });
+
     const buttons = visibleButtons();
     if (!buttons.length) return;
 
