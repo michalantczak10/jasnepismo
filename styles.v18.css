@@ -2100,18 +2100,18 @@ button.hero-cta,
 @media (max-width: 560px) {
   .site-footer .footer-nav a.hero-cta,
   .site-footer .hero-cta.footer-cta {
-    width: calc(100% - 12px) !important;
+    width: calc(100% - 4px) !important;
     max-width: none !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
   .site-footer .footer-contact-card {
-    width: calc(100% - 12px) !important;
+    width: calc(100% - 4px) !important;
   }
 
   .site-footer .hero-cta.footer-cta {
-    width: calc(100% - 8px) !important;
+    width: calc(100% - 4px) !important;
     min-height: 48px !important;
     padding: 0.58rem 0.8rem !important;
     border-radius: 28px !important;
