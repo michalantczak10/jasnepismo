@@ -81,6 +81,45 @@
     </script>
 
     <link rel="stylesheet" href="styles.v16.css" />
+    <style>
+      /* Inline override: Homepage CTAs (highest priority) */
+      /* Placed after external stylesheet to immediately override cached or CDN-served CSS */
+      .section--app .hero-cta,
+      #freeButton,
+      .form-actions .hero-cta {
+        background: linear-gradient(180deg, #ffd54f, #ffcc33) !important;
+        color: #111 !important;
+        border: none !important;
+        border-radius: 999px !important;
+        padding: 12px 20px !important;
+        font-weight: 700 !important;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06) !important;
+        text-decoration: none !important;
+      }
+
+      /* Make emojis and icons inside CTAs larger */
+      .section--app .hero-cta .nav-emoji,
+      .section--app .hero-cta .button-icon,
+      #freeButton .nav-emoji,
+      .feature-emoji {
+        font-size: 1.25em !important;
+        vertical-align: middle !important;
+        margin-right: 8px !important;
+      }
+
+      /* Prevent button-fit.js inline widths from shrinking hero CTAs */
+      .section--app .hero-cta,
+      #freeButton {
+        width: auto !important;
+        min-width: 140px !important;
+      }
+
+      /* Tweak free button specifically */
+      #freeButton {
+        padding: 14px 24px !important;
+        font-size: 18px !important;
+      }
+    </style>
   </head>
   <body>
     <header class="hero" data-testid="header-hero">
