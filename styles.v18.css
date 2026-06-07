@@ -643,6 +643,15 @@ section:last-of-type {
   margin: 0.35rem 0 0;
 }
 
+.footer-contact-title {
+  margin: 0 0 0.35rem;
+  color: var(--color-primary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .footer-contact-card {
   display: flex;
   align-items: center;
