@@ -171,6 +171,7 @@
     </header>
     <main>
       <section
+        id="app-section"
         class="section section--app fade-in"
         aria-labelledby="app-heading"
         data-testid="section-app"
@@ -318,7 +319,35 @@
         </article>
       </section>
 
+      <section id="sections-nav" class="section fade-in" aria-labelledby="sections-nav-heading">
+        <div class="section-header">
+          <p class="section-tag">Nawigacja</p>
+          <h2 id="sections-nav-heading">Przejdź do sekcji</h2>
+        </div>
+        <nav class="footer-nav" aria-label="Nawigacja po sekcjach">
+          <a href="#app-section" class="hero-cta cta-warm"
+            ><span class="nav-emoji" aria-hidden="true">📝</span> Jak to działa</a
+          >
+          <a href="#info-section" class="hero-cta cta-warm"
+            ><span class="nav-emoji" aria-hidden="true">🔒</span> Bezpieczeństwo</a
+          >
+          <a href="#about-section" class="hero-cta cta-warm" data-testid="link-about"
+            ><span class="nav-emoji" aria-hidden="true">ℹ️</span> O nas</a
+          >
+          <a href="#privacy-section" class="hero-cta cta-warm" data-testid="link-privacy"
+            ><span class="nav-emoji" aria-hidden="true">🛡️</span> Polityka prywatności</a
+          >
+          <a href="#terms-section" class="hero-cta cta-warm" data-testid="link-terms"
+            ><span class="nav-emoji" aria-hidden="true">📜</span> Regulamin</a
+          >
+          <a href="#contact-section" class="hero-cta cta-warm"
+            ><span class="nav-emoji" aria-hidden="true">✉️</span> Kontakt</a
+          >
+        </nav>
+      </section>
+
       <section
+        id="info-section"
         class="section section--info product fade-in"
         aria-labelledby="info-heading"
         data-testid="section-info"
@@ -479,19 +508,7 @@
           </div>
         </div>
 
-        <nav class="footer-nav" aria-label="Stopka">
-          <a href="#about-section" class="hero-cta cta-warm" data-testid="link-about"
-            ><span class="nav-emoji" aria-hidden="true">ℹ️</span> O nas</a
-          >
-          <a href="#privacy-section" class="hero-cta cta-warm" data-testid="link-privacy"
-            ><span class="nav-emoji" aria-hidden="true">🔒</span> Polityka prywatności</a
-          >
-          <a href="#terms-section" class="hero-cta cta-warm" data-testid="link-terms"
-            ><span class="nav-emoji" aria-hidden="true">📜</span> Regulamin</a
-          >
-        </nav>
-
-        <address class="footer-contact">
+        <address id="contact-section" class="footer-contact">
           <p class="section-tag footer-contact-section-tag">Kontakt</p>
           <div class="footer-contact-card" role="region" aria-label="Kontakt">
             <p class="footer-contact-title">Napisz do nas</p>
@@ -510,8 +527,6 @@
             </div>
           </div>
         </address>
-
-        <p class="footer-legal">© 2026 Jasne pismo.</p>
       </div>
     </footer>
 
