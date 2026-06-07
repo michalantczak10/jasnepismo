@@ -1900,6 +1900,43 @@ section:last-of-type {
   width: 1.6rem !important;
 }
 
+/* Homepage: style all hero-cta inside .section--app to match legal/terms yellow pill */
+.section--app .hero-cta,
+.section--app .hero-cta.cta-warm,
+.section--app .file-upload-button,
+.section--app .file-upload-row .hero-cta,
+.section--app .form-actions .hero-cta,
+.section--app .file-upload-row button,
+.section--app .form-actions button {
+  width: min(420px, 86%) !important;
+  max-width: 520px !important;
+  display: block !important;
+  margin: 0.9rem auto !important;
+  padding: 1rem 1.4rem !important;
+  border-radius: 36px !important;
+  background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
+  color: #111 !important;
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  text-align: center !important;
+}
+
+.section--app .hero-cta .button-icon,
+.section--app .hero-cta .nav-emoji {
+  background: #2f80ed !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 0.06rem 0.25rem !important;
+  font-size: 1rem !important;
+  margin-right: 0.6rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 1.6rem !important;
+  width: 1.6rem !important;
+}
+
 /* Ensure images and svgs don't overflow */
 img,
 svg {
