@@ -319,6 +319,32 @@
       </section>
 
       <section
+        id="about-section"
+        class="section section--about fade-in"
+        aria-labelledby="about-heading"
+        data-testid="section-about"
+      >
+        <div class="section-header">
+          <p class="section-tag" data-testid="section-about-tag">O nas</p>
+          <h2 id="about-heading" data-testid="section-about-heading">Dlaczego Jasne pismo?</h2>
+          <p class="section-intro" data-testid="section-about-intro">
+            Pomagamy szybko zrozumieć oficjalne pisma prostym językiem i bez prawniczego żargonu.
+          </p>
+        </div>
+        <div class="content-block">
+          <p>
+            Jasne pismo to niezależny, przyjazny projekt, którego celem jest ułatwienie zrozumienia
+            oficjalnych pism i dokumentów. Wklej treść dokumentu, kliknij „Wyjaśnij”, a system
+            zwróci proste podsumowanie i praktyczne wskazówki.
+          </p>
+          <p>
+            Chcemy pomagać w sprawach codziennych — pismach urzędowych, spółdzielni, szkoły i innych
+            instytucji. To, co piszemy, to informacje — nie zastępują porady prawnika.
+          </p>
+        </div>
+      </section>
+
+      <section
         class="section section--info product fade-in"
         aria-labelledby="info-heading"
         data-testid="section-info"
@@ -432,7 +458,7 @@
         </div>
 
         <nav class="footer-nav" aria-label="Stopka">
-          <a href="about.html" class="hero-cta cta-warm" data-testid="link-about"
+          <a href="#about-section" class="hero-cta cta-warm" data-testid="link-about"
             ><span class="nav-emoji" aria-hidden="true">ℹ️</span> O nas</a
           >
           <a href="privacy-policy.html" class="hero-cta cta-warm" data-testid="link-privacy"
