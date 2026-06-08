@@ -122,7 +122,7 @@ Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są prz
 
 ### Zalecana wersja Node.js dla deweloperów
 
-Projekt działa z Node.js >=18 (zdefiniowane w `package.json`), ale rekomenduję używanie Node.js z rodziny 24.x — to wersja używana lokalnie podczas sprawdzania repozytorium (w moim środowisku: v24.14.0). Aby ułatwić zarządzanie wersją, dodałem plik `.nvmrc` z wartością `24`.
+Projekt działa z Node.js >=24 (zdefiniowane w `package.json`). Rekomenduję używanie Node.js z rodziny 24.x (np. v24.14.0). Aby ułatwić zarządzanie wersją, dodałem plik `.nvmrc` z wartością `24`.
 
 Przykładowe polecenia:
 

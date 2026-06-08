@@ -5,7 +5,7 @@ function getOpenAIApiKey() {
 }
 
 function getOpenAIModel() {
-  return process.env.OPENAI_MODEL || 'gpt-4o-mini';
+  return process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 }
 
 async function generateExplanation(text) {

@@ -410,6 +410,7 @@ section:last-of-type {
   white-space: nowrap;
 }
 
+.section-header > h2 + p,
 .section-intro {
   margin: 0 auto;
   max-width: 620px;
@@ -558,6 +559,7 @@ section:last-of-type {
   font-size: 0.96rem;
 }
 
+.footer-branding-text p + p,
 .footer-subtitle {
   margin: 0.35rem 0 0.9rem;
   color: rgba(17, 17, 17, 0.92);
@@ -747,6 +749,7 @@ section:last-of-type {
     text-align: center;
   }
   .footer-tagline,
+  .footer-branding-text p + p,
   .footer-subtitle {
     text-align: center;
   }
@@ -1748,6 +1751,7 @@ section:last-of-type {
 }
 
 @media (max-width: 760px) {
+  .hero-copy > h1 + p,
   .hero-subtitle {
     max-width: 42ch;
     margin: 0 auto;
@@ -2049,6 +2053,30 @@ section:last-of-type {
     font-size: 0.9rem !important;
     line-height: 1.12 !important;
   }
+}
+
+/* Keep one-line labels in the navigation section buttons */
+#sections-nav .footer-nav a.hero-cta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: clamp(0.96rem, 3.6vw, 1.05rem) !important;
+  gap: 0.35rem !important;
+}
+
+#sections-nav .footer-nav a.hero-cta .btn-label {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#sections-nav .footer-nav .nav-emoji {
+  flex: 0 0 auto !important;
+  margin-right: 0.3rem !important;
 }
 
 /* Final CTA icon+label alignment (global) */
