@@ -2,22 +2,7 @@ const openai = require('./openai');
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
-let redisClient = null;
-let usingRedis = false;
-if (process.env.REDIS_URL) {
-  try {
-    const Redis = require('ioredis');
-    redisClient = new Redis(process.env.REDIS_URL);
-    redisClient.on('error', (err) => console.warn('Redis error:', err && err.message));
-    usingRedis = true;
-    console.log('Rate limiting: using Redis at REDIS_URL');
-  } catch (err) {
-    console.warn(
-      'ioredis not available or failed to initialize, falling back to in-memory rate limiter'
-    );
-    usingRedis = false;
-  }
-}
+// Redis support removed — always use in-memory rate limiter
 
 // In-memory fallback
 const rateMap = new Map(); // clientKey => [timestamps]
@@ -34,21 +19,6 @@ function getClientKey(req) {
 
 async function checkRateLimit(clientKey) {
   if (!clientKey) return { ok: true };
-  if (usingRedis && redisClient) {
-    try {
-      const key = `rate:explain:${clientKey}`;
-      const ttlSeconds = Math.ceil(RATE_LIMIT_WINDOW_MS / 1000);
-      const count = await redisClient.incr(key);
-      if (count === 1) await redisClient.expire(key, ttlSeconds);
-      if (count > RATE_LIMIT_MAX) {
-        return { ok: false, retryAfter: ttlSeconds };
-      }
-      return { ok: true };
-    } catch (err) {
-      console.warn('Redis rate limit check failed, falling back to in-memory:', err && err.message);
-      // fallthrough to in-memory
-    }
-  }
 
   const now = Date.now();
   const windowStart = now - RATE_LIMIT_WINDOW_MS;
@@ -106,10 +76,8 @@ module.exports = async function handler(req, res) {
         .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.' });
     }
 
-    return res
-      .status(500)
-      .json({
-        error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
-      });
+    return res.status(500).json({
+      error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
+    });
   }
 };

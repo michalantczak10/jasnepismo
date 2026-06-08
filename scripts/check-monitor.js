@@ -80,20 +80,8 @@ function fetchJson(path) {
     console.log(`Environment: ${health.environment}`);
     console.log(`Model: ${health.model}`);
 
-    if (!process.env.MONITOR_ADMIN_TOKEN) {
-      // Local runs often don't have the secret set; don't fail the whole check
-      // just because usage info is unavailable. In CI the secret should be set
-      // and this branch will not run.
-      console.warn('MONITOR_ADMIN_TOKEN is not set — skipping /api/usage check (local run).');
-    } else {
-      console.log(`Checking ${targetUrl}/api/usage ...`);
-      const usage = await fetchJson('/api/usage');
-      if (usage.status !== 'ok') {
-        throw new Error(`Usage status not ok: ${JSON.stringify(usage)}`);
-      }
-      console.log('Usage check passed.');
-      console.log(`Usage data: ${JSON.stringify(usage.last_usage ?? 'none')}`);
-    }
+    // /api/usage endpoint removed — skip usage check
+    console.log('Skipping /api/usage check (endpoint removed).');
 
     process.exit(0);
   } catch (error) {

@@ -44,6 +44,5 @@ scripts/vendor/
 
 # Ignore local tool and model artifacts
 .MyOllamaEnhancer/
-.claude/
 .e2e_tmp/
 
