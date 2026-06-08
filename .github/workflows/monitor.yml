@@ -29,6 +29,4 @@ jobs:
         run: node ./scripts/check-monitor.js
         env:
           TARGET_URL: https://jasnepismo.pl
-          # Provide monitoring admin token from repository secrets so the monitor
-          # can call protected admin endpoints (should match server's ADMIN_API_TOKEN)
-          MONITOR_ADMIN_TOKEN: ${{ secrets.MONITOR_ADMIN_TOKEN }}
+          # Monitoring now only checks public endpoints (e.g. /api/health). MONITOR_ADMIN_TOKEN omitted.

@@ -90,18 +90,12 @@ Przykładowa odpowiedź z `/api/explain`:
 
 ## Wymagane zmienne środowiskowe
 
-- `OPENAI_API_KEY` — klucz OpenAI dla endpointu `/api/explain`.
+- `OPENAI_API_KEY` — klucz OpenAI wymagany do wywołań `/api/explain`.
 - `OPENAI_MODEL` — opcjonalnie, model OpenAI do użycia. Domyślnie `gpt-4.1-mini`.
   - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
   - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
-- `OPENAI_ADMIN_KEY` — adminowy klucz OpenAI wymagany do `/api/costs`. Może być inny niż `OPENAI_API_KEY`.
 
-### Dodatkowe zmienne administracyjne (opcjonalne)
-
-- `ADMIN_API_TOKEN` — token administracyjny wymagany do wywołań chronionych endpointów (`/api/usage`, `/api/costs`). Ustaw go jako sekret w Vercel oraz w innych środowiskach CI.
-- `MONITOR_ADMIN_TOKEN` — opcjonalny sekret używany przez skrypt monitorujący (`scripts/check-monitor.js`) i workflow `monitor.yml`. Jeśli chcesz, aby monitoring sprawdzał prywatne endpointy, ustaw tę wartość na ten sam token co `ADMIN_API_TOKEN`.
-
-Upewnij się, że powyższe tokeny nie są commitowane do repozytorium i są przechowywane bezpiecznie jako sekrety środowiskowe.
+Uwaga: administracyjne endpointy (`/api/usage`, `/api/costs`) zostały usunięte w uproszczonej wersji projektu. Jeśli chcesz przywrócić takie funkcje, skonfiguruj dodatkowe zmienne środowiskowe i odpowiednie zabezpieczenia, ale nie przechowuj ich w repozytorium jako jawnych wartości.
 
 ## Deployment on Vercel
 
