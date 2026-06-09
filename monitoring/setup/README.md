@@ -32,3 +32,36 @@ Notes
 - Gauges like jasnepismo_last_usage_* are useful for single-request diagnostics but not for cumulative sums.
 
 If you want, add the counter to /api/metrics now and I will add two Grafana panels and a comparison rule.
+
+Enable nightly snapshots via GitHub Actions
+
+1. Add repository secrets (Settings → Secrets & variables → Actions) or use gh CLI:
+   - METRICS_URL = https://your-host.example.com/api/metrics
+   - METRICS_TOKEN = <token> (optional)
+
+2. (Optional) Run the helper to set secrets using gh locally:
+   ./scripts/set-github-secrets.sh owner/repo "https://your-host.example.com/api/metrics" "<METRICS_TOKEN>"
+
+3. The workflow .github/workflows/snapshot-metrics.yml is configured to run daily and will upload artifacts with raw metrics text.
+
+Installing accurate estimator (tiktoken)
+
+- Try automated helper:
+  ./scripts/install-tiktoken.sh
+- If it fails, install according to https://github.com/openai/tiktoken for your platform and then set env USE_TIKTOKEN=1 in the service environment.
+
+Local snapshot and debug
+
+- Create an immediate snapshot locally:
+  node scripts/snapshot-tokens.js
+- Check current counters:
+  node -e "const o=require('../api/openai'); console.log(o.getTotalTokens(), o.getTheoreticalTokens(), o.getCompressedTokens())"
+
+Security
+
+- Keep METRICS_TOKEN secret; store it in Prometheus host as bearer_token_file as documented earlier.
+
+Notes on next steps
+
+- After secrets are in place the GitHub Action will collect /api/metrics daily and store artifacts. You can download artifacts from the Actions UI to inspect historical metrics.
+- If you want, I can also add a simple workflow that converts those raw metric files into JSON snapshots automatically (parse the text and extract counters). Ask and I'll add it.
