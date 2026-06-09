@@ -68,20 +68,21 @@ function fetchJson(path) {
 
 (async () => {
   try {
-    console.log(`Checking ${targetUrl}/api/health ...`);
-    const health = await fetchJson('/api/health');
+    console.log(`Checking ${targetUrl}/api/internal-health ...`);
+    const health = await fetchJson('/api/internal-health');
     if (health.status !== 'ok') {
       throw new Error(`Health status not ok: ${JSON.stringify(health)}`);
     }
     if (typeof health.uptime_seconds !== 'number') {
       throw new Error(`Health uptime_seconds is not a number: ${JSON.stringify(health)}`);
     }
-    console.log('Health check passed.');
-    console.log(`Environment: ${health.environment}`);
-    console.log(`Model: ${health.model}`);
+    if (!health.openai_api_key_present) {
+      throw new Error('OPENAI_API_KEY is missing on the server');
+    }
 
-    // /api/usage endpoint removed — skip usage check
-    console.log('Skipping /api/usage check (endpoint removed).');
+    console.log('Internal health check passed.');
+    console.log(`Environment: ${health.environment}`);
+    console.log(`OpenAI key present: ${health.openai_api_key_present}`);
 
     process.exit(0);
   } catch (error) {
