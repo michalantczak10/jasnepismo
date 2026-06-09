@@ -1,0 +1,38 @@
+name: Snapshot metrics
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # daily at 00:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for repo structure)
+        uses: actions/checkout@v4
+
+      - name: Fetch metrics
+        env:
+          METRICS_URL: ${{ secrets.METRICS_URL }}
+          METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: |
+          set -e
+          if [ -z "$METRICS_URL" ]; then echo "METRICS_URL not set, aborting"; exit 1; fi
+          AUTH_HEADER=""
+          if [ -n "$METRICS_TOKEN" ]; then AUTH_HEADER="-H 'Authorization: Bearer $METRICS_TOKEN'"; fi
+          mkdir -p monitoring/snapshots
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          # fetch and save
+          if [ -n "$METRICS_TOKEN" ]; then
+            curl -s -H "Authorization: Bearer $METRICS_TOKEN" "$METRICS_URL" -o "monitoring/snapshots/$TIMESTAMP.txt"
+          else
+            curl -s "$METRICS_URL" -o "monitoring/snapshots/$TIMESTAMP.txt"
+          fi
+          echo "Saved metrics to monitoring/snapshots/$TIMESTAMP.txt"
+
+      - name: Upload snapshot artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-snapshot-${{ github.run_id }}
+          path: monitoring/snapshots/
