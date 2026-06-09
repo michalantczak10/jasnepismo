@@ -14,25 +14,30 @@ function cacheGet(key) {
   const entry = cacheMap.get(key);
   if (!entry) {
     cacheMisses += 1;
+    console.info('[cache] miss', { key });
     return null;
   }
   if (Date.now() - entry.ts > CACHE_TTL_MS) {
     cacheMap.delete(key);
     cacheMisses += 1;
+    console.info('[cache] expired', { key });
     return null;
   }
   // refresh order
   cacheMap.delete(key);
   cacheMap.set(key, entry);
   cacheHits += 1;
+  console.info('[cache] hit', { key });
   return entry.value;
 }
 
 function cacheSet(key, value) {
   cacheMap.set(key, { value, ts: Date.now() });
+  console.info('[cache] set', { key, size: cacheMap.size });
   while (cacheMap.size > CACHE_MAX_ENTRIES) {
     const oldestKey = cacheMap.keys().next().value;
     cacheMap.delete(oldestKey);
+    console.info('[cache] evict', { evicted: oldestKey });
   }
 }
 
