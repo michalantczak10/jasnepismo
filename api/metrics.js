@@ -4,6 +4,17 @@ module.exports = function handler(req, res) {
     return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.' });
   }
 
+  // Optional protection: set METRICS_TOKEN in env to require a token for scraping
+  const METRICS_TOKEN = process.env.METRICS_TOKEN;
+  if (METRICS_TOKEN) {
+    const auth = req.headers && (req.headers.authorization || req.headers['x-metrics-token']);
+    if (!auth) return res.status(401).json({ error: 'Brak nagłówka autoryzacji.' });
+    let token = auth;
+    if (typeof token === 'string' && token.toLowerCase().startsWith('bearer '))
+      token = token.slice(7).trim();
+    if (token !== METRICS_TOKEN) return res.status(403).json({ error: 'Nieautoryzowany dostęp.' });
+  }
+
   try {
     const openai = require('./openai');
     const stats = typeof openai.getCacheStats === 'function' ? openai.getCacheStats() : {};
