@@ -12,20 +12,12 @@ jobs:
       - name: Checkout (for repo structure)
         uses: actions/checkout@v4
 
-      - name: Fetch metrics
+      - name: Fetch metrics (node)
         env:
           METRICS_URL: ${{ secrets.METRICS_URL }}
           METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
         run: |
-          set -euxo pipefail
-          if [ -z "\"$METRICS_URL\"" ] || [ "$METRICS_URL" = "" ]; then echo "METRICS_URL not set, aborting"; exit 1; fi
-          mkdir -p monitoring/snapshots
-          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          if [ -n "$METRICS_TOKEN" ]; then
-            curl -s -f -H "Authorization: Bearer $METRICS_TOKEN" "$METRICS_URL" -o "monitoring/snapshots/${TIMESTAMP}.txt"
-          else
-            curl -s -f "$METRICS_URL" -o "monitoring/snapshots/${TIMESTAMP}.txt"
-          fi
+          node scripts/fetch-metrics.js
 
       - name: Upload snapshot artifact
         uses: actions/upload-artifact@v4
