@@ -238,13 +238,40 @@ async function generateExplanation(text) {
     lastUsage = usage1;
   }
 
-  // Update cumulative tokens counter for monitoring (process-wide)
+  // Token estimations and counters
   try {
+    // Estimator: try tiktoken if enabled, else fallback heuristic
+    const estimateTokens = (txt) => {
+      try {
+        if (process.env.USE_TIKTOKEN && require.resolve('tiktoken')) {
+          const { encoding_for_model } = require('tiktoken');
+          const enc = encoding_for_model(getOpenAIModel());
+          const tokens = enc.encode(txt || '').length;
+          try { enc.free(); } catch(e){}
+          return tokens;
+        }
+      } catch (e) {
+        // ignore and fallback
+      }
+      return Math.max(1, Math.ceil(((txt || '') .length) / 4));
+    };
+
+    const originalEstimate = estimateTokens(text);
+    const compressedEstimate = estimateTokens(compressed);
+
+    // update theoretical and compressed counters (persisted)
+    global.__jasnepismo_theoretical_total = (global.__jasnepismo_theoretical_total || 0) + originalEstimate;
+    global.__jasnepismo_compressed_total = (global.__jasnepismo_compressed_total || 0) + compressedEstimate;
+
+    // update actual API counter
     if (lastUsage && typeof lastUsage.total_tokens === 'number') {
       global.__jasnepismo_tokens_total = (global.__jasnepismo_tokens_total || 0) + (lastUsage.total_tokens || 0);
     }
+
+    // persist totals to disk
+    persistTotals();
   } catch (e) {
-    // ignore counter errors
+    // ignore estimation errors
   }
 
   const result = { explanation, usage: lastUsage };
@@ -265,9 +292,19 @@ function getTotalTokens() {
   return global.__jasnepismo_tokens_total || 0;
 }
 
+function getTheoreticalTokens() {
+  return global.__jasnepismo_theoretical_total || 0;
+}
+
+function getCompressedTokens() {
+  return global.__jasnepismo_compressed_total || 0;
+}
+
 module.exports = {
   generateExplanation,
   getLastUsage,
   getCacheStats,
   getTotalTokens,
+  getTheoreticalTokens,
+  getCompressedTokens,
 };

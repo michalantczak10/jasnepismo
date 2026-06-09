@@ -55,8 +55,19 @@ module.exports = function handler(req, res) {
       lines.push('jasnepismo_last_usage_total_tokens ' + (lastUsage.total_tokens || 0));
     }
 
-    // Expose cumulative tokens counter if the application provides it
+    // Expose cumulative tokens counters if the application provides them
     const totalTokens = typeof openai.getTotalTokens === 'function' ? Number(openai.getTotalTokens()) : 0;
+    const theoretical = typeof openai.getTheoreticalTokens === 'function' ? Number(openai.getTheoreticalTokens()) : 0;
+    const compressedTotal = typeof openai.getCompressedTokens === 'function' ? Number(openai.getCompressedTokens()) : 0;
+
+    lines.push('# HELP jasnepismo_theoretical_tokens_total Theoretical tokens if prompts were not compressed');
+    lines.push('# TYPE jasnepismo_theoretical_tokens_total counter');
+    lines.push('jasnepismo_theoretical_tokens_total ' + (theoretical || 0));
+
+    lines.push('# HELP jasnepismo_compressed_tokens_total Tokens estimated for compressed prompts');
+    lines.push('# TYPE jasnepismo_compressed_tokens_total counter');
+    lines.push('jasnepismo_compressed_tokens_total ' + (compressedTotal || 0));
+
     lines.push('# HELP jasnepismo_tokens_total Cumulative tokens used');
     lines.push('# TYPE jasnepismo_tokens_total counter');
     lines.push('jasnepismo_tokens_total ' + (totalTokens || 0));
