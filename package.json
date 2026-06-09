@@ -1,40 +1,38 @@
-{
-  "name": "jasnepismo",
-  "version": "0.1.0",
-  "private": true,
-  "type": "commonjs",
-  "scripts": {
-    "test": "node --test",
-    "gen:sitemap": "node scripts/generate-sitemap.js",
-    "lint": "eslint . --ext .js,.cjs --config .eslintrc.cjs --cache",
-    "lint:fix": "eslint . --ext .js,.cjs --config .eslintrc.cjs --fix",
-    "format": "prettier --write .",
-    "ci": "npm run lint && npm test",
-    "prepare": "node scripts/prepare-husky.js",
-    "test:e2e": "playwright test"
-  },
-  "dependencies": {
-    "png-to-ico": "^3.0.1",
-    "sharp": "^0.34.5"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.60.0",
-    "eslint": "^8.48.0",
-    "eslint-config-prettier": "^10.1.8",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.0.5",
-    "prettier": "^3.8.3"
-  },
-  "lint-staged": {
-    "*.{js,cjs}": [
-      "eslint --config .eslintrc.cjs --fix",
-      "prettier --write"
-    ],
-    "*.{css,scss,md,html}": [
-      "prettier --write"
-    ]
-  },
-  "engines": {
-    "node": ">=24"
-  }
+﻿{
+    "name":  "jasnepismo",
+    "version":  "0.1.0",
+    "private":  true,
+    "type":  "commonjs",
+    "scripts":  {
+                    "test":  "node --test",
+                    "gen:sitemap":  "node scripts/generate-sitemap.js",
+                    "lint":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --cache",
+                    "lint:fix":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --fix",
+                    "format":  "prettier --write .",
+                    "ci":  "npm run lint \u0026\u0026 npm test",
+                    "prepare":  "node scripts/prepare-husky.js"
+                },
+    "dependencies":  {
+                         "png-to-ico":  "^3.0.1",
+                         "sharp":  "^0.34.5"
+                     },
+    "devDependencies":  {
+                            "eslint":  "^8.48.0",
+                            "eslint-config-prettier":  "^10.1.8",
+                            "husky":  "^9.1.7",
+                            "lint-staged":  "^17.0.5",
+                            "prettier":  "^3.8.3"
+                        },
+    "lint-staged":  {
+                        "*.{js,cjs}":  [
+                                           "eslint --config .eslintrc.cjs --fix",
+                                           "prettier --write"
+                                       ],
+                        "*.{css,scss,md,html}":  [
+                                                     "prettier --write"
+                                                 ]
+                    },
+    "engines":  {
+                    "node":  "\u003e=24"
+                }
 }
