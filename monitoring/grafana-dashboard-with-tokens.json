@@ -3,6 +3,16 @@
   "title": "JasnePismo - Token Metrics (Extended)",
   "schemaVersion": 27,
   "version": 1,
+  "annotations": {
+    "list": [
+      {
+        "name": "Optimization deployed",
+        "enabled": true,
+        "iconColor": "#7EB26D",
+        "text": "Optimization deployed at 2026-06-09T20:19:23+02:00"
+      }
+    ]
+  },
   "panels": [
     {
       "id": 1,
