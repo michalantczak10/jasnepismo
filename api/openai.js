@@ -1,5 +1,27 @@
 let lastUsage = null;
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+// File to persist cumulative token counter between restarts
+const TOKENS_FILE = path.join(__dirname, '..', 'monitoring', 'tokens_total.txt');
+
+// Load persisted total tokens if present
+try {
+  const existing = fs.readFileSync(TOKENS_FILE, 'utf8');
+  global.__jasnepismo_tokens_total = Number(existing) || 0;
+} catch (e) {
+  global.__jasnepismo_tokens_total = global.__jasnepismo_tokens_total || 0;
+}
+
+function persistTotalTokens() {
+  try {
+    fs.mkdirSync(path.dirname(TOKENS_FILE), { recursive: true });
+    fs.writeFileSync(TOKENS_FILE, String(global.__jasnepismo_tokens_total || 0), 'utf8');
+  } catch (e) {
+    console.warn('Failed to persist token total:', e && e.message ? e.message : e);
+  }
+}
 
 // Simple in-memory LRU cache
 const CACHE_MAX_ENTRIES = process.env.CACHE_MAX_ENTRIES
