@@ -216,6 +216,15 @@ async function generateExplanation(text) {
     lastUsage = usage1;
   }
 
+  // Update cumulative tokens counter for monitoring (process-wide)
+  try {
+    if (lastUsage && typeof lastUsage.total_tokens === 'number') {
+      global.__jasnepismo_tokens_total = (global.__jasnepismo_tokens_total || 0) + (lastUsage.total_tokens || 0);
+    }
+  } catch (e) {
+    // ignore counter errors
+  }
+
   const result = { explanation, usage: lastUsage };
   // Store in cache for future requests
   try {
@@ -230,8 +239,13 @@ function getLastUsage() {
   return lastUsage;
 }
 
+function getTotalTokens() {
+  return global.__jasnepismo_tokens_total || 0;
+}
+
 module.exports = {
   generateExplanation,
   getLastUsage,
   getCacheStats,
+  getTotalTokens,
 };

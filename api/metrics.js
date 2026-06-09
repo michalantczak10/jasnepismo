@@ -55,6 +55,12 @@ module.exports = function handler(req, res) {
       lines.push('jasnepismo_last_usage_total_tokens ' + (lastUsage.total_tokens || 0));
     }
 
+    // Expose cumulative tokens counter if the application provides it
+    const totalTokens = typeof openai.getTotalTokens === 'function' ? Number(openai.getTotalTokens()) : 0;
+    lines.push('# HELP jasnepismo_tokens_total Cumulative tokens used');
+    lines.push('# TYPE jasnepismo_tokens_total counter');
+    lines.push('jasnepismo_tokens_total ' + (totalTokens || 0));
+
     res.setHeader('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
     return res.status(200).end(lines.join('\n') + '\n');
   } catch (e) {
