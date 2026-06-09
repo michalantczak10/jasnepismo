@@ -1,4 +1,4 @@
-name: Snapshot metrics
+﻿name: Snapshot metrics
 
 on:
   schedule:
@@ -17,19 +17,15 @@ jobs:
           METRICS_URL: ${{ secrets.METRICS_URL }}
           METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
         run: |
-          set -e
-          if [ -z "$METRICS_URL" ]; then echo "METRICS_URL not set, aborting"; exit 1; fi
-          AUTH_HEADER=""
-          if [ -n "$METRICS_TOKEN" ]; then AUTH_HEADER="-H 'Authorization: Bearer $METRICS_TOKEN'"; fi
+          set -euxo pipefail
+          if [ -z "\"$METRICS_URL\"" ] || [ "$METRICS_URL" = "" ]; then echo "METRICS_URL not set, aborting"; exit 1; fi
           mkdir -p monitoring/snapshots
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          # fetch and save
           if [ -n "$METRICS_TOKEN" ]; then
-            curl -s -H "Authorization: Bearer $METRICS_TOKEN" "$METRICS_URL" -o "monitoring/snapshots/$TIMESTAMP.txt"
+            curl -s -f -H "Authorization: Bearer $METRICS_TOKEN" "$METRICS_URL" -o "monitoring/snapshots/${TIMESTAMP}.txt"
           else
-            curl -s "$METRICS_URL" -o "monitoring/snapshots/$TIMESTAMP.txt"
+            curl -s -f "$METRICS_URL" -o "monitoring/snapshots/${TIMESTAMP}.txt"
           fi
-          echo "Saved metrics to monitoring/snapshots/$TIMESTAMP.txt"
 
       - name: Upload snapshot artifact
         uses: actions/upload-artifact@v4
