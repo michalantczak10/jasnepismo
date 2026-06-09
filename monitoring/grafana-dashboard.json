@@ -1,0 +1,61 @@
+{
+  "uid": "jasnepismo-token-metrics",
+  "title": "JasnePismo - Token Metrics",
+  "schemaVersion": 27,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Cache hit rate (%)",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "(sum(rate(jasnepismo_cache_hits[5m])) / (sum(rate(jasnepismo_cache_hits[5m])) + sum(rate(jasnepismo_cache_misses[5m])))) * 100",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "Last request - total tokens",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 6 },
+      "targets": [
+        { "expr": "jasnepismo_last_usage_total_tokens", "refId": "A" }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Last request - prompt vs completion tokens",
+      "gridPos": { "x": 0, "y": 6, "w": 12, "h": 6 },
+      "targets": [
+        { "expr": "jasnepismo_last_usage_prompt_tokens", "refId": "A", "legendFormat": "prompt" },
+        { "expr": "jasnepismo_last_usage_completion_tokens", "refId": "B", "legendFormat": "completion" }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Cache size (items)",
+      "gridPos": { "x": 12, "y": 6, "w": 6, "h": 6 },
+      "targets": [
+        { "expr": "jasnepismo_cache_size", "refId": "A" }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Cache max entries",
+      "gridPos": { "x": 18, "y": 6, "w": 6, "h": 6 },
+      "targets": [
+        { "expr": "jasnepismo_cache_max_entries", "refId": "A" }
+      ]
+    }
+  ],
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "description": "Dashboard showing cache hit rate and token usage metrics exported by /api/metrics. If you want per-token metrics, expose token-labelled metrics from the application.",
+  "tags": ["jasnepismo","tokens","cache"]
+}
