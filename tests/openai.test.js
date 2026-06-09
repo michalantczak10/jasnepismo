@@ -19,10 +19,9 @@ describe('api/openai.js', () => {
   });
 
   it('throws when OPENAI_API_KEY is missing', async () => {
-    await assert.rejects(
-      openai.generateExplanation('Test'),
-      { message: 'Brak klucza OpenAI API na serwerze.' }
-    );
+    await assert.rejects(openai.generateExplanation('Test'), {
+      message: 'Brak klucza OpenAI API na serwerze.',
+    });
   });
 
   it('returns explanation and usage when OpenAI responds successfully', async () => {
@@ -32,12 +31,13 @@ describe('api/openai.js', () => {
       ok: true,
       json: async () => ({
         choices: [{ message: { content: 'Wyjaśnienie testowe.' } }],
-        usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
-      })
+        usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 },
+      }),
     });
 
     const result = await openai.generateExplanation('Przykładowy tekst');
     assert.equal(result.explanation, 'Wyjaśnienie testowe.');
-    assert.deepEqual(result.usage, { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 });
+    // Two-stage pipeline aggregates usage from both calls
+    assert.deepEqual(result.usage, { prompt_tokens: 2, completion_tokens: 4, total_tokens: 6 });
   });
 });
