@@ -82,10 +82,11 @@ async function main() {
     const beforeComp = readNum(COMP);
     const beforeAct = readNum(TOKENS);
 
+    let out = null;
     try {
-      const out = await openai.generateExplanation(s.text);
+      out = await openai.generateExplanation(s.text);
       // allow some time for persistence if needed
-      await new Promise((r) => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 100));
     } catch (e) {
       console.error('generateExplanation failed for', s.name, e && e.message ? e.message : e);
     }
@@ -111,6 +112,23 @@ async function main() {
       saved_vs_actual_pct: Number(savedVsActual.toFixed(2)),
     };
     results.push(row);
+
+    // write debug entry per-sample so live runs can be inspected
+    try {
+      const dbg = {
+        sample: s.name,
+        before: { theoretical: beforeTheo, compressed: beforeComp, actual: beforeAct },
+        after: { theoretical: afterTheo, compressed: afterComp, actual: afterAct },
+        delta: { theoretical: deltaTheo, compressed: deltaComp, actual: deltaAct },
+        saved_by_compression_pct: row.saved_by_compression_pct,
+        saved_vs_actual_pct: row.saved_vs_actual_pct,
+        api_response: out || null,
+        timestamp: new Date().toISOString(),
+      };
+      fs.appendFileSync(path.join(REPORTS, 'debug-log.jsonl'), JSON.stringify(dbg) + '\n', 'utf8');
+    } catch (e) {
+      console.warn('Failed to write debug log for', s.name, e && e.message ? e.message : e);
+    }
 
     console.log(`  theoretical: ${deltaTheo}, compressed: ${deltaComp}, actual: ${deltaAct}`);
   }
