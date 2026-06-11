@@ -46,6 +46,9 @@ jobs:
       - name: Aggregate reports
         run: node scripts/aggregate-reports.js
 
+      - name: Build summary from latest report
+        run: node scripts/report-summary.js
+
       - name: Upload token report artifacts
         uses: actions/upload-artifact@v4
         with:
