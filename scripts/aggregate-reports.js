@@ -7,17 +7,62 @@ const OUT_CSV = path.join(REPDIR, 'aggregate.csv');
 const OUT_SVG = path.join(REPDIR, 'aggregate.svg');
 const OUT_PNG = path.join(REPDIR, 'aggregate.png');
 
+const argv = process.argv.slice(2);
+let days = null; // last N days
+let fromDate = null;
+let toDate = null;
+for (let i = 0; i < argv.length; i++) {
+  const a = argv[i];
+  if (a === '--days' && argv[i+1]) { days = Number(argv[i+1]); i++; }
+  else if (a === '--from' && argv[i+1]) { fromDate = new Date(argv[i+1]); i++; }
+  else if (a === '--to' && argv[i+1]) { toDate = new Date(argv[i+1]); i++; }
+}
+if (days && !fromDate) {
+  toDate = toDate || new Date();
+  fromDate = new Date(toDate.getTime() - Math.max(0, days) * 24 * 3600 * 1000);
+}
+if (!fromDate && !toDate) {
+  // default to last 30 days
+  toDate = new Date();
+  fromDate = new Date(toDate.getTime() - 30 * 24 * 3600 * 1000);
+}
+
+function parseTimestampFromFilename(fname) {
+  const m = fname.match(/token-report-(.+)Z.json$/);
+  if (!m) return null;
+  const s = m[1]; // example: 2026-06-11T15-41-24-808
+  const parts = s.split('T');
+  if (parts.length !== 2) return null;
+  const date = parts[0];
+  const timeParts = parts[1].split('-');
+  const hh = timeParts[0] || '00';
+  const mm = timeParts[1] || '00';
+  const ss = timeParts[2] || '00';
+  const ms = timeParts.slice(3).join('') || '000';
+  const iso = `${date}T${hh.padStart(2,'0')}:${mm.padStart(2,'0')}:${ss.padStart(2,'0')}.${ms}Z`;
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? null : d;
+}
+
 function readReports() {
   if (!fs.existsSync(REPDIR)) return [];
   const files = fs.readdirSync(REPDIR).filter(f => f.endsWith('.json'));
-  return files.map(f => {
+  const items = files.map(f => {
     try {
       const json = JSON.parse(fs.readFileSync(path.join(REPDIR, f), 'utf8'));
-      const m = f.match(/token-report-(.+)Z.json$/);
-      const ts = m ? new Date(m[1].replace(/-/g, ':')) : null;
+      const ts = parseTimestampFromFilename(f) || fs.statSync(path.join(REPDIR,f)).mtime;
       return { file: f, ts: ts || null, data: json };
     } catch (e) { return null; }
   }).filter(Boolean).sort((a,b) => (a.ts && b.ts) ? a.ts - b.ts : 0);
+
+  // apply date filter
+  const filtered = items.filter(it => {
+    if (!it.ts) return false;
+    if (fromDate && it.ts < fromDate) return false;
+    if (toDate && it.ts > toDate) return false;
+    return true;
+  });
+  return filtered;
 }
 
 function pivot(reports) {
