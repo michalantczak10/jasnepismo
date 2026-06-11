@@ -27,14 +27,21 @@ jobs:
 
       - name: Run token report
         run: |
+          echo "Mode: ${{ github.event.inputs.mode }}"
           if [ "${{ github.event.inputs.mode }}" = "mock" ]; then
             npm run report:tokens:mock
           else
-            # requires OPENAI_API_KEY set in repository secrets
-            npm run report:tokens
+            # run live only when REPORT_OPENAI secret explicitly set to '1'
+            if [ "${{ secrets.REPORT_OPENAI }}" = "1" ]; then
+              npm run report:tokens
+            else
+              echo "REPORT_OPENAI not enabled; aborting live run. Set repository secret REPORT_OPENAI=1 to enable.";
+              exit 78
+            fi
           fi
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REPORT_OPENAI: ${{ secrets.REPORT_OPENAI }}
 
       - name: Upload token report artifacts
         uses: actions/upload-artifact@v4
