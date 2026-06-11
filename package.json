@@ -10,7 +10,9 @@
                     "lint:fix":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --fix",
                     "format":  "prettier --write .",
                     "ci":  "npm run lint \u0026\u0026 npm test",
-                    "prepare":  "node scripts/prepare-husky.js"
+                    "prepare":  "node scripts/prepare-husky.js",
+                    "report:tokens": "node scripts/token-report.js",
+                    "report:tokens:mock": "node scripts/token-report.js --mock"
                 },
     "dependencies":  {
                          "png-to-ico":  "^3.0.1",
