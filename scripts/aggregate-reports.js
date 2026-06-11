@@ -5,6 +5,7 @@ const path = require('path');
 const REPDIR = path.join(__dirname, '..', 'monitoring', 'reports');
 const OUT_CSV = path.join(REPDIR, 'aggregate.csv');
 const OUT_SVG = path.join(REPDIR, 'aggregate.svg');
+const OUT_PNG = path.join(REPDIR, 'aggregate.png');
 
 function readReports() {
   if (!fs.existsSync(REPDIR)) return [];
@@ -50,7 +51,7 @@ function writeCsv(pivoted) {
 
 function makeSimpleSvg(pivoted) {
   const { sampleList, rows } = pivoted;
-  if (!rows.length) return;
+  if (!rows.length) return null;
   const w = 800, h = 240, pad = 40;
   // build series for first sample only (keep simple)
   const key = sampleList[0];
@@ -65,14 +66,33 @@ function makeSimpleSvg(pivoted) {
   svg.push(`<text x="${pad}" y="${pad-8}" font-size="12" fill="#333">Series: ${key}</text>`);
   svg.push('</svg>');
   fs.writeFileSync(OUT_SVG, svg.join('\n'), 'utf8');
+  return OUT_SVG;
 }
 
-function main() {
+async function convertSvgToPng(svgPath, outPng) {
+  try {
+    const sharp = require('sharp');
+    const svgBuf = fs.readFileSync(svgPath);
+    await sharp(svgBuf).png().toFile(outPng);
+    return outPng;
+  } catch (e) {
+    console.warn('SVG->PNG conversion skipped (sharp missing or failed):', e && e.message ? e.message : e);
+    return null;
+  }
+}
+
+async function main() {
   const reports = readReports();
   const pivoted = pivot(reports);
   writeCsv(pivoted);
-  makeSimpleSvg(pivoted);
-  console.log('Wrote', OUT_CSV, 'and', OUT_SVG);
+  const svgPath = makeSimpleSvg(pivoted);
+  if (svgPath) {
+    const png = await convertSvgToPng(svgPath, OUT_PNG);
+    if (png) console.log('Wrote', OUT_CSV, OUT_SVG, OUT_PNG);
+    else console.log('Wrote', OUT_CSV, OUT_SVG);
+  } else {
+    console.log('Wrote', OUT_CSV);
+  }
 }
 
-main();
+main().catch(e => { console.error(e); process.exit(1); });
