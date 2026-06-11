@@ -46,11 +46,14 @@ function parseTimestampFromFilename(fname) {
 
 function readReports() {
   if (!fs.existsSync(REPDIR)) return [];
-  const files = fs.readdirSync(REPDIR).filter(f => f.endsWith('.json'));
+  // Only consider per-run token-report JSON files
+  const files = fs.readdirSync(REPDIR).filter(f => f.endsWith('.json') && f.startsWith('token-report-'));
   const items = files.map(f => {
     try {
       const json = JSON.parse(fs.readFileSync(path.join(REPDIR, f), 'utf8'));
       const ts = parseTimestampFromFilename(f) || fs.statSync(path.join(REPDIR,f)).mtime;
+      // Expect json to be an array of sample objects; skip if not
+      if (!Array.isArray(json)) return null;
       return { file: f, ts: ts || null, data: json };
     } catch (e) { return null; }
   }).filter(Boolean).sort((a,b) => (a.ts && b.ts) ? a.ts - b.ts : 0);
