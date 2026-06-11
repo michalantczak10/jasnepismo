@@ -3,23 +3,40 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-// File to persist cumulative token counter between restarts
-const TOKENS_FILE = path.join(__dirname, '..', 'monitoring', 'tokens_total.txt');
+// Files to persist cumulative token counters between restarts
+const TOKENS_DIR = path.join(__dirname, '..', 'monitoring');
+const TOKENS_FILE = path.join(TOKENS_DIR, 'tokens_total.txt');
+const THEORETICAL_FILE = path.join(TOKENS_DIR, 'theoretical_tokens_total.txt');
+const COMPRESSED_FILE = path.join(TOKENS_DIR, 'compressed_tokens_total.txt');
 
-// Load persisted total tokens if present
+// Load persisted totals if present
 try {
   const existing = fs.readFileSync(TOKENS_FILE, 'utf8');
   global.__jasnepismo_tokens_total = Number(existing) || 0;
 } catch (e) {
   global.__jasnepismo_tokens_total = global.__jasnepismo_tokens_total || 0;
 }
+try {
+  const existingT = fs.readFileSync(THEORETICAL_FILE, 'utf8');
+  global.__jasnepismo_theoretical_total = Number(existingT) || 0;
+} catch (e) {
+  global.__jasnepismo_theoretical_total = global.__jasnepismo_theoretical_total || 0;
+}
+try {
+  const existingC = fs.readFileSync(COMPRESSED_FILE, 'utf8');
+  global.__jasnepismo_compressed_total = Number(existingC) || 0;
+} catch (e) {
+  global.__jasnepismo_compressed_total = global.__jasnepismo_compressed_total || 0;
+}
 
-function persistTotalTokens() {
+function persistTotals() {
   try {
-    fs.mkdirSync(path.dirname(TOKENS_FILE), { recursive: true });
+    fs.mkdirSync(TOKENS_DIR, { recursive: true });
     fs.writeFileSync(TOKENS_FILE, String(global.__jasnepismo_tokens_total || 0), 'utf8');
+    fs.writeFileSync(THEORETICAL_FILE, String(global.__jasnepismo_theoretical_total || 0), 'utf8');
+    fs.writeFileSync(COMPRESSED_FILE, String(global.__jasnepismo_compressed_total || 0), 'utf8');
   } catch (e) {
-    console.warn('Failed to persist token total:', e && e.message ? e.message : e);
+    console.warn('Failed to persist token totals:', e && e.message ? e.message : e);
   }
 }
 
