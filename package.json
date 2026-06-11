@@ -15,7 +15,7 @@
     "dependencies":  {
                          "png-to-ico":  "^3.0.1",
                          "sharp":  "^0.34.5",
-                         "tiktoken": "^0.3.0"
+                         "tiktoken":  "^1.0.22"
                      },
     "devDependencies":  {
                             "eslint":  "^8.48.0",
