@@ -23,3 +23,23 @@ Uwaga: w trybie mock wartości są symulowane. W trybie live raportuje rzeczywis
 Rekomendacja:
 - Uruchamiaj analizę za pomocą --days 30 (ostatnie 30 dni) aby uzyskać stabilny obraz trendów.
 - Używaj trybu mock do testów CI i lokalnych sprawdzeń. Tryb live wymaga sekretu REPORT_OPENAI=1 i OPENAI_API_KEY i będzie zużywał tokeny.
+
+Automatyzacja (uruchamianie zdalne przy użyciu GitHub Actions lub gh CLI):
+
+- Ręczne wywołanie workflow (zalecane, używa sekretów repo):
+  - gh workflow run token-report.yml --ref main -f mode=live -f days=30
+  - gh run watch
+  - gh run list --workflow=token-report.yml
+  - gh run download <RUN-ID> -D ./monitoring/reports
+
+- Szybki skrypt (lokalny):
+  - PowerShell: .\scripts\trigger-token-report.ps1 -Mode live -Days 30
+  - Bash: ./scripts/trigger-token-report.sh live 30
+  - Skrypty preferują gh CLI; jeśli go nie ma, spróbują użyć GITHUB_TOKEN do wywołania REST API.
+
+- Gdy workflow zakończy, artefakty (monitoring/reports/*) zostaną załadowane i możesz pobrać je do lokalnego katalogu przez gh run download albo z interfejsu Actions.
+
+Bezpieczeństwo:
+- Live run zużywa tokeny. Włącz go tylko po ustawieniu repo secretów: OPENAI_API_KEY oraz REPORT_OPENAI=1.
+- Jeśli nie chcesz używać gh CLI, ustaw GITHUB_TOKEN (z prawami do uruchamiania workflow) i użyj skryptów fallback.
+
