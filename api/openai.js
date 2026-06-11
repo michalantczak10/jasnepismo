@@ -35,6 +35,20 @@ function persistTotals() {
     fs.writeFileSync(TOKENS_FILE, String(global.__jasnepismo_tokens_total || 0), 'utf8');
     fs.writeFileSync(THEORETICAL_FILE, String(global.__jasnepismo_theoretical_total || 0), 'utf8');
     fs.writeFileSync(COMPRESSED_FILE, String(global.__jasnepismo_compressed_total || 0), 'utf8');
+
+    // Append a small audit line to help debug persistence timing and values
+    try {
+      const audit = {
+        ts: new Date().toISOString(),
+        tokens_total: global.__jasnepismo_tokens_total || 0,
+        theoretical_total: global.__jasnepismo_theoretical_total || 0,
+        compressed_total: global.__jasnepismo_compressed_total || 0,
+      };
+      fs.appendFileSync(path.join(TOKENS_DIR, 'persist-log.jsonl'), JSON.stringify(audit) + '\n', 'utf8');
+      console.info('[persist] wrote totals', audit);
+    } catch (e) {
+      console.warn('[persist] audit write failed', e && e.message ? e.message : e);
+    }
   } catch (e) {
     console.warn('Failed to persist token totals:', e && e.message ? e.message : e);
   }
@@ -277,12 +291,33 @@ async function generateExplanation(text) {
     const compressedEstimate = estimateTokens(compressed);
 
     // update theoretical and compressed counters (persisted)
+    const before = {
+      theoretical: global.__jasnepismo_theoretical_total || 0,
+      compressed: global.__jasnepismo_compressed_total || 0,
+      actual: global.__jasnepismo_tokens_total || 0,
+    };
+
     global.__jasnepismo_theoretical_total = (global.__jasnepismo_theoretical_total || 0) + originalEstimate;
     global.__jasnepismo_compressed_total = (global.__jasnepismo_compressed_total || 0) + compressedEstimate;
 
     // update actual API counter
     if (lastUsage && typeof lastUsage.total_tokens === 'number') {
       global.__jasnepismo_tokens_total = (global.__jasnepismo_tokens_total || 0) + (lastUsage.total_tokens || 0);
+    }
+
+    const after = {
+      theoretical: global.__jasnepismo_theoretical_total,
+      compressed: global.__jasnepismo_compressed_total,
+      actual: global.__jasnepismo_tokens_total,
+    };
+
+    // Log a short audit to console and a debug file so live runs can be inspected
+    try {
+      const audit = { ts: new Date().toISOString(), sample: key.slice(0,8), originalEstimate, compressedEstimate, lastUsage: lastUsage || null, before, after };
+      console.info('[tokens] updating totals', audit);
+      fs.appendFileSync(path.join(TOKENS_DIR, 'update-log.jsonl'), JSON.stringify(audit) + '\n', 'utf8');
+    } catch (e) {
+      console.warn('Failed to write update-log:', e && e.message ? e.message : e);
     }
 
     // persist totals to disk
