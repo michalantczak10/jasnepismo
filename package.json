@@ -6,12 +6,9 @@
     "scripts":  {
                     "test":  "node --test",
                     "gen:sitemap":  "node scripts/generate-sitemap.js",
-                    "lint":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --cache",
-                    "lint:fix":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --fix",
-                    "format":  "prettier --write .",
-                    "ci":  "npm run lint \u0026\u0026 npm test",
-                    "prepare":  "node scripts/prepare-husky.js"
+                    "format":  "prettier --write ."
                 },
+
     "dependencies":  {
                          "png-to-ico":  "^3.0.1",
                          "sharp":  "^0.34.5"
