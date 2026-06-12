@@ -1,15 +1,17 @@
 ﻿:root {
-  --color-primary: #b30000;
-  --color-accent: #ffcc00;
-  --color-accent-strong: #f2c200;
+  --color-primary: #8b0000; /* darker red for stronger contrast */
+  --color-primary-contrast: #ffffff;
+  --color-accent: #ffb300; /* slightly deeper yellow */
+  --color-accent-strong: #f2a900;
   --color-accent-soft: #fff6cf;
   --color-accent-muted: #fffbea;
-  --color-accent-border: rgba(255, 196, 0, 0.45);
+  --color-accent-border: rgba(255, 179, 0, 0.45);
+  --color-accent-text: #111; /* text color when on accent background */
   --color-danger: #9b1d1d;
   --color-danger-soft: #fff5f5;
   --color-danger-border: rgba(179, 0, 0, 0.16);
   --color-bg: #fff;
-  --color-text: #222;
+  --color-text: #111; /* slightly darker for better readability */
   --radius: 22px;
   --radius-pill: 999px;
   --radius-card: 24px;
