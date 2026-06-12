@@ -15,8 +15,8 @@
   --radius-card: 24px;
   --control-width: min(420px, 100%);
   --button-width: var(--control-width);
-  --shadow-button: 0 14px 28px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.06);
-  --shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.10), 0 3px 8px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -505,10 +505,6 @@ section:last-of-type {
   margin: 0 auto;
 }
 
-.contact-card {
-  margin: 0 auto;
-  width: min(100%, 760px);
-}
 
 .footer-inner {
   width: min(100%, 920px);
@@ -624,13 +620,12 @@ section:last-of-type {
 }
 
 .hero-cta:focus-visible,
-.footer-cta:focus-visible {
-  outline: none;
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.16),
-    0 8px 16px rgba(0, 0, 0, 0.08),
-    0 0 0 3px rgba(255, 255, 255, 0.92),
-    0 0 0 6px rgba(0, 0, 0, 0.16);
+.footer-cta:focus-visible,
+a:focus-visible,
+.site-footer a:focus-visible {
+  outline: 3px solid rgba(242, 194, 0, 0.95);
+  outline-offset: 3px;
+  box-shadow: none;
   border-color: rgba(0, 0, 0, 0.06);
 }
 
@@ -756,6 +751,15 @@ section:last-of-type {
 /* make footer CTA full-width on small screens and add footer-art */
 .footer-art {
   display: none;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 @media (max-width: 879px) {
   .footer-cta {
