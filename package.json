@@ -10,14 +10,11 @@
                     "lint:fix":  "eslint . --ext .js,.cjs --config .eslintrc.cjs --fix",
                     "format":  "prettier --write .",
                     "ci":  "npm run lint \u0026\u0026 npm test",
-                    "prepare":  "node scripts/prepare-husky.js",
-                    "report:tokens": "node scripts/token-report.js",
-                    "report:tokens:mock": "node scripts/token-report.js --mock"
+                    "prepare":  "node scripts/prepare-husky.js"
                 },
     "dependencies":  {
                          "png-to-ico":  "^3.0.1",
-                         "sharp":  "^0.34.5",
-                         "tiktoken":  "^1.0.22"
+                         "sharp":  "^0.34.5"
                      },
     "devDependencies":  {
                             "eslint":  "^8.48.0",
