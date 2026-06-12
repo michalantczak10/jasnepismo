@@ -47,12 +47,19 @@ if (fs.existsSync(manifestPath)) {
   }
 
   if (manifest && Array.isArray(manifest.icons)) {
-    for (const icon of manifest.icons) {
+    for (let i = 0; i < manifest.icons.length; i++) {
+      const icon = manifest.icons[i];
       if (!icon.src) {
-        fail('icon entry in site.webmanifest is missing "src"');
+        fail(`icon at index ${i} in site.webmanifest is missing "src"`);
         continue;
       }
-      // src values start with '/' – strip the leading slash for path resolution
+      // Skip absolute URLs (e.g. https://…) – they point to external resources
+      // that cannot be validated against the local filesystem.
+      if (/^https?:\/\//i.test(icon.src)) {
+        continue;
+      }
+      // Relative or root-relative paths – strip any leading slash for
+      // resolution against the repository root.
       const iconFile = icon.src.replace(/^\/+/, '');
       const iconPath = path.join(repoRoot, iconFile);
       if (!fs.existsSync(iconPath)) {
