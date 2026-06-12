@@ -37,7 +37,7 @@ describe('api/openai.js', () => {
 
     const result = await openai.generateExplanation('Przykładowy tekst');
     assert.equal(result.explanation, 'Wyjaśnienie testowe.');
-    // Two-stage pipeline aggregates usage from both calls
-    assert.deepEqual(result.usage, { prompt_tokens: 2, completion_tokens: 4, total_tokens: 6 });
+    // Single-call pipeline now returns usage from the single request
+    assert.deepEqual(result.usage, { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 });
   });
 });
