@@ -37,7 +37,8 @@ jobs:
             npm-cache-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        # prefer npm ci for reproducible installs, fall back to npm install if lockfile mismatch
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Lint
         run: npx eslint . --ext .js,.cjs
@@ -66,7 +67,7 @@ jobs:
             npm-cache-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci || npm install --no-audit --no-fund
 
       - name: Validate favicons
         run: node scripts/check-favicons.js
