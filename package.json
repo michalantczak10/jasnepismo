@@ -11,7 +11,10 @@
 
     "dependencies":  {
                          "png-to-ico":  "^3.0.1",
-                         "sharp":  "^0.34.5"
+                         "sharp":  "^0.34.5",
+                         "formidable": "^3.0.0",
+                         "pdf-parse": "^1.1.1",
+                         "mammoth": "^1.4.19"
                      },
     "devDependencies":  {
                             "eslint":  "^8.48.0",

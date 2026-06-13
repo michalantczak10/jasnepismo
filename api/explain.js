@@ -2,6 +2,11 @@ const openai = require('./openai');
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
+const fs = require('fs');
+const formidable = require('formidable');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+
 // Redis support removed — always use in-memory rate limiter
 
 // In-memory fallback
@@ -31,6 +36,52 @@ async function checkRateLimit(clientKey) {
   return { ok: true };
 }
 
+function parseForm(req) {
+  return new Promise((resolve, reject) => {
+    const form = formidable({ multiples: false });
+    form.parse(req, (err, fields, files) => {
+      if (err) return reject(err);
+      resolve({ fields, files });
+    });
+  });
+}
+
+async function extractTextFromFile(file) {
+  if (!file) return '';
+  const filepath = file.filepath || file.path || file.file;
+  const name = file.originalFilename || file.name || '';
+  const type = (file.mimetype || file.type || '').toLowerCase();
+
+  const buffer = fs.readFileSync(filepath);
+
+  if (type.includes('pdf') || name.toLowerCase().endsWith('.pdf')) {
+    try {
+      const data = await pdfParse(buffer);
+      return data.text || '';
+    } catch (e) {
+      console.error('PDF parse error:', e);
+      return '';
+    }
+  }
+
+  if (name.toLowerCase().endsWith('.docx') || type.includes('word')) {
+    try {
+      const result = await mammoth.extractRawText({ buffer });
+      return result && result.value ? result.value : '';
+    } catch (e) {
+      console.error('Mammoth parse error:', e);
+      return '';
+    }
+  }
+
+  if (type === 'text/plain' || name.toLowerCase().endsWith('.txt')) {
+    return buffer.toString('utf8');
+  }
+
+  // Other types (images) are not handled server-side here
+  return '';
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -45,26 +96,42 @@ module.exports = async function handler(req, res) {
     return res.status(429).json({ error: 'Za dużo żądań. Spróbuj ponownie później.' });
   }
 
-  const { text } = req.body || {};
-  if (typeof text !== 'string' || !text.trim()) {
-    return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.' });
-  }
-
-  if (text.length > 5000) {
-    return res
-      .status(413)
-      .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
-  }
+  let text = '';
 
   try {
+    const contentType = (req.headers['content-type'] || req.headers['Content-Type'] || '').toLowerCase();
+
+    if (contentType.includes('multipart/form-data')) {
+      const { fields, files } = await parseForm(req);
+      text = (fields && fields.text) || '';
+
+      const file = files && (files.documentFile || files.file || Object.values(files)[0]);
+      if (!text && file) {
+        text = await extractTextFromFile(file);
+      }
+    } else {
+      // JSON body
+      const body = req.body || {};
+      text = body.text || '';
+    }
+
+    if (typeof text !== 'string' || !text.trim()) {
+      return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.' });
+    }
+
+    if (text.length > 5000) {
+      return res
+        .status(413)
+        .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
+    }
+
     const { explanation, usage } = await openai.generateExplanation(text.trim());
     return res.status(200).json({ explanation, usage });
   } catch (error) {
-    // Log full error on the server for debugging, but return a generic message to the client
     console.error('Error in /api/explain:', error);
 
     const isRateLimit =
-      error.message &&
+      error && error.message &&
       (error.message.includes('Too Many Requests') ||
         error.message.includes('rate limit') ||
         error.message.includes('429'));
