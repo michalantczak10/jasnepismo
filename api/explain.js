@@ -1,4 +1,4 @@
-const openai = require('./openai');
+const provider = process.env.USE_OLLAMA === 'true' ? require('./ollama') : require('./openai');
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
