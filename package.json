@@ -1,38 +1,38 @@
 {
-    "name":  "jasnepismo",
-    "version":  "0.1.0",
-    "private":  true,
-    "type":  "commonjs",
-    "scripts":  {
-                    "test":  "node --test",
-                    "gen:sitemap":  "node scripts/generate-sitemap.js",
-                    "format":  "prettier --write ."
-                },
-
-    "dependencies":  {
-                         "png-to-ico":  "^3.0.1",
-                         "sharp":  "^0.34.5",
-                         "formidable": "^3.0.0",
-                         "pdf-parse": "^1.1.1",
-                         "mammoth": "^1.4.19"
-                     },
-    "devDependencies":  {
-                            "eslint":  "^8.48.0",
-                            "eslint-config-prettier":  "^10.1.8",
-                            "husky":  "^9.1.7",
-                            "lint-staged":  "^17.0.5",
-                            "prettier":  "^3.8.3"
-                        },
-    "lint-staged":  {
-                        "*.{js,cjs}":  [
-                                           "eslint --config .eslintrc.cjs --fix",
-                                           "prettier --write"
-                                       ],
-                        "*.{css,scss,md,html}":  [
-                                                     "prettier --write"
-                                                 ]
-                    },
-    "engines":  {
-                    "node":  "\u003e=24"
-                }
+    "name": "jasnepismo",
+    "version": "0.1.0",
+    "private": true,
+    "type": "commonjs",
+    "scripts": {
+        "test": "node --test",
+        "gen:sitemap": "node scripts/generate-sitemap.js",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "formidable": "^3.0.0",
+        "mammoth": "^1.4.19",
+        "pdf-parse": "^1.1.1",
+        "png-to-ico": "^3.0.1",
+        "sharp": "^0.34.5",
+        "tesseract.js": "^7.0.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.48.0",
+        "eslint-config-prettier": "^10.1.8",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.0.5",
+        "prettier": "^3.8.3"
+    },
+    "lint-staged": {
+        "*.{js,cjs}": [
+            "eslint --config .eslintrc.cjs --fix",
+            "prettier --write"
+        ],
+        "*.{css,scss,md,html}": [
+            "prettier --write"
+        ]
+    },
+    "engines": {
+        "node": ">=24"
+    }
 }
