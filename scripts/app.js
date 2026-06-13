@@ -62,7 +62,45 @@
       errorMessage.hidden = true;
       resultCard.hidden = true;
       try {
-        const text = document.getElementById('documentText').value || '';
+        let text = document.getElementById('documentText').value || '';
+        // If a file is selected, try to extract text client-side
+        const f = fileInput && fileInput.files && fileInput.files[0];
+        if (f && !text.trim()) {
+          const type = (f.type || '').toLowerCase();
+          if (type.includes('pdf')) {
+            // PDF.js - extract text
+            const arrayBuffer = await f.arrayBuffer();
+            const loadingTask = window.pdfjsLib.getDocument({ data: arrayBuffer });
+            const pdf = await loadingTask.promise;
+            let full = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const content = await page.getTextContent();
+              const strings = content.items.map(i => i.str || i.text || '');
+              full += strings.join(' ') + '\n\n';
+            }
+            text = full.trim();
+          } else if (type.includes('word') || f.name.endsWith('.docx') || f.name.endsWith('.doc')) {
+            // mammoth for docx
+            const arrayBuffer = await f.arrayBuffer();
+            const result = await window.mammoth.extractRawText({ arrayBuffer });
+            text = (result && result.value) || '';
+          } else if (type.startsWith('image/') || f.name.match(/\.(png|jpe?g|tiff|bmp)$/i)) {
+            // tesseract for image OCR
+            const blobUrl = URL.createObjectURL(f);
+            const worker = Tesseract.createWorker({ logger: m => null });
+            await worker.load();
+            await worker.loadLanguage('eng');
+            await worker.initialize('eng');
+            const { data } = await worker.recognize(blobUrl);
+            text = (data && data.text) || '';
+            await worker.terminate();
+            URL.revokeObjectURL(blobUrl);
+          } else if (type === 'text/plain' || f.name.match(/\.(txt)$/i)) {
+            text = await f.text();
+          }
+        }
+
         const resp = await fetch('/api/explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
