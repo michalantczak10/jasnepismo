@@ -103,7 +103,8 @@ module.exports = async function handler(req, res) {
   let text = '';
 
   try {
-    const contentType = (req.headers['content-type'] || req.headers['Content-Type'] || '').toLowerCase();
+    const headers = req.headers || {};
+    const contentType = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
 
     if (contentType.includes('multipart/form-data')) {
       const { fields, files } = await parseForm(req);
@@ -120,7 +121,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (typeof text !== 'string' || !text.trim()) {
-      return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.' });
+      return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.' });
     }
 
     if (text.length > 5000) {
