@@ -6,11 +6,8 @@ const fs = require('fs');
 const formidable = require('formidable');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
-const { createWorker } = require('tesseract.js');
 
-// Toggle server-side OCR with env var ENABLE_SERVER_OCR=true
-const ENABLE_SERVER_OCR = String(process.env.ENABLE_SERVER_OCR || '').toLowerCase() === 'true';
-const TESSERACT_LANGS = (process.env.TESSERACT_LANGS || 'pol,eng').split(',').map((s) => s.trim()).filter(Boolean);
+// Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
 
 // Redis support removed — always use in-memory rate limiter
 
@@ -51,32 +48,7 @@ function parseForm(req) {
   });
 }
 
-async function ocrImageBuffer(buffer) {
-  if (!ENABLE_SERVER_OCR) return '';
-  const worker = createWorker({ logger: () => {} });
-  try {
-    await worker.load();
-    for (const lang of TESSERACT_LANGS) {
-      try {
-        await worker.loadLanguage(lang);
-        await worker.initialize(lang);
-        const { data } = await worker.recognize(buffer);
-        await worker.terminate();
-        return (data && data.text) || '';
-      } catch (e) {
-        console.error(`Tesseract (${lang}) recognition error:`, e);
-        // try next language
-      }
-    }
-    await worker.terminate();
-  } catch (e) {
-    console.error('Tesseract worker error:', e);
-    try {
-      await worker.terminate();
-    } catch (er) {}
-  }
-  return '';
-}
+
 
 async function extractTextFromFile(file) {
   if (!file) return '';
@@ -110,21 +82,7 @@ async function extractTextFromFile(file) {
     return buffer.toString('utf8');
   }
 
-  // Image handling — attempt server-side OCR if enabled
-  if (type.startsWith('image/') || name.match(/\.(jpe?g|png|tiff?|bmp|gif)$/i)) {
-    if (!ENABLE_SERVER_OCR) {
-      return '';
-    }
-    try {
-      const text = await ocrImageBuffer(buffer);
-      return text || '';
-    } catch (e) {
-      console.error('OCR error:', e);
-      return '';
-    }
-  }
-
-  // Other types not handled server-side
+  // Image handling not supported server-side in this configuration
   return '';
 }
 
