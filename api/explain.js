@@ -40,9 +40,27 @@ async function checkRateLimit(clientKey) {
   return { ok: true };
 }
 
+function makeForm(options) {
+  // support multiple formidable API shapes across versions
+  try {
+    if (typeof formidable === 'function') return formidable(options);
+    if (formidable && typeof formidable.formidable === 'function') return formidable.formidable(options);
+    if (formidable && typeof formidable.IncomingForm === 'function') return new formidable.IncomingForm(options);
+  } catch (e) {
+    // fallthrough
+  }
+  throw new Error('formidable library not available or has unexpected API shape');
+}
+
 function parseForm(req) {
   return new Promise((resolve, reject) => {
-    const form = formidable({ multiples: false });
+    let form;
+    try {
+      form = makeForm({ multiples: false });
+    } catch (e) {
+      return reject(e);
+    }
+    // Some form implementations (IncomingForm) may not support .parse returning files in same shape
     form.parse(req, (err, fields, files) => {
       if (err) return reject(err);
       resolve({ fields, files });
