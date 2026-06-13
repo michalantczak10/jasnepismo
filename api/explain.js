@@ -109,12 +109,26 @@ module.exports = async function handler(req, res) {
     const contentType = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
 
     if (contentType.includes('multipart/form-data')) {
-      const { fields, files } = await parseForm(req);
-      text = (fields && fields.text) || '';
+      // parse form safely and handle parse errors explicitly
+      let fields, files;
+      try {
+        const parsed = await parseForm(req);
+        fields = parsed.fields;
+        files = parsed.files;
+      } catch (e) {
+        console.error('Form parse error in /api/explain:', e && e.stack ? e.stack : e);
+        return res.status(400).json({ error: 'Nieprawidłowy format formularza. Upewnij się, że wysyłasz multipart/form-data.' });
+      }
 
+      text = (fields && fields.text) || '';
       const file = files && (files.documentFile || files.file || Object.values(files)[0]);
       if (!text && file) {
-        text = await extractTextFromFile(file);
+        try {
+          text = await extractTextFromFile(file);
+        } catch (e) {
+          console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
+          return res.status(400).json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
+        }
       }
     } else {
       // JSON body
