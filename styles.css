@@ -763,6 +763,24 @@ a:focus-visible,
     scroll-behavior: auto !important;
   }
 }
+
+/* Skip link for keyboard users */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  z-index: 9999;
+  transform: translateY(-120%);
+  transition: transform 0.18s ease;
+}
+.skip-link:focus {
+  transform: translateY(0%);
+  outline: 3px solid var(--color-accent);
+}
 @media (max-width: 879px) {
   .footer-cta {
     width: 100% !important;
