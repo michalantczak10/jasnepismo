@@ -1,0 +1,41 @@
+name: Set Vercel env (non-interactive)
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_id:
+        description: 'Vercel project id (project id, e.g., prj_xxx)'
+        required: true
+        type: string
+      model:
+        description: 'Fallback model name (e.g., gpt-3.5-turbo)'
+        required: false
+        default: 'gpt-3.5-turbo'
+
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add OPENAI_FALLBACK_MODEL via Vercel API
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo "Missing VERCEL_TOKEN secret. Create it in repository Settings → Secrets → Actions" >&2
+            exit 1
+          fi
+          PROJECT_ID="${{ github.event.inputs.project_id }}"
+          MODEL="${{ github.event.inputs.model }}"
+          echo "Adding OPENAI_FALLBACK_MODEL=$MODEL to project $PROJECT_ID"
+          API_URL="https://api.vercel.com/v9/projects/${PROJECT_ID}/env"
+          resp=$(curl -sS -X POST "$API_URL" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"key\":\"OPENAI_FALLBACK_MODEL\",\"value\":\"${MODEL}\",\"target\":[\"production\",\"preview\"],\"type\":\"encrypted\"}") || true
+          echo "$resp" | jq -C . || echo "$resp"
+          if echo "$resp" | grep -q 'error'; then
+            echo "Vercel API returned an error" >&2
+            exit 1
+          fi
+          echo "Success — variable set. Trigger a redeploy from Vercel dashboard or run 'vercel deploy --prod --confirm' locally."
