@@ -16,7 +16,16 @@ async function callOpenAI(body) {
     body: JSON.stringify(body),
   });
   const data = await resp.json();
-  if (!resp.ok) throw new Error(data.error?.message || 'Błąd połączenia z OpenAI.');
+  if (!resp.ok) {
+    const errMsg = data?.error?.message || data?.message || `Błąd połączenia z OpenAI: ${resp.status}`;
+    const err = new Error(errMsg);
+    // Detect organization verification error message and tag it so caller can respond appropriately
+    if (errMsg && errMsg.toLowerCase().includes('must be verified')) {
+      err.code = 'ORG_UNVERIFIED';
+    }
+    err.status = resp.status;
+    throw err;
+  }
   return data;
 }
 

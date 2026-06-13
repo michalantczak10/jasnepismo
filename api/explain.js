@@ -227,6 +227,14 @@ module.exports = async function handler(req, res) {
         .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.' });
     }
 
+    // Organization not verified error from OpenAI (common when using newer models)
+    if (error && error.code === 'ORG_UNVERIFIED') {
+      return res.status(403).json({
+        error:
+          'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.'
+      });
+    }
+
     return res.status(500).json({
       error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
     });
