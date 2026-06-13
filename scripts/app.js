@@ -90,8 +90,14 @@
             const blobUrl = URL.createObjectURL(f);
             const worker = Tesseract.createWorker({ logger: m => null });
             await worker.load();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
+            // Prefer Polish model, fallback to English
+            try {
+              await worker.loadLanguage('pol');
+              await worker.initialize('pol');
+            } catch (e) {
+              await worker.loadLanguage('eng');
+              await worker.initialize('eng');
+            }
             const { data } = await worker.recognize(blobUrl);
             text = (data && data.text) || '';
             await worker.terminate();
