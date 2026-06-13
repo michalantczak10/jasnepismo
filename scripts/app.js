@@ -101,6 +101,10 @@
           }
         }
 
+        if (!text || !text.trim()) {
+          throw new Error('Nie znaleziono tekstu w pliku ani w polu. Proszę wkleić tekst lub wybrać plik zawierający czytelny tekst.');
+        }
+
         const resp = await fetch('/api/explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
