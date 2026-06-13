@@ -1,4 +1,11 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('explainForm');
+  if (form) {
+    // prevent native form submission which can trigger a GET to /api/explain
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+    });
+  }
   const freeButton = document.getElementById('freeButton');
   const clearButton = document.getElementById('clearButton');
   const removeFileButton = document.getElementById('removeFileButton');
