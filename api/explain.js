@@ -1,4 +1,6 @@
-const provider = process.env.USE_OLLAMA === 'true' ? require('./ollama') : require('./openai');
+let openai = require('./openai');
+// allow tests or runtime to swap provider by mutating the exported module
+try { if (!openai) openai = require('./openai'); } catch (e) {}
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
