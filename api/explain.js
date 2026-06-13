@@ -70,15 +70,55 @@ function parseForm(req) {
 
 
 
-async function extractTextFromFile(file) {
-  if (!file) return '';
-  const filepath = file.filepath || file.path || file.file;
-  const name = file.originalFilename || file.name || '';
+async function extractTextFromFile(rawFile) {
+  if (!rawFile) return '';
+
+  // Handle array-of-files (some parsers return arrays)
+  const file = Array.isArray(rawFile) ? rawFile[0] : rawFile;
+
+  // Resolve common path/buffer fields across different multipart parsers
+  const pathCandidates = ['filepath', 'path', 'filePath', 'tempFilePath', 'tempFile'];
+  const name = file.originalFilename || file.name || file.filename || file.fileName || '';
   const type = (file.mimetype || file.type || '').toLowerCase();
 
-  const buffer = fs.readFileSync(filepath);
+  let buffer = null;
+  let filepath = null;
 
-  if (type.includes('pdf') || name.toLowerCase().endsWith('.pdf')) {
+  for (const k of pathCandidates) {
+    if (file[k]) {
+      filepath = file[k];
+      break;
+    }
+  }
+
+  // Some libs (busboy/multiparty) provide file.buffer or file.data
+  if (!filepath && (file.buffer || file.data)) {
+    buffer = file.buffer || file.data;
+    if (!Buffer.isBuffer(buffer)) buffer = Buffer.from(buffer);
+  }
+
+  // If we have a filepath, ensure it exists and read
+  if (filepath) {
+    try {
+      if (!fs.existsSync(filepath)) {
+        console.error('extractTextFromFile: filepath not found', filepath, 'file keys:', Object.keys(file));
+        return '';
+      }
+      buffer = fs.readFileSync(filepath);
+    } catch (e) {
+      console.error('extractTextFromFile read error:', e);
+      return '';
+    }
+  }
+
+  if (!buffer) {
+    console.error('extractTextFromFile: no buffer/path available', 'file keys:', Object.keys(file));
+    return '';
+  }
+
+  // Detect by extension first, then by MIME type
+  const lowerName = (name || '').toLowerCase();
+  if (type.includes('pdf') || lowerName.endsWith('.pdf')) {
     try {
       const data = await pdfParse(buffer);
       return data.text || '';
@@ -88,7 +128,7 @@ async function extractTextFromFile(file) {
     }
   }
 
-  if (name.toLowerCase().endsWith('.docx') || type.includes('word')) {
+  if (lowerName.endsWith('.docx') || type.includes('word')) {
     try {
       const result = await mammoth.extractRawText({ buffer });
       return result && result.value ? result.value : '';
@@ -98,11 +138,16 @@ async function extractTextFromFile(file) {
     }
   }
 
-  if (type === 'text/plain' || name.toLowerCase().endsWith('.txt')) {
-    return buffer.toString('utf8');
+  if (type === 'text/plain' || lowerName.endsWith('.txt')) {
+    try {
+      return buffer.toString('utf8');
+    } catch (e) {
+      console.error('Text decode error:', e);
+      return '';
+    }
   }
 
-  // Image handling not supported server-side in this configuration
+  // Other types not supported here
   return '';
 }
 
