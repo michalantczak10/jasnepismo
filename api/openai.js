@@ -32,20 +32,41 @@ async function callOpenAI(body) {
 async function generateExplanation(text) {
   if (!text || !text.trim()) throw new Error('Brak treści do przetworzenia.');
   const OPENAI_MODEL = getOpenAIModel();
-  const req = {
-    model: OPENAI_MODEL,
+  const FALLBACK_MODEL = process.env.OPENAI_FALLBACK_MODEL || '';
+
+  const makeReq = (model) => ({
+    model,
     messages: [
       { role: 'system', content: 'Jesteś asystentem, który tłumaczy pisma urzędowe na prosty język.' },
       { role: 'user', content: text.trim() },
     ],
     temperature: 0.2,
     max_tokens: 600,
-  };
+  });
 
-  const data = await callOpenAI(req);
-  const explanation = data.choices?.[0]?.message?.content?.trim();
-  lastUsage = data.usage || null;
-  return { explanation, usage: lastUsage };
+  // Try primary model first
+  try {
+    const data = await callOpenAI(makeReq(OPENAI_MODEL));
+    const explanation = data.choices?.[0]?.message?.content?.trim();
+    lastUsage = data.usage || null;
+    return { explanation, usage: lastUsage };
+  } catch (err) {
+    // If organization/permission error and fallback configured, try fallback
+    const isOrgUnverified = err && (err.code === 'ORG_UNVERIFIED' || (err.message && err.message.toLowerCase().includes('must be verified')) || err.status === 403);
+    if (isOrgUnverified && FALLBACK_MODEL && FALLBACK_MODEL !== OPENAI_MODEL) {
+      try {
+        const data2 = await callOpenAI(makeReq(FALLBACK_MODEL));
+        const explanation = data2.choices?.[0]?.message?.content?.trim();
+        lastUsage = data2.usage || null;
+        return { explanation, usage: lastUsage };
+      } catch (err2) {
+        // If fallback also fails, throw original error (for clearer messaging)
+        err2.original = err;
+        throw err2;
+      }
+    }
+    throw err;
+  }
 }
 
 function getLastUsage() { return lastUsage; }
