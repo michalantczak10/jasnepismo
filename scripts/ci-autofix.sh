@@ -30,11 +30,23 @@ unzip -q logs.zip -d logs || true
 
 echo "Scanning logs for known failure patterns..."
 PATTERN=""
+
 if grep -R --line-number -n "Unrecognized named-value: 'secrets'" logs >/dev/null 2>&1; then
-  PATTERN="secrets_expr"
+  PATTERN="${PATTERN:+$PATTERN,}secrets_expr"
 fi
 
-# Helper: create branch, commit, push and open PR using the GitHub API
+if grep -R --line-number -n -E "No browsers are installed|No browsers were installed|No browsers installed|Failed to launch|playwright.*No browsers" logs >/dev/null 2>&1; then
+  PATTERN="${PATTERN:+$PATTERN,}playwright_browsers"
+fi
+
+if grep -R --line-number -n -E "ERR! code ERESOLVE|ERR! ERESOLVE" logs >/dev/null 2>&1; then
+  PATTERN="${PATTERN:+$PATTERN,}npm_eresolve"
+fi
+
+if grep -R --line-number -n -E "ELIFECYCLE.*npm|npm ERR!.*ELIFECYCLE" logs >/dev/null 2>&1; then
+  PATTERN="${PATTERN:+$PATTERN,}npm_elifecycle"
+fi
+
 create_pr() {
   BRANCH="$1"
   TITLE="$2"
@@ -46,15 +58,20 @@ create_pr() {
   git commit -m "$TITLE" -m "Co-authored-by: CI Auto Fix <action@github.com>" || true
   git push --set-upstream origin "$BRANCH" || true
 
-  # Create PR via API
-  PAYLOAD=$(printf '{"title":"%s","head":"%s","base":"main","body":"%s"}' "${TITLE//"/\"}" "${BRANCH//"/\"}" "${BODY//"/\"}")
+  PAYLOAD=$(printf '{"title":"%s","head":"%s","base":"main","body":"%s"}' \
+    "$(echo "$TITLE" | sed 's/\"/\\\"/g')" \
+    "$(echo "$BRANCH" | sed 's/\"/\\\"/g')" \
+    "$(echo "$BODY" | sed 's/\"/\\\"/g')")
+
   curl -sS -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" -d "$PAYLOAD" "https://api.github.com/repos/${REPO}/pulls" || true
 }
 
-if [ "$PATTERN" = "secrets_expr" ]; then
+handled=false
+
+# secrets_expr fix
+if echo "$PATTERN" | grep -q "secrets_expr"; then
   echo "Detected 'secrets' conditional pattern. Attempting automated fix in .github/workflows/ci.yml"
   if [ -f ".github/workflows/ci.yml" ]; then
-    # Patch the file: replace if: ${{ secrets.VERCEL_TOKEN }} with a safer conditional
     python - <<'PY'
 from pathlib import Path
 p=Path('.github/workflows/ci.yml')
@@ -68,14 +85,9 @@ if old in s:
 else:
     print('no-change')
 PY
-
     if git status --porcelain | grep -q .; then
-      BRANCH="auto/ci-fix-secrets-${RUN_ID}"
-      TITLE="ci: auto-fix workflow secrets conditional"
-      BODY="Automated fix: replace secrets expression with safer env check. Triggered by failing workflow run ${RUN_ID}."
-      create_pr "$BRANCH" "$TITLE" "$BODY"
-      echo "Created branch and PR for fix."
-      exit 0
+      create_pr "auto/ci-fix-secrets-${RUN_ID}" "ci: auto-fix workflow secrets conditional" "Automated fix: replace secrets expression with safer env check. Triggered by failing workflow run ${RUN_ID}."
+      handled=true
     else
       echo "No changes made to workflow file."
     fi
@@ -84,15 +96,84 @@ PY
   fi
 fi
 
-# No automated fix applied: create an issue with a logs snippet to help triage
-SNIPPET=$(grep -R --line-number -n -E "error|exception|fail|fatal|unrecognized" logs || true)
-if [ -z "$SNIPPET" ]; then
-  SNIPPET=$(find logs -type f -exec tail -n 200 {} + | sed -n '1,400p')
+# playwright_browsers fix
+if echo "$PATTERN" | grep -q "playwright_browsers"; then
+  echo "Detected Playwright browsers failure. Attempting to add Playwright install step."
+  if [ -f ".github/workflows/ci.yml" ]; then
+    python - <<'PY'
+from pathlib import Path
+p=Path('.github/workflows/ci.yml')
+s=p.read_text()
+if 'npx playwright install' not in s:
+    old='      - name: Install dependencies\n        run: npm ci --silent'
+    new=old + '\n\n      - name: Install Playwright browsers\n        run: npx playwright install --with-deps'
+    if old in s:
+        s=s.replace(old, new)
+        p.write_text(s)
+        print('patched_playwright')
+    else:
+        # fallback: try to insert before Run Playwright e2e tests step
+        insert_at='      - name: Run Playwright e2e tests'
+        idx = s.find(insert_at)
+        if idx != -1:
+            s = s[:idx] + '\n\n      - name: Install Playwright browsers\n        run: npx playwright install --with-deps\n' + s[idx:]
+            p.write_text(s)
+            print('patched_playwright_fallback')
+        else:
+            print('no-match')
+else:
+    print('already_has_install')
+PY
+    if git status --porcelain | grep -q .; then
+      create_pr "auto/ci-add-playwright-install-${RUN_ID}" "ci: add Playwright browser install step" "Automated fix: add 'npx playwright install --with-deps' after dependencies install. Triggered by failing workflow run ${RUN_ID}."
+      handled=true
+    else
+      echo "No change (maybe workflow already had playwright install step)."
+    fi
+  else
+    echo ".github/workflows/ci.yml not found in checkout." >&2
+  fi
 fi
 
-BODY=$(printf "CI failed for run %s\n\nLogs snippet:\n\n```\n%s\n```\n\nPlease investigate." "$RUN_ID" "${SNIPPET}")
+# npm_eresolve fix
+if echo "$PATTERN" | grep -q "npm_eresolve"; then
+  echo "Detected npm ERESOLVE. Attempting to add legacy-peer-deps fallback to npm ci."
+  if [ -f ".github/workflows/ci.yml" ]; then
+    python - <<'PY'
+from pathlib import Path
+p=Path('.github/workflows/ci.yml')
+s=p.read_text()
+old='run: npm ci --silent'
+new='run: npm ci --silent || npm ci --silent --legacy-peer-deps'
+if old in s and '--legacy-peer-deps' not in s:
+    s=s.replace(old, new)
+    p.write_text(s)
+    print('patched_npm_legacy')
+else:
+    print('no-change')
+PY
+    if git status --porcelain | grep -q .; then
+      create_pr "auto/ci-npm-legacy-${RUN_ID}" "ci: add npm ci legacy-peer-deps fallback" "Automated fix: add 'npm ci --silent || npm ci --silent --legacy-peer-deps' to Install dependencies step to work around peer dependency resolution failures."
+      handled=true
+    else
+      echo "No changes made for npm."
+    fi
+  else
+    echo ".github/workflows/ci.yml not found in checkout." >&2
+  fi
+fi
 
-PAYLOAD=$(printf '{"title":"%s","body":"%s"}' "CI failed: run ${RUN_ID}" "${BODY//"/\"}")
-curl -sS -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" -d "$PAYLOAD" "https://api.github.com/repos/${REPO}/issues" || true
+# If we didn't handle anything, create issue with logs
+if [ "$handled" = false ]; then
+  SNIPPET=$(grep -R --line-number -n -E "error|exception|fail|fatal|unrecognized" logs || true)
+  if [ -z "$SNIPPET" ]; then
+    SNIPPET=$(find logs -type f -exec tail -n 200 {} + | sed -n '1,400p')
+  fi
 
-echo "Created issue with log snippet. Exiting." 
+  BODY=$(printf "CI failed for run %s\n\nLogs snippet:\n\n```\n%s\n```\n\nPlease investigate." "$RUN_ID" "${SNIPPET}")
+  PAYLOAD=$(printf '{"title":"%s","body":"%s"}' "CI failed: run ${RUN_ID}" "$(echo "$BODY" | sed 's/\"/\\\"/g')")
+  curl -sS -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" -d "$PAYLOAD" "https://api.github.com/repos/${REPO}/issues" || true
+
+  echo "Created issue with log snippet. Exiting."
+fi
+
