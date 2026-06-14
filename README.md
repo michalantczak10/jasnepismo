@@ -214,18 +214,21 @@ curl -X POST https://jasnepismo.pl/api/explain \
 
 Playwright tests cover the main page and interactive UI behaviors:
 
-- `e2e/index.spec.js` — basic page load and hero checks
-- `e2e/ui.spec.js` — form, modal and file input behavior
+- 	ests/e2e/index.spec.js — basic page load and hero checks
+- 	ests/e2e/ui.spec.js — form, modal and file input behavior
 
-Setup and run locally:
+Run them locally with:
 
-```bash
+`ash
 # install Playwright test runner and browsers (one-time)
 npm install -D @playwright/test
 npx playwright install
 
 # run e2e tests
 npm run test:e2e
-```
+`
 
-Note: CI runners must also install Playwright and its browser binaries before executing `npm run test:e2e`. Use `npx playwright install` in your workflow. 
+Unit tests are now in the specs/ folder and can be run with:
+`ash
+node --test ./specs
+`
