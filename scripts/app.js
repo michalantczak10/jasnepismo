@@ -183,6 +183,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await response.json();
         const resultText = document.getElementById('resultText');
         if (resultText) resultText.textContent = data.explanation || '';
+        // Show which model was used (if provided by backend)
+        const usedModelEl = document.getElementById('usedModel');
+        if (usedModelEl) {
+          const model = data && data.usedModel;
+          const fallback = data && data.usedFallback ? ' (fallback)' : '';
+          if (model) {
+            usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
+            usedModelEl.hidden = false;
+          } else {
+            usedModelEl.hidden = true;
+          }
+        }
         if (resultCard) resultCard.hidden = false;
         if (statusMessage) statusMessage.hidden = true;
       } catch (err) {
