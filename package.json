@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "test": "node --test ./specs",
+    "test": "node --test",
     "test:e2e": "npx playwright test",
     "gen:sitemap": "node scripts/generate-sitemap.js",
     "format": "prettier --write ."
