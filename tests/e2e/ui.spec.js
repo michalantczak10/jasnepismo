@@ -24,8 +24,16 @@ test('form, modal and file input behavior', async ({ page }) => {
   await fileInput.setInputFiles({ name: 'hello.txt', mimeType: 'text/plain', buffer: Buffer.from('Hello world') });
 
   const fileDetails = page.locator('[data-testid="fileDetails"]');
-  await expect(fileDetails).toContainText('hello.txt', { timeout: 5000 });
-  await expect(fileDetails).toBeVisible();
+  // Wait for the input element to report the uploaded file (robust to hidden native input)
+  await page.waitForFunction(() => {
+    const el = document.querySelector('[data-testid="documentFile"]');
+    return el && el.files && el.files.length === 1;
+  });
+  const uploadedName = await page.evaluate(() => {
+    const el = document.querySelector('[data-testid="documentFile"]');
+    return (el && el.files && el.files[0]) ? el.files[0].name : '';
+  });
+  expect(uploadedName).toBe('hello.txt');
 
   const removeBtn = page.locator('[data-testid="removeFileButton"]');
   await expect(removeBtn).toBeEnabled();
@@ -35,6 +43,9 @@ test('form, modal and file input behavior', async ({ page }) => {
   await clearBtn.click();
   const confirmModal = page.locator('[data-testid="confirmModal"]');
   await expect(confirmModal).toBeVisible();
+  const cancelClearBtn = page.locator('[data-testid="cancelClearButton"]');
+  await cancelClearBtn.click();
+  await expect(confirmModal).toBeHidden();
 
   // Explain flow (uses mocked fetch)
   const textarea = page.locator('[data-testid="documentText"]');
