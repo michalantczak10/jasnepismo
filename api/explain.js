@@ -184,8 +184,15 @@ module.exports = async function handler(req, res) {
       }
 
       text = (fields && fields.text) || '';
+      // Normalize field types (some parsers return arrays)
+      if (Array.isArray(text)) {
+        text = text.join('\n');
+      } else if (typeof text === 'object' && text !== null) {
+        text = String(text);
+      }
       const file = files && (files.documentFile || files.file || Object.values(files)[0]);
-      if (!text && file) {
+      // If text is empty or whitespace, prefer extracting from file when available
+      if ((!text || !String(text).trim()) && file) {
         try {
           text = await extractTextFromFile(file);
         } catch (e) {
