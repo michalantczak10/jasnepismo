@@ -237,6 +237,11 @@ module.exports = async function handler(req, res) {
       text = body.text || '';
     }
 
+    const extractOnly = headers && (headers['x-extract-only'] || headers['X-Extract-Only']);
+    if (extractOnly) {
+      return res.status(200).json({ extractedText: text || '' });
+    }
+
     if (typeof text !== 'string' || !text.trim()) {
       return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.' });
     }

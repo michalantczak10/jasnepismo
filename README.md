@@ -11,17 +11,134 @@ Prosta aplikacja webowa do wyjaśniania pism urzędowych z wykorzystaniem AI. Um
 - `apple-touch-icon.png`, `site.webmanifest`, `robots.txt`, `sitemap.xml` — pliki statyczne serwowane z katalogu głównego
 - `.gitignore` — reguły Git
 
-## Jak używać
+## Jak używać (szczegółowo)
 
 1. Otwórz wdrożoną stronę (np. na Vercel) albo uruchom projekt lokalnie.
-2. Wklej treść dokumentu lub prześlij plik (obraz/PDF/DOC/DOCX/DOTX/ODT/RTF/TXT).
-3. Kliknij przycisk "Wyjaśnij".
-4. Otrzymasz proste wyjaśnienie oraz sugestie kolejnych kroków.
-5. Możesz pobrać wyjaśnienie jako plik tekstowy.
+2. Wklej treść dokumentu w pole tekstowe u góry lub prześlij plik (obsługiwane: PDF, DOCX/DOC/DOTX, ODT, RTF, TXT, obrazy JPG/PNG/GIF).
+3. Po wybraniu pliku aplikacja spróbuje automatycznie wczytać jego treść i wstawić ją do pola tekstowego:
+   - Pliki tekstowe (.txt, .rtf, .md, .csv oraz mime typu text/*) są odczytywane w przeglądarce i natychmiast wstawiane do pola tekstowego.
+   - Dla PDF/DOCX/obrazów wysyłane jest żądanie wyodrębnienia (serwer albo zewnętrzny worker); po zakończeniu wynik jest wstawiany do pola tekstowego.
+4. Zweryfikuj/edytuj treść w polu tekstowym (max 5000 znaków).
+5. Kliknij przycisk "Wyjaśnij" — serwer użyje zawartości pola tekstowego (jeśli istnieje) lub pliku (jeśli nie ma tekstu) do wygenerowania wyjaśnienia.
+6. Wynik pojawi się w sekcji wyników; dodatkowo backend zwróci statystyki zużycia tokenów oraz informację, którego modelu użyto (pola `usedModel` i `usedFallback`).
 
-## Uwagi
+## Zasady i uwagi ważne dla działania
 
-Ten projekt teraz obsługuje prostą wersję backendu na Vercel i przetwarzanie obrazów OCR w przeglądarce.
+- Frontend zawsze priorytetowo używa zawartości pola tekstowego (documentText) do wysłania do `/api/explain`. Jeśli pole jest puste i przesłano plik, backend najpierw wyodrębni tekst z pliku i użyje go do wyjaśnienia.
+- Klient korzysta z mechanizmu "extract-only" przy wczytywaniu pliku: wysyła plik do `/api/explain` z nagłówkiem `X-Extract-Only: 1` aby otrzymać tylko wyodrębniony tekst (pole `extractedText`).
+- Limit długości tekstu wysyłanego do modelu to 5000 znaków (frontend pokazuje aktualną długość w elemencie textCount).
+- Jeśli użyty model zwróci błąd związany z weryfikacją organizacji, serwer automatycznie spróbuje fallbacku (`OPENAI_FALLBACK_MODEL` lub `gpt-3.5-turbo`) i zwróci pole `usedFallback: true` w odpowiedzi.
+
+## Referencja UI (elementy, testy, klasy)
+
+Poniżej lista elementów DOM, ich id / data-testid oraz przeznaczenie — przydatne przy odtwarzaniu wyglądu i funkcjonalności:
+
+- Pole główne: textarea
+  - id: `documentText`
+  - data-testid: `documentText`
+  - Opis: tu wklejasz lub automatycznie wstawiana jest treść z pliku; maxlength wyświetlany w `textCount`.
+
+- Licznik znaków:
+  - id: `textCount`
+  - data-testid: `textCount`
+  - Wyświetla: "<aktualna> / 5000 znaków".
+
+- Input pliku:
+  - element: `<input type="file">`
+  - id: `documentFile`
+  - data-testid: `documentFile`
+  - class: `file-upload-input`
+  - Dodatkowy widoczny przycisk label: class `file-upload-button` (label for="documentFile").
+
+- Szczegóły pliku (nazwa + rozmiar):
+  - element: `<p>`
+  - id: `fileDetails`
+  - data-testid: `fileDetails`
+  - class: `field-note file-details`
+  - Hidden gdy brak pliku.
+
+- Usuń plik:
+  - `<button>` id: `removeFileButton`, data-testid: `removeFileButton`, class: `hero-cta hero-cta-secondary file-clear-button`
+  - Domyślnie `disabled` — staje się aktywny po wczytaniu pliku.
+
+- Wyczyść tekst:
+  - `<button>` id: `clearButton`, data-testid: `clearButton`, class: `hero-cta hero-cta-secondary` — otwiera modal potwierdzenia.
+
+- Modal potwierdzenia:
+  - id: `confirmModal`, data-testid: `confirmModal` — zawiera `confirmClearButton` (potwierdza) i `cancelClearButton` (anuluje).
+
+- Przycisk wyjaśnienia:
+  - `<button>` id: `freeButton`, data-testid: `freeButton`, class: `hero-cta cta-warm` — uruchamia żądanie do `/api/explain`.
+
+- Komunikaty statusu i błędów:
+  - `statusMessage` — pokazywany podczas wysyłania/wczytywania pliku.
+  - `errorMessage` — wyświetla komunikaty błędów po stronie klienta/serwera.
+
+- Wynik:
+  - `resultCard` — główny kontener karty z wynikiem.
+  - `resultText` (data-testid `resultText`) — treść wygenerowanego wyjaśnienia.
+
+- Style istotne przy odtworzeniu wyglądu:
+  - `hero-cta`, `hero-cta-secondary`, `cta-warm` — przyciski akcji
+  - `field-note` / `file-details` — drobne notatki i metadane pod polem.
+
+## Mechanika po stronie klienta (scripts/app.js)
+
+Plik: `scripts/app.js` — odpowiada za:
+- Zapobieganie domyślnemu submitowi formularza.
+- Obsługę zmiany inputu pliku: wstępne pokazanie nazwy pliku, odczyt treści pliku (lokalnie lub przez serwer), wstawienie treści do `documentText`, aktywacja przycisku "Usuń plik".
+- Obsługę kliknięcia "Usuń plik" — czyści input i szczegóły pliku.
+- Obsługę przycisku "Wyczyść" i modala potwierdzającego.
+- Obsługę przycisku "Wyjaśnij" — wysyła zawartość pola (preferowane) lub pliku w formData do `/api/explain`, odbiera odpowiedź i wyświetla `explanation` w `resultText` oraz `usage` i dodatkowe pola `usedModel` / `usedFallback`.
+
+Jeżeli chcesz przywrócić frontend w razie awarii, sprawdź czy plik `scripts/app.js` istnieje i czy w `index.html` znajduje się tag `<script defer src="scripts/app.js?v=...">`.
+
+## Mechanika po stronie serwera (api/)
+
+Główne endpointy:
+- `POST /api/explain` — obsługuje dwa tryby:
+  1. Normalny: przyjmuje `text` w JSON albo formData (`text` + optional `file`) i zwraca obiekt: `{ explanation, usage, usedModel, usedFallback }`.
+  2. Extract-only: jeśli żądanie zawiera nagłówek `X-Extract-Only: 1` i przesłano plik, serwer zwraca `{ extractedText }` i nie wywołuje OpenAI.
+
+- Ekstrakcja plików: wykonywana serwerowo przy użyciu bibliotek `pdf-parse` (PDF), `mammoth` (DOCX), lub prostego odczytu plików tekstowych. Jeżeli wyodrębniona treść jest pusta i `OCR_WORKER_URL` jest ustawione, plik zostanie przesłany do zewnętrznego worker'a OCR (endpoint `/process`), a odpowiedź worker'a może zawierać pole `text` lub `result.text`.
+
+- OpenAI helper (`api/openai.js`): łączy się z OpenAI Chat Completions (endpoint `/v1/chat/completions`) i zapisuje statystyki użycia tokenów. Implementuje heurystykę wykrywania błędów weryfikacji organizacji i automatyczny fallback do `OPENAI_FALLBACK_MODEL` (domyślnie `gpt-3.5-turbo`).
+
+- Ochrona i ograniczenia:
+  - Rate limit per client: 10 żądań na minutę (in-memory fallback); endpoint zwraca 429 przy przekroczeniu.
+  - Limit długości tekstu: 5000 znaków (413 Payload Too Large jeśli przekroczony).
+
+## Zmienne środowiskowe (pełna lista)
+
+- `OPENAI_API_KEY` (wymagane) — klucz API OpenAI.
+- `OPENAI_MODEL` (opcjonalne) — preferowany model (np. `gpt-4.1-mini`, `gpt-4o`, `gpt-3.5-turbo`).
+- `OPENAI_FALLBACK_MODEL` (opcjonalne, domyślnie `gpt-3.5-turbo`) — model do użycia gdy główny model zwraca błąd związany z weryfikacją organizacji.
+- `OPENAI_ADMIN_KEY` — (opcjonalne) klucz organizacji do pobierania kosztów `/api/costs`.
+- `ADMIN_API_TOKEN` — token do autoryzacji endpointów administracyjnych (`/api/costs`).
+- `OCR_WORKER_URL` — URL zewnętrznego serwisu OCR (np. `https://.../process`).
+
+## Przywracanie serwisu (krok po kroku)
+
+1. Sklonuj repo: `git clone ... && cd jasnepismo`.
+2. Zainstaluj zależności: `npm install`.
+3. Sprawdź `index.html` ma poprawne id/data-testid (patrz sekcja Referencja UI).
+4. Upewnij się, że `scripts/app.js` istnieje i zawiera obsługę eventów (jeśli brakuje, odtwórz z repoż historii Git — commit zawiera wersję, np. `git show <commit>:scripts/app.js`).
+5. Uruchom testy jednostkowe: `npm test`.
+6. Jeśli e2e są potrzebne: `npm run test:e2e` (upewnij się, że Playwright ma zainstalowane przeglądarki `npx playwright install --with-deps`).
+7. Przy wdrożeniu na Vercel ustaw zmienne środowiskowe według listy powyżej i zdeployuj (Vercel automatycznie obsłuży pliki w `api/`).
+
+## Testy i CI
+
+- Testy jednostkowe: Node.js Test Runner (`node --test`) — pliki w `specs/`.
+- Testy e2e: Playwright (`tests/e2e`) — skrypt `npm run test:e2e`.
+- CI: `.github/workflows/ci.yml` — instaluje zależności, uruchamia `npm test`, instaluje Playwright browsers (`npx playwright install --with-deps`) i uruchamia e2e.
+
+---
+
+Jeżeli chcesz, mogę teraz:
+- Zaktualizować frontend aby wyświetlał komunikat "Wyjaśnienie wygenerowane przy użyciu <model>" (pole `usedModel`),
+- Dodać endpoint `POST /api/extract` zamiast nagłówka X-Extract-Only (jeśli wolisz oddzielny endpoint),
+- Dodać bardziej rozbudowany opis wizualny (kolory, fonty, spacing) — powiedz co dokładnie potrzeba.
 
 ## Uruchomienie z API
 

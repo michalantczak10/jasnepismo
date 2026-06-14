@@ -32,12 +32,62 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   if (fileInput && fileDetails && removeFileButton) {
-    fileInput.addEventListener('change', function () {
+    fileInput.addEventListener('change', async function () {
       const f = fileInput.files && fileInput.files[0];
       if (f) {
         fileDetails.hidden = false;
         fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
         removeFileButton.disabled = false;
+
+        // Try to populate textarea with file contents.
+        const textareaEl = document.getElementById('documentText');
+        const textCountEl = document.getElementById('textCount');
+        function updateTextCount(val) {
+          if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znaków`;
+        }
+
+        const lowerName = f.name ? f.name.toLowerCase() : '';
+        if ((f.type && f.type.startsWith('text/')) || lowerName.endsWith('.txt') || lowerName.endsWith('.rtf') || lowerName.endsWith('.md') || lowerName.endsWith('.csv')) {
+          const reader = new FileReader();
+          reader.addEventListener('load', function (ev) {
+            const content = ev.target.result || '';
+            if (textareaEl) textareaEl.value = content;
+            updateTextCount(content);
+          });
+          reader.readAsText(f, 'utf-8');
+        } else {
+          // Fallback: ask server to extract text and return it (without generating explanation)
+          if (statusMessage) {
+            statusMessage.hidden = false;
+            statusMessage.textContent = 'Wczytywanie pliku…';
+          }
+          try {
+            const formData = new FormData();
+            formData.append('file', f, f.name);
+            const resp = await fetch('/api/explain', { method: 'POST', headers: { 'X-Extract-Only': '1' }, body: formData });
+            if (resp.ok) {
+              const json = await resp.json().catch(() => null);
+              const extracted = (json && (json.extractedText || json.text)) || '';
+              if (textareaEl && extracted) {
+                textareaEl.value = extracted;
+                updateTextCount(extracted);
+              }
+            } else {
+              const errJson = await resp.json().catch(() => null);
+              if (errorMessage) {
+                errorMessage.hidden = false;
+                errorMessage.textContent = (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
+              }
+            }
+          } catch (e) {
+            if (errorMessage) {
+              errorMessage.hidden = false;
+              errorMessage.textContent = 'Błąd wczytywania pliku.';
+            }
+          } finally {
+            if (statusMessage) statusMessage.hidden = true;
+          }
+        }
       } else {
         fileDetails.hidden = true;
         fileDetails.textContent = '';
