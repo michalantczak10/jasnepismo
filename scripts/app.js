@@ -16,6 +16,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const statusMessage = document.getElementById('statusMessage');
   const errorMessage = document.getElementById('errorMessage');
 
+  let extractInProgress = false;
+
+  function updateTextCount(val) {
+    const textCountEl = document.getElementById('textCount');
+    if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znaków`;
+  }
+
+  function updateFreeButtonState() {
+    const ta = document.getElementById('documentText');
+    const hasText = ta && ta.value && ta.value.trim().length > 0;
+    if (freeButton) freeButton.disabled = extractInProgress || !hasText;
+    if (clearButton) clearButton.disabled = extractInProgress;
+  }
+
   function setLoading(isLoading) {
     if (!freeButton) return;
     freeButton.disabled = isLoading;
@@ -34,6 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
   if (fileInput && fileDetails && removeFileButton) {
     fileInput.addEventListener('change', async function () {
       const f = fileInput.files && fileInput.files[0];
+      // when file selection starts, mark extraction in progress and update button state
+      extractInProgress = false; // reset then set if needed
+      updateFreeButtonState();
+
       if (f) {
         fileDetails.hidden = false;
         fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
@@ -41,22 +59,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Try to populate textarea with file contents.
         const textareaEl = document.getElementById('documentText');
-        const textCountEl = document.getElementById('textCount');
-        function updateTextCount(val) {
-          if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znaków`;
-        }
 
         const lowerName = f.name ? f.name.toLowerCase() : '';
         if ((f.type && f.type.startsWith('text/')) || lowerName.endsWith('.txt') || lowerName.endsWith('.rtf') || lowerName.endsWith('.md') || lowerName.endsWith('.csv')) {
           const reader = new FileReader();
+          extractInProgress = true;
+          updateFreeButtonState();
+          if (statusMessage) {
+            statusMessage.hidden = false;
+            statusMessage.textContent = 'Wczytywanie pliku…';
+          }
           reader.addEventListener('load', function (ev) {
             const content = ev.target.result || '';
             if (textareaEl) textareaEl.value = content;
             updateTextCount(content);
+            extractInProgress = false;
+            if (statusMessage) statusMessage.hidden = true;
+            updateFreeButtonState();
           });
           reader.readAsText(f, 'utf-8');
         } else {
           // Fallback: ask server to extract text and return it (without generating explanation)
+          extractInProgress = true;
+          updateFreeButtonState();
           if (statusMessage) {
             statusMessage.hidden = false;
             statusMessage.textContent = 'Wczytywanie pliku…';
@@ -71,6 +96,12 @@ document.addEventListener('DOMContentLoaded', function () {
               if (textareaEl && extracted) {
                 textareaEl.value = extracted;
                 updateTextCount(extracted);
+                if (errorMessage) { errorMessage.hidden = true; errorMessage.textContent = ''; }
+              } else {
+                if (errorMessage) {
+                  errorMessage.hidden = false;
+                  errorMessage.textContent = 'Nie udało się automatycznie wczytać tekstu z pliku. Jeśli to skan, włącz OCR (OCR_WORKER_URL) lub wpisz tekst ręcznie.';
+                }
               }
             } else {
               const errJson = await resp.json().catch(() => null);
@@ -85,13 +116,16 @@ document.addEventListener('DOMContentLoaded', function () {
               errorMessage.textContent = 'Błąd wczytywania pliku.';
             }
           } finally {
+            extractInProgress = false;
             if (statusMessage) statusMessage.hidden = true;
+            updateFreeButtonState();
           }
         }
       } else {
         fileDetails.hidden = true;
         fileDetails.textContent = '';
         removeFileButton.disabled = true;
+        updateFreeButtonState();
       }
     });
   }
@@ -104,6 +138,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fileDetails.textContent = '';
       }
       removeFileButton.disabled = true;
+      // Update UI state after removing file
+      updateFreeButtonState();
     });
   }
 
@@ -116,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const confirmClearButton = document.getElementById('confirmClearButton');
   const cancelClearButton = document.getElementById('cancelClearButton');
-  const textarea = document.getElementById('documentText');
 
   if (confirmClearButton) {
     confirmClearButton.addEventListener('click', function () {
@@ -127,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function () {
         fileDetails.textContent = '';
       }
       if (removeFileButton) removeFileButton.disabled = true;
+      updateTextCount('');
+      updateFreeButtonState();
       const confirmModal = document.getElementById('confirmModal');
       if (confirmModal) confirmModal.hidden = true;
     });
@@ -138,6 +175,19 @@ document.addEventListener('DOMContentLoaded', function () {
       if (confirmModal) confirmModal.hidden = true;
     });
   }
+
+  // Wire textarea input to update state
+  const textarea = document.getElementById('documentText');
+  if (textarea) {
+    updateTextCount(textarea.value || '');
+    textarea.addEventListener('input', function () {
+      updateTextCount(this.value || '');
+      updateFreeButtonState();
+    });
+  }
+
+  // Evaluate initial button state
+  updateFreeButtonState();
 
   if (freeButton) {
     freeButton.addEventListener('click', async function () {
