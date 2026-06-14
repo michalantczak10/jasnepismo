@@ -247,8 +247,12 @@ module.exports = async function handler(req, res) {
         .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
     }
 
-    const { explanation, usage } = await openai.generateExplanation(text.trim());
-    return res.status(200).json({ explanation, usage });
+    const result = await openai.generateExplanation(text.trim());
+    const explanation = result && result.explanation;
+    const usage = result && result.usage;
+    const usedModel = (result && result.model) || process.env.OPENAI_MODEL || null;
+    const usedFallback = !!(result && result.fallback);
+    return res.status(200).json({ explanation, usage, usedModel, usedFallback });
   } catch (error) {
     console.error('Error in /api/explain:', error);
 
@@ -267,9 +271,11 @@ module.exports = async function handler(req, res) {
 
     // Organization not verified error from OpenAI (common when using newer models)
     if (error && error.code === 'ORG_UNVERIFIED') {
+      const suggestedModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
       return res.status(403).json({
         error:
-          'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.'
+          'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.',
+        suggestedModel
       });
     }
 

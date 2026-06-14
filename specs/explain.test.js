@@ -72,10 +72,9 @@ describe('api/explain.js', () => {
     await explain(req, res);
 
     assert.equal(res.getStatus(), 200);
-    assert.deepEqual(res.getBody(), {
-      explanation: 'Testowe wyjaśnienie',
-      usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 },
-    });
+    const body = res.getBody();
+    assert.equal(body.explanation, 'Testowe wyjaśnienie');
+    assert.deepEqual(body.usage, { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 });
   });
 
   it('returns 500 when OpenAI helper fails', async () => {
