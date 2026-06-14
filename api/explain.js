@@ -192,6 +192,44 @@ module.exports = async function handler(req, res) {
           console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
           return res.status(400).json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
         }
+
+        // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
+        if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
+          try {
+            const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/,'') + '/process';
+            const fs = require('fs');
+            // prefer file path when available
+            const filepath = file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
+            let formBody = null;
+
+            // Use global FormData when available (Node 18+), otherwise fall back to form-data package
+            const FormDataCtor = global.FormData || (() => { try { return require('form-data'); } catch (e) { return null; } })();
+
+            if (filepath && typeof filepath === 'string' && fs.existsSync(filepath) && FormDataCtor) {
+              const stream = fs.createReadStream(filepath);
+              formBody = new FormDataCtor();
+              if (typeof formBody.append === 'function') formBody.append('file', stream, file.originalFilename || file.name || 'file');
+            } else if ((file.buffer || file.data) && FormDataCtor) {
+              const buf = file.buffer || file.data;
+              formBody = new FormDataCtor();
+              if (typeof formBody.append === 'function') formBody.append('file', buf, file.originalFilename || file.name || 'file');
+            }
+
+            if (formBody) {
+              const headers = typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
+              const resp = await fetch(OCR_URL, { method: 'POST', headers, body: formBody });
+              if (resp.ok) {
+                const json = await resp.json().catch(() => null);
+                if (json && json.text) text = json.text;
+                else if (json && json.result && json.result.text) text = json.result.text;
+              } else {
+                console.error('OCR worker responded with', resp.status);
+              }
+            }
+          } catch (e) {
+            console.error('OCR worker forwarding error:', e && e.stack ? e.stack : e);
+          }
+        }
       }
     } else {
       // JSON body

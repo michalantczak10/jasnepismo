@@ -95,7 +95,17 @@ Przykładowa odpowiedź z `/api/explain`:
   - Przykłady: `gpt-4.1`, `gpt-4o`, `gpt-4.1-mini`.
   - Upewnij się, że dany model jest dostępny na twoim koncie OpenAI.
 
-Uwaga: administracyjne endpointy (`/api/usage`, `/api/costs`) zostały usunięte w uproszczonej wersji projektu. Jeśli chcesz przywrócić takie funkcje, skonfiguruj dodatkowe zmienne środowiskowe i odpowiednie zabezpieczenia, ale nie przechowuj ich w repozytorium jako jawnych wartości.
+Uwaga: projekt zawiera teraz dodatkowe, chronione endpointy administracyjne:
+
+- `GET /api/usage` — zwraca informacje o ostatnim użyciu tokenów (pole `last_usage`) z wywołania `/api/explain`.
+- `GET /api/costs` — pobiera dzienne dane kosztów OpenAI dla wybranego dnia. Endpoint jest chroniony i wymaga autoryzacji: ustawienia zmiennej środowiskowej `ADMIN_API_TOKEN` oraz przesłania tego tokena w nagłówku `x-admin-token` lub `Authorization: Bearer <token>`.
+
+Wymagane zmienne środowiskowe dla tych funkcji:
+- `OPENAI_ADMIN_KEY` — (opcjonalnie) klucz organizacyjny OpenAI wykorzystywany przez `/api/costs`. Jeśli nie jest ustawiony, `/api/costs` zwróci błąd 501.
+- `ADMIN_API_TOKEN` — tajny token administracyjny wymagany do uwierzytelnienia żądań do `/api/costs`.
+- `OCR_WORKER_URL` — (opcjonalnie) URL zewnętrznego serwisu OCR. Jeśli jest ustawiony, pliki przesłane do `/api/explain` zostaną przesłane do tego serwisu (endpoint `/process`) w celu wyodrębnienia tekstu.
+
+Zachowaj bezpieczeństwo: nie przechowuj tokenów i kluczy w repozytorium. Ustaw je w konfiguracji środowiska hostingu (Vercel, Cloud Run, itp.).
 
 ## Deployment on Vercel
 
@@ -207,8 +217,15 @@ Playwright tests cover the main page and interactive UI behaviors:
 - `e2e/index.spec.js` — basic page load and hero checks
 - `e2e/ui.spec.js` — form, modal and file input behavior
 
-Run them locally with:
+Setup and run locally:
 
 ```bash
+# install Playwright test runner and browsers (one-time)
+npm install -D @playwright/test
+npx playwright install
+
+# run e2e tests
 npm run test:e2e
 ```
+
+Note: CI runners must also install Playwright and its browser binaries before executing `npm run test:e2e`. Use `npx playwright install` in your workflow. 
