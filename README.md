@@ -155,6 +155,9 @@ Ten projekt używa backendu Vercel Serverless do obsługi zapytań OpenAI.
   - Pobiera dzienne dane kosztów OpenAI z endpointu organizacyjnego.
 - `POST /api/explain`
   - Przyjmuje JSON z polem `text` i zwraca wyjaśnienie plus informacje o zużyciu tokenów.
+- `POST /api/extract`
+  - Przyjmuje multipart/form-data z polem `file` i zwraca `{ extractedText }` — służy do wyodrębniania tekstu z plików (PDF, DOCX, TXT, obrazy przetworzone po stronie serwera/worker'a). Używaj tego endpointu, jeśli chcesz tylko pobrać tekst z pliku bez wywoływania OpenAI.
+
 
 ### Przykłady użycia
 
