@@ -51,11 +51,15 @@ async function generateExplanation(text) {
   const makeReq = (model) => ({
     model,
     messages: [
-      { role: 'system', content: 'Jesteś asystentem, który tłumaczy pisma urzędowe na prosty język.' },
-      { role: 'user', content: text.trim() },
+      {
+        role: 'system',
+        content:
+          "Jesteś asystentem prawnym, który w przystępny sposób wyjaśnia treść pism urzędowych po polsku. Nie powtarzaj oryginalnego tekstu 1:1. W odpowiedzi podaj:\n\n1) Krótkie streszczenie (1-3 zdania).\n2) Najważniejsze punkty dokumentu (lista punktowana).\n3) Konkretne zalecane kroki lub działania (krótka lista).\n\nJeżeli brakuje istotnych informacji, wskaż które fragmenty wymagają doprecyzowania. Odpowiadaj zwięźle, używaj prostego języka i list punktowanych tam, gdzie to pomaga. Nie cytuj długich fragmentów dokumentu, zamiast tego streszczaj."
+      },
+      { role: 'user', content: `Oto tekst do wyjaśnienia:\n\n${text.trim()}\n\nProszę przygotować wyjaśnienie według powyższych zasad.` },
     ],
     temperature: 0.2,
-    max_tokens: 600,
+    max_tokens: 800,
   });
 
   // Try primary model first
