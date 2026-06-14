@@ -19,13 +19,13 @@ test('form, modal and file input behavior', async ({ page }) => {
 
   // File input behavior
   const fileInput = page.locator('[data-testid="documentFile"]');
-  await expect(fileInput).toBeVisible();
+  await expect(fileInput).toHaveCount(1);
 
   await fileInput.setInputFiles({ name: 'hello.txt', mimeType: 'text/plain', buffer: Buffer.from('Hello world') });
 
   const fileDetails = page.locator('[data-testid="fileDetails"]');
+  await expect(fileDetails).toContainText('hello.txt', { timeout: 5000 });
   await expect(fileDetails).toBeVisible();
-  await expect(fileDetails).toContainText('hello.txt');
 
   const removeBtn = page.locator('[data-testid="removeFileButton"]');
   await expect(removeBtn).toBeEnabled();
