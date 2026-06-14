@@ -1,4 +1,4 @@
-﻿let lastUsage = null;
+let lastUsage = null;
 
 function getOpenAIApiKey() {
   return process.env.OPENAI_API_KEY;
@@ -15,14 +15,28 @@ async function callOpenAI(body) {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
     body: JSON.stringify(body),
   });
-  const data = await resp.json();
+  const data = await resp.json().catch(() => null);
   if (!resp.ok) {
-    const errMsg = data?.error?.message || data?.message || `Błąd połączenia z OpenAI: ${resp.status}`;
+    const errMsg = (data && (data.error?.message || data.message)) || `Błąd połączenia z OpenAI: ${resp.status}`;
     const err = new Error(errMsg);
-    // Detect organization verification error message and tag it so caller can respond appropriately
-    if (errMsg && errMsg.toLowerCase().includes('must be verified')) {
-      err.code = 'ORG_UNVERIFIED';
+    // Detect organization verification / permission error message and tag it so caller can respond appropriately
+    const msg = (errMsg || '').toString().toLowerCase();
+    let isOrgUnverified = false;
+    // Heuristics to catch English and Polish variants of the org verification problem
+    if (
+      msg.includes('must be verified') ||
+      msg.includes('not verified') ||
+      msg.includes('unverified') ||
+      msg.includes('nie jest zweryfik') ||
+      msg.includes('zweryfik') ||
+      (msg.includes('organization') && (msg.includes('verify') || msg.includes('verified') || msg.includes('unverified')))
+    ) {
+      isOrgUnverified = true;
+    } else if (resp.status === 403 || resp.status === 401) {
+      // 403/401 often indicate permission/organization restrictions
+      isOrgUnverified = msg.includes('organization') || msg.includes('org') || msg.includes('verified') || msg.includes('unverified') || msg.includes('must be verified') || msg.includes('not verified');
     }
+    if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
     err.status = resp.status;
     throw err;
   }
@@ -32,7 +46,7 @@ async function callOpenAI(body) {
 async function generateExplanation(text) {
   if (!text || !text.trim()) throw new Error('Brak treści do przetworzenia.');
   const OPENAI_MODEL = getOpenAIModel();
-  const FALLBACK_MODEL = process.env.OPENAI_FALLBACK_MODEL || '';
+  const FALLBACK_MODEL = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
 
   const makeReq = (model) => ({
     model,
@@ -49,22 +63,26 @@ async function generateExplanation(text) {
     const data = await callOpenAI(makeReq(OPENAI_MODEL));
     const explanation = data.choices?.[0]?.message?.content?.trim();
     lastUsage = data.usage || null;
-    return { explanation, usage: lastUsage };
+    return { explanation, usage: lastUsage, model: OPENAI_MODEL };
   } catch (err) {
-    // If organization/permission error and fallback configured, try fallback
-    const isOrgUnverified = err && (err.code === 'ORG_UNVERIFIED' || (err.message && err.message.toLowerCase().includes('must be verified')) || err.status === 403);
+    // Detect organization/permission issues (English + Polish heuristics)
+    const msg = (err && err.message) ? err.message.toString().toLowerCase() : '';
+    const isOrgUnverified = err && (err.code === 'ORG_UNVERIFIED' || err.status === 403 || msg.includes('must be verified') || msg.includes('not verified') || msg.includes('unverified') || msg.includes('zweryfik'));
+
     if (isOrgUnverified && FALLBACK_MODEL && FALLBACK_MODEL !== OPENAI_MODEL) {
       try {
+        console.warn(`OpenAI model "${OPENAI_MODEL}" failed with organization/permission error; retrying with fallback "${FALLBACK_MODEL}".`);
         const data2 = await callOpenAI(makeReq(FALLBACK_MODEL));
         const explanation = data2.choices?.[0]?.message?.content?.trim();
         lastUsage = data2.usage || null;
-        return { explanation, usage: lastUsage };
+        return { explanation, usage: lastUsage, model: FALLBACK_MODEL, fallback: true };
       } catch (err2) {
-        // If fallback also fails, throw original error (for clearer messaging)
+        // Preserve original error for diagnostics
         err2.original = err;
         throw err2;
       }
     }
+
     throw err;
   }
 }
