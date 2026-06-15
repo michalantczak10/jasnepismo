@@ -5,7 +5,9 @@
   "type": "commonjs",
   "scripts": {
     "test": "node --test",
+    "test:unit": "node --test",
     "test:e2e": "npx playwright test --reporter=html",
+    "test:all": "npm run test:unit && npm run test:e2e",
     "gen:sitemap": "node scripts/generate-sitemap.js",
     "format": "prettier --write ."
   },
