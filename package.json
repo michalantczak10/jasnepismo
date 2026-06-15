@@ -13,7 +13,6 @@
     "formidable": "^3.0.0",
     "mammoth": "^1.4.19",
     "pdf-parse": "^1.1.1",
-    "png-to-ico": "^3.0.1",
     "sharp": "^0.34.5",
     "tesseract.js": "^7.0.0",
     "adm-zip": "^0.5.9",
