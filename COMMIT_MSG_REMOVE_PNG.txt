@@ -1,5 +1,0 @@
-chore(deps): remove png-to-ico (unused)
-
-Removes png-to-ico from dependencies (unused by code).
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

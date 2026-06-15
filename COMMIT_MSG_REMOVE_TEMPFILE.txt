@@ -1,5 +1,0 @@
-chore: remove temporary commit message file
-
-Remove COMMIT_MSG_REMOVE_MONITORING.txt left accidentally in repo.
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
