@@ -1,6 +1,6 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const { describe, it, beforeEach, afterEach } = require('node:test');
-const openai = require('../api/openai.js');
+const openai = require('../../api/openai.js');
 
 describe('api/openai.js', () => {
   const originalKey = process.env.OPENAI_API_KEY;
@@ -41,3 +41,4 @@ describe('api/openai.js', () => {
     assert.deepEqual(result.usage, { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 });
   });
 });
+

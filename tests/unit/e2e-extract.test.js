@@ -1,10 +1,10 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const { describe, it, beforeEach, afterEach } = require('node:test');
-const openai = require('../api/openai.js');
+const openai = require('../../api/openai.js');
 // note: explain (handler) is required dynamically inside each test iteration so that
 // it picks up the current stubbed parseForm from ./extract-utils
 
-const extractUtils = require('../api/extract-utils.js');
+const extractUtils = require('../../api/extract-utils.js');
 const sharp = require('sharp');
 const AdmZip = require('adm-zip');
 
@@ -95,8 +95,8 @@ describe('e2e: /api/explain file extraction and full flow', () => {
       openai.generateExplanation = async (text) => { captured = text; return { explanation: `expl:${f.name}`, usage: {} }; };
 
       // require handler after stubbing parseForm so it picks up the stub
-      delete require.cache[require.resolve('../api/explain.js')];
-      const explain = require('../api/explain.js');
+      delete require.cache[require.resolve('../../api/explain.js')];
+      const explain = require('../../api/explain.js');
 
       const req = { method: 'POST', headers: { 'content-type': 'multipart/form-data' } };
       const res = createResponse();
@@ -111,3 +111,4 @@ describe('e2e: /api/explain file extraction and full flow', () => {
     }
   });
 });
+

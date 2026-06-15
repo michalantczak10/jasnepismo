@@ -1,7 +1,7 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const { describe, it, beforeEach, afterEach } = require('node:test');
-const usage = require('../api/usage.js');
-const openai = require('../api/openai.js');
+const usage = require('../../api/usage.js');
+const openai = require('../../api/openai.js');
 
 function createResponse() {
   let statusCode;
@@ -50,3 +50,4 @@ describe('api/usage.js', () => {
     assert.deepEqual(res.getBody(), { last_usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 } });
   });
 });
+

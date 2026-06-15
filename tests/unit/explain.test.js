@@ -1,7 +1,7 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const { describe, it, afterEach } = require('node:test');
-const openai = require('../api/openai.js');
-const explain = require('../api/explain.js');
+const openai = require('../../api/openai.js');
+const explain = require('../../api/explain.js');
 
 function createResponse() {
   let statusCode;
@@ -93,3 +93,4 @@ describe('api/explain.js', () => {
     });
   });
 });
+

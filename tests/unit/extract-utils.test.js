@@ -1,7 +1,7 @@
-const assert = require('node:assert/strict');
+﻿const assert = require('node:assert/strict');
 const { describe, it } = require('node:test');
 const AdmZip = require('adm-zip');
-const { extractTextFromFile } = require('../api/extract-utils');
+const { extractTextFromFile } = require('../../api/extract-utils');
 
 function escapeXml(s) {
   return String(s)
@@ -60,3 +60,4 @@ describe('extract-utils', () => {
     assert.ok(typeof text === 'string');
   });
 });
+
