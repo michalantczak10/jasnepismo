@@ -1,5 +1,5 @@
-feat(extract): support odt, doc (RTF), and image OCR; add tests
+test(e2e): add e2e extract tests for all file types
 
-Adds ODT parsing (adm-zip, xml2js), image OCR (tesseract.js), RTF heuristic for .doc, and test script api/test-extract3.js. Updates package.json dependencies.
+Adds specs/e2e-extract.test.js which uploads and verifies extraction for txt, pdf, docx, doc (RTF), odt and images (png/jpeg/bmp). Ensures the full /api/explain flow calls extractTextFromFile and openai.generateExplanation.
 
 Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
