@@ -1,4 +1,4 @@
-﻿let openai = require('./openai');
+let openai = require('./openai');
 // allow tests or runtime to swap provider by mutating the exported module
 try { if (!openai) openai = require('./openai'); } catch (e) {}
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
@@ -9,7 +9,7 @@ const { parseForm, extractTextFromFile } = require('./extract-utils');
 
 // Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
 
-// Redis support removed â€” always use in-memory rate limiter
+// Redis support removed — always use in-memory rate limiter
 
 // In-memory fallback
 const rateMap = new Map(); // clientKey => [timestamps]
@@ -44,7 +44,7 @@ async function checkRateLimit(clientKey) {
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Metoda niedozwolona. UĹĽyj POST.' });
+    return res.status(405).json({ error: 'Metoda niedozwolona. Użyj POST.' });
   }
 
   // rate limiting
@@ -52,7 +52,7 @@ module.exports = async function handler(req, res) {
   const rl = await checkRateLimit(clientKey);
   if (!rl.ok) {
     res.setHeader('Retry-After', Math.ceil(rl.retryAfter || RATE_LIMIT_WINDOW_MS / 1000));
-    return res.status(429).json({ error: 'Za duĹĽo ĹĽÄ…daĹ„. SprĂłbuj ponownie pĂłĹşniej.' });
+    return res.status(429).json({ error: 'Za dużo żądań. Spróbuj ponownie później.' });
   }
 
   let text = '';
@@ -70,7 +70,7 @@ module.exports = async function handler(req, res) {
         files = parsed.files;
       } catch (e) {
         console.error('Form parse error in /api/explain:', e && e.stack ? e.stack : e);
-        return res.status(400).json({ error: 'NieprawidĹ‚owy format formularza. Upewnij siÄ™, ĹĽe wysyĹ‚asz multipart/form-data.' });
+        return res.status(400).json({ error: 'Nieprawidłowy format formularza. Upewnij się, że wysyłasz multipart/form-data.' });
       }
 
       text = (fields && fields.text) || '';
@@ -87,7 +87,7 @@ module.exports = async function handler(req, res) {
           text = await extractTextFromFile(file);
         } catch (e) {
           console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
-          return res.status(400).json({ error: 'Nie udaĹ‚o siÄ™ odczytaÄ‡ pliku. Upewnij siÄ™, ĹĽe plik jest prawidĹ‚owy.' });
+          return res.status(400).json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
         }
 
         // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
@@ -140,13 +140,13 @@ module.exports = async function handler(req, res) {
     }
 
     if (typeof text !== 'string' || !text.trim()) {
-      return res.status(400).json({ error: 'ProszÄ™ wkleiÄ‡ treĹ›Ä‡ pisma do przetworzenia.' });
+      return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.' });
     }
 
     if (text.length > 5000) {
       return res
         .status(413)
-        .json({ error: `Tekst przekracza maksymalnÄ… dozwolonÄ… dĹ‚ugoĹ›Ä‡ ${5000} znakĂłw.` });
+        .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
     }
 
     const result = await openai.generateExplanation(text.trim());
@@ -169,7 +169,7 @@ module.exports = async function handler(req, res) {
       res.setHeader('Retry-After', '60');
       return res
         .status(429)
-        .json({ error: 'OpenAI API rate limit exceeded. SprĂłbuj ponownie za chwilÄ™.' });
+        .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.' });
     }
 
     // Organization not verified error from OpenAI (common when using newer models)
@@ -177,14 +177,13 @@ module.exports = async function handler(req, res) {
       const suggestedModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
       return res.status(403).json({
         error:
-          'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj siÄ™ na https://platform.openai.com/settings/organization/general i zweryfikuj organizacjÄ™, lub ustaw inny model w zmiennej OPENAI_MODEL.',
+          'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.',
         suggestedModel
       });
     }
 
     return res.status(500).json({
-      error: 'WystÄ…piĹ‚ bĹ‚Ä…d serwera podczas generowania wyjaĹ›nienia. SprĂłbuj ponownie pĂłĹşniej.',
+      error: 'Wystąpił błąd serwera podczas generowania wyjaśnienia. Spróbuj ponownie później.',
     });
   }
 };
-
