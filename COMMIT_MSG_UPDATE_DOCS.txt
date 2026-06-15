@@ -1,0 +1,5 @@
+﻿chore(docs/ci): remove references to removed endpoints and admin token
+
+Removes README lines referencing /api/costs and /api/extract, deletes specs/costs.test.js and removes ADMIN_API_TOKEN from CI.
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
