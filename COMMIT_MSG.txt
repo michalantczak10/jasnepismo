@@ -1,0 +1,5 @@
+feat(extract): support odt, doc (RTF), and image OCR; add tests
+
+Adds ODT parsing (adm-zip, xml2js), image OCR (tesseract.js), RTF heuristic for .doc, and test script api/test-extract3.js. Updates package.json dependencies.
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

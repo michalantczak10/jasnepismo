@@ -79,6 +79,8 @@ async function extractTextFromFile(rawFile) {
 
   // Detect by extension first, then by MIME type
   const lowerName = (name || '').toLowerCase();
+
+  // PDF
   if (type.includes('pdf') || lowerName.endsWith('.pdf')) {
     try {
       const data = await pdfParse(buffer);
@@ -89,6 +91,7 @@ async function extractTextFromFile(rawFile) {
     }
   }
 
+  // DOCX
   if (lowerName.endsWith('.docx') || type.includes('word')) {
     try {
       const result = await mammoth.extractRawText({ buffer });
@@ -99,6 +102,7 @@ async function extractTextFromFile(rawFile) {
     }
   }
 
+  // TXT
   if (type === 'text/plain' || lowerName.endsWith('.txt')) {
     try {
       return buffer.toString('utf8');
@@ -106,6 +110,102 @@ async function extractTextFromFile(rawFile) {
       console.error('Text decode error:', e);
       return '';
     }
+  }
+
+  // ODT
+  if (lowerName.endsWith('.odt') || type.includes('opendocument')) {
+    try {
+      const AdmZip = require('adm-zip');
+      const xml2js = require('xml2js');
+      const zip = new AdmZip(buffer);
+      const entries = zip.getEntries();
+      let contentEntry = entries.find((e) => e.entryName && e.entryName.endsWith('content.xml'));
+      if (!contentEntry) contentEntry = zip.getEntry('content.xml');
+      if (contentEntry) {
+        const contentXml = contentEntry.getData().toString('utf8');
+        try {
+          const parsed = await xml2js.parseStringPromise(contentXml, { explicitArray: false, ignoreAttrs: true });
+          function extract(node) {
+            if (!node) return '';
+            if (typeof node === 'string') return node;
+            if (Array.isArray(node)) return node.map(extract).join(' ');
+            let out = '';
+            for (const k of Object.keys(node)) {
+              out += extract(node[k]) + ' ';
+            }
+            return out;
+          }
+          const text = extract(parsed).replace(/\s+/g, ' ').trim();
+          return text;
+        } catch (e) {
+          // fallback: strip tags
+          return contentXml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+    } catch (e) {
+      console.error('ODT parse error:', e);
+      return '';
+    }
+  }
+
+  // Images (OCR)
+  if (type.startsWith('image/') || ['.jpg', '.jpeg', '.png', '.bmp'].some((ext) => lowerName.endsWith(ext))) {
+    try {
+      let imgBuffer = buffer;
+      try {
+        const sharpLib = require('sharp');
+        imgBuffer = await sharpLib(buffer).png().toBuffer();
+      } catch (e) {
+        // sharp not available or conversion failed; continue with original buffer
+      }
+
+      const { createWorker } = require('tesseract.js');
+      let worker = null;
+      try {
+        // createWorker is async and returns a Promise that resolves to a worker object
+        worker = await createWorker();
+        try {
+          // prefer Polish, fall back to English
+          await worker.reinitialize('pol');
+        } catch (e) {
+          try {
+            await worker.reinitialize('eng');
+          } catch (e2) {
+            // languages not available
+          }
+        }
+        const { data } = await worker.recognize(imgBuffer);
+        await worker.terminate();
+        return (data && data.text) ? data.text : '';
+      } catch (e) {
+        if (worker) try { await worker.terminate(); } catch (e2) {}
+        throw e;
+      }
+    } catch (e) {
+      console.error('Image OCR error:', e);
+      return '';
+    }
+  }
+
+  // Heuristic for .doc (RTF) — best-effort
+  if (lowerName.endsWith('.doc')) {
+    try {
+      const head = buffer.slice(0, 2000).toString('utf8');
+      if (head.includes('{\\rtf')) {
+        // naive RTF -> text conversion
+        let s = buffer.toString('utf8');
+        s = s.replace(/\\par[d]?/g, '\n');
+        s = s.replace(/\\'[0-9a-fA-F]{2}/g, '');
+        s = s.replace(/\\[a-zA-Z]+\d*/g, '');
+        s = s.replace(/[{}\r]/g, '');
+        s = s.replace(/\n\s+/g, '\n').replace(/\s+/g, ' ').trim();
+        return s;
+      }
+    } catch (e) {
+      console.error('DOC heuristic error:', e);
+    }
+    // unsupported
+    return '';
   }
 
   // Other types not supported here

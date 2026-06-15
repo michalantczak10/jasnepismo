@@ -15,7 +15,9 @@
     "pdf-parse": "^1.1.1",
     "png-to-ico": "^3.0.1",
     "sharp": "^0.34.5",
-    "tesseract.js": "^7.0.0"
+    "tesseract.js": "^7.0.0",
+    "adm-zip": "^0.5.9",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
