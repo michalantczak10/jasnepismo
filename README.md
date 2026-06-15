@@ -113,8 +113,6 @@ Główne endpointy:
 - `OPENAI_API_KEY` (wymagane) — klucz API OpenAI.
 - `OPENAI_MODEL` (opcjonalne) — preferowany model (np. `gpt-4.1-mini`, `gpt-4o`, `gpt-3.5-turbo`).
 - `OPENAI_FALLBACK_MODEL` (opcjonalne, domyślnie `gpt-3.5-turbo`) — model do użycia gdy główny model zwraca błąd związany z weryfikacją organizacji.
-- `OPENAI_ADMIN_KEY` — (opcjonalne) klucz organizacji do pobierania kosztów `/api/costs`.
-- `ADMIN_API_TOKEN` — token do autoryzacji endpointów administracyjnych (`/api/costs`).
 
 
 ## Przywracanie serwisu (krok po kroku)
@@ -137,7 +135,6 @@ Główne endpointy:
 
 Jeżeli chcesz, mogę teraz:
 - Zaktualizować frontend aby wyświetlał komunikat "Wyjaśnienie wygenerowane przy użyciu <model>" (pole `usedModel`),
-- Dodać endpoint `POST /api/extract` zamiast nagłówka X-Extract-Only (jeśli wolisz oddzielny endpoint),
 - Dodać bardziej rozbudowany opis wizualny (kolory, fonty, spacing) — powiedz co dokładnie potrzeba.
 
 ## Uruchomienie z API
@@ -151,11 +148,9 @@ Ten projekt używa backendu Vercel Serverless do obsługi zapytań OpenAI.
   - Zwraca JSON z informacją o statusie, czasie działania i środowisku.
 - `GET /api/usage`
   - Zwraca dane o ostatnim użyciu tokenów z wywołania `/api/explain`.
-- `GET /api/costs`
   - Pobiera dzienne dane kosztów OpenAI z endpointu organizacyjnego.
 - `POST /api/explain`
   - Przyjmuje JSON z polem `text` i zwraca wyjaśnienie plus informacje o zużyciu tokenów.
-- `POST /api/extract`
   - Przyjmuje multipart/form-data z polem `file` i zwraca `{ extractedText }` — służy do wyodrębniania tekstu z plików (PDF, DOCX, TXT, obrazy przetworzone po stronie serwera/worker'a). Używaj tego endpointu, jeśli chcesz tylko pobrać tekst z pliku bez wywoływania OpenAI.
 
 
@@ -184,13 +179,11 @@ curl -X POST https://jasnepismo.pl/api/explain \
 #### Sprawdzenie kosztów OpenAI
 
 ```bash
-curl -X GET https://jasnepismo.pl/api/costs
 ```
 
 Możesz też użyć daty w query:
 
 ```bash
-curl -X GET "https://jasnepismo.pl/api/costs?date=2026-05-25"
 ```
 
 Ten endpoint używa OpenAI `/v1/organization/costs` i zwraca dzienne dane kosztów dla wybranego dnia.
@@ -218,12 +211,8 @@ Przykładowa odpowiedź z `/api/explain`:
 Uwaga: projekt zawiera teraz dodatkowe, chronione endpointy administracyjne:
 
 - `GET /api/usage` — zwraca informacje o ostatnim użyciu tokenów (pole `last_usage`) z wywołania `/api/explain`.
-- `GET /api/costs` — pobiera dzienne dane kosztów OpenAI dla wybranego dnia. Endpoint jest chroniony i wymaga autoryzacji: ustawienia zmiennej środowiskowej `ADMIN_API_TOKEN` oraz przesłania tego tokena w nagłówku `x-admin-token` lub `Authorization: Bearer <token>`.
 
 Wymagane zmienne środowiskowe dla tych funkcji:
-- `OPENAI_ADMIN_KEY` — (opcjonalnie) klucz organizacyjny OpenAI wykorzystywany przez `/api/costs`. Jeśli nie jest ustawiony, `/api/costs` zwróci błąd 501.
-- `ADMIN_API_TOKEN` — tajny token administracyjny wymagany do uwierzytelnienia żądań do `/api/costs`.
-- `OCR_WORKER_URL` — (opcjonalnie) URL zewnętrznego serwisu OCR. Jeśli jest ustawiony, pliki przesłane do `/api/explain` zostaną przesłane do tego serwisu (endpoint `/process`) w celu wyodrębnienia tekstu.
 
 Zachowaj bezpieczeństwo: nie przechowuj tokenów i kluczy w repozytorium. Ustaw je w konfiguracji środowiska hostingu (Vercel, Cloud Run, itp.).
 
@@ -234,8 +223,6 @@ Zachowaj bezpieczeństwo: nie przechowuj tokenów i kluczy w repozytorium. Ustaw
 3. Add the environment variable in Vercel:
    - `OPENAI_API_KEY`
 4. Add the admin variables if you use protected endpoints:
-   - `OPENAI_ADMIN_KEY`
-   - `ADMIN_API_TOKEN`
 5. Deploy the project. The site is served statically and backend routes are handled by Vercel Serverless Functions in the `api/` folder.
 
 ## Jak testować
@@ -295,7 +282,6 @@ Dodatkowo:
 
 - `POST /api/explain` zwraca pole `usage` wraz z wyjaśnieniem, co pozwala monitorować zużycie tokenów przy każdym żądaniu.
 - `GET /api/usage` zwraca ostatnie użycie tokenów z wywołania `/api/explain`.
-- `GET /api/costs` pobiera dzienne dane kosztów OpenAI dla bieżącego dnia lub podanej daty.
 
 ### Propozycja monitoringu
 

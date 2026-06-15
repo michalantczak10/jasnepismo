@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+﻿document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('explainForm');
   if (form) {
     // Prevent native form submission which can trigger a GET to /api/explain.
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function updateTextCount(val) {
     const textCountEl = document.getElementById('textCount');
-    if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znaków`;
+    if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znakĂłw`;
   }
 
   function updateFreeButtonState() {
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isLoading) {
       freeButton.dataset.orig = freeButton.textContent;
-      freeButton.textContent = 'Wyjaśnianie…';
+      freeButton.textContent = 'WyjaĹ›nianieâ€¦';
       freeButton.setAttribute('aria-busy', 'true');
     } else {
       if (freeButton.dataset.orig) freeButton.textContent = freeButton.dataset.orig;
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (f) {
         fileDetails.hidden = false;
-        fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
+        fileDetails.textContent = `${f.name} â€” ${Math.round(f.size / 1024)} KB`;
         removeFileButton.disabled = false;
 
         // Try to populate textarea with file contents.
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
           updateFreeButtonState();
           if (statusMessage) {
             statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie pliku…';
+            statusMessage.textContent = 'Wczytywanie plikuâ€¦';
           }
           reader.addEventListener('load', function (ev) {
             const content = ev.target.result || '';
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
           updateFreeButtonState();
           if (statusMessage) {
             statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie pliku…';
+            statusMessage.textContent = 'Wczytywanie plikuâ€¦';
           }
           try {
             const formData = new FormData();
@@ -100,20 +100,20 @@ document.addEventListener('DOMContentLoaded', function () {
               } else {
                 if (errorMessage) {
                   errorMessage.hidden = false;
-                  errorMessage.textContent = 'Nie udało się automatycznie wczytać tekstu z pliku. Jeśli to skan, włącz OCR (OCR_WORKER_URL) lub wpisz tekst ręcznie.';
+                  errorMessage.textContent = 'Nie udaĹ‚o siÄ™ automatycznie wczytaÄ‡ tekstu z pliku. JeĹ›li to skan, wĹ‚Ä…cz OCR (lokalny OCR) lub wpisz tekst rÄ™cznie.';
                 }
               }
             } else {
               const errJson = await resp.json().catch(() => null);
               if (errorMessage) {
                 errorMessage.hidden = false;
-                errorMessage.textContent = (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
+                errorMessage.textContent = (errJson && errJson.error) || 'Nie udaĹ‚o siÄ™ wczytaÄ‡ pliku.';
               }
             }
           } catch (e) {
             if (errorMessage) {
               errorMessage.hidden = false;
-              errorMessage.textContent = 'Błąd wczytywania pliku.';
+              errorMessage.textContent = 'BĹ‚Ä…d wczytywania pliku.';
             }
           } finally {
             extractInProgress = false;
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setLoading(true);
       if (statusMessage) {
         statusMessage.hidden = false;
-        statusMessage.textContent = 'Wysyłanie do serwera…';
+        statusMessage.textContent = 'WysyĹ‚anie do serweraâ€¦';
       }
       if (errorMessage) {
         errorMessage.hidden = true;
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
           if (!text.trim()) {
             throw new Error(
-              'Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.'
+              'ProszÄ™ wkleiÄ‡ treĹ›Ä‡ pisma do przetworzenia lub doĹ‚Ä…czyÄ‡ plik z tekstem.'
             );
           }
           response = await fetch('/api/explain', {
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!response.ok) {
           const json = await response.json().catch(() => null);
-          throw new Error((json && json.error) || 'Błąd serwera');
+          throw new Error((json && json.error) || 'BĹ‚Ä…d serwera');
         }
 
         const data = await response.json();
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const model = data && data.usedModel;
           const fallback = data && data.usedFallback ? ' (fallback)' : '';
           if (model) {
-            usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
+            usedModelEl.textContent = `UĹĽyty model: ${model}${fallback}`;
             usedModelEl.hidden = false;
           } else {
             usedModelEl.hidden = true;
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
       } catch (err) {
         if (errorMessage) {
           errorMessage.hidden = false;
-          errorMessage.textContent = (err && err.message) || 'Wystąpił błąd';
+          errorMessage.textContent = (err && err.message) || 'WystÄ…piĹ‚ bĹ‚Ä…d';
         }
         if (statusMessage) statusMessage.hidden = true;
       } finally {
@@ -271,3 +271,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
