@@ -1,5 +1,5 @@
 let lastUsage = null;
-const monitor = require('./monitoring');
+
 
 function getOpenAIApiKey() {
   return process.env.OPENAI_API_KEY;
@@ -39,7 +39,7 @@ async function callOpenAI(body) {
     }
     if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
     err.status = resp.status;
-    try { if (typeof monitor !== 'undefined' && monitor && typeof monitor.captureException === 'function') monitor.captureException(err); } catch (e) {}
+    console.error(err);
     throw err;
   }
   return data;

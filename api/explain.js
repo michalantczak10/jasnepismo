@@ -6,7 +6,6 @@ const RATE_LIMIT_MAX = 10; // max requests per window
 
 const fs = require('fs');
 const { parseForm, extractTextFromFile } = require('./extract-utils');
-const monitor = require('./monitoring');
 
 // Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
 
@@ -158,7 +157,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ explanation, usage, usedModel, usedFallback });
   } catch (error) {
     console.error('Error in /api/explain:', error);
-    try { if (typeof monitor !== 'undefined' && monitor && typeof monitor.captureException === 'function') monitor.captureException(error); } catch (e) {} 
+
 
     const isRateLimit =
       error && error.message &&

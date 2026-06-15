@@ -100,7 +100,7 @@ Główne endpointy:
   1. Normalny: przyjmuje `text` w JSON albo formData (`text` + optional `file`) i zwraca obiekt: `{ explanation, usage, usedModel, usedFallback }`.
   2. Extract-only: jeśli żądanie zawiera nagłówek `X-Extract-Only: 1` i przesłano plik, serwer zwraca `{ extractedText }` i nie wywołuje OpenAI.
 
-- Ekstrakcja plików: wykonywana serwerowo przy użyciu bibliotek `pdf-parse` (PDF), `mammoth` (DOCX), lub prostego odczytu plików tekstowych. Jeżeli wyodrębniona treść jest pusta i `OCR_WORKER_URL` jest ustawione, plik zostanie przesłany do zewnętrznego worker'a OCR (endpoint `/process`), a odpowiedź worker'a może zawierać pole `text` lub `result.text`.
+- Ekstrakcja plików: wykonywana serwerowo przy użyciu bibliotek `pdf-parse` (PDF), `mammoth` (DOCX), `tesseract.js` (OCR obrazów) oraz prostego odczytu plików tekstowych. Aplikacja nie przekazuje plików do zewnętrznych serwisów OCR.
 
 - OpenAI helper (`api/openai.js`): łączy się z OpenAI Chat Completions (endpoint `/v1/chat/completions`) i zapisuje statystyki użycia tokenów. Implementuje heurystykę wykrywania błędów weryfikacji organizacji i automatyczny fallback do `OPENAI_FALLBACK_MODEL` (domyślnie `gpt-3.5-turbo`).
 
@@ -115,7 +115,7 @@ Główne endpointy:
 - `OPENAI_FALLBACK_MODEL` (opcjonalne, domyślnie `gpt-3.5-turbo`) — model do użycia gdy główny model zwraca błąd związany z weryfikacją organizacji.
 - `OPENAI_ADMIN_KEY` — (opcjonalne) klucz organizacji do pobierania kosztów `/api/costs`.
 - `ADMIN_API_TOKEN` — token do autoryzacji endpointów administracyjnych (`/api/costs`).
-- `OCR_WORKER_URL` — URL zewnętrznego serwisu OCR (np. `https://.../process`).
+
 
 ## Przywracanie serwisu (krok po kroku)
 
@@ -236,7 +236,6 @@ Zachowaj bezpieczeństwo: nie przechowuj tokenów i kluczy w repozytorium. Ustaw
 4. Add the admin variables if you use protected endpoints:
    - `OPENAI_ADMIN_KEY`
    - `ADMIN_API_TOKEN`
-   - `MONITOR_ADMIN_TOKEN` (optional, if you want the monitor workflow to hit protected routes)
 5. Deploy the project. The site is served statically and backend routes are handled by Vercel Serverless Functions in the `api/` folder.
 
 ## Jak testować
@@ -304,19 +303,9 @@ Dodatkowo:
 2. Sprawdzanie co 5 minut to dobre ustawienie dla serwisu produkcyjnego.
 3. Jeśli monitor zgłosi błąd, to oznacza problem z hostingiem, DNS lub backendem.
 
-### GitHub Actions monitoring
+### Monitoring
 
-W repozytorium dodałem automatyczny monitoring na GitHub Actions:
-
-- plik: `.github/workflows/monitor.yml`
-- skrypt: `scripts/check-monitor.js`
-
-Ten workflow uruchamia się co 6 godzin i wykonuje dwa sprawdzenia:
-
-- `GET /api/health`
-- `GET /api/usage`
-
-Jeśli któreś z nich nie zwróci oczekiwanej odpowiedzi, workflow zakończy się błędem.
+Repository nie zawiera automatycznego workflowu monitorującego. Jeśli chcesz monitorować serwis, użyj zewnętrznego narzędzia (np. UptimeRobot lub Better Uptime) i ustaw monitor na `GET https://<twoja-domena>/api/health`.
 
 ### Przykłady użycia
 

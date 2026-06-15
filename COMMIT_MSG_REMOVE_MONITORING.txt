@@ -1,0 +1,5 @@
+chore(extract): remove monitoring and external OCR forwarding
+
+Removes monitoring module and stops forwarding files to external OCR. Updates CI and README.
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

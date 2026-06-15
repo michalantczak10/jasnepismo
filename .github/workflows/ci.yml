@@ -67,11 +67,3 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-args: '--prod'
 
-  monitor:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Check site health
-        run: |
-          echo "Pinging production health endpoint"
-          curl -fS https://jasnepismo.pl/api/health || exit 1
