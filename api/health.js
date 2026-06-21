@@ -5,6 +5,7 @@ module.exports = function handler(req, res) {
   }
 
   const uptimeSeconds = Math.floor(process.uptime());
+  const metrics = require('./metrics');
   const response = {
     status: 'ok',
     service: 'jasnepismo',
@@ -12,6 +13,7 @@ module.exports = function handler(req, res) {
     model: process.env.OPENAI_MODEL || 'gpt-5-mini',
     timestamp: new Date().toISOString(),
     uptime_seconds: uptimeSeconds,
+    metrics: metrics.getAll(),
   };
 
   res.setHeader('Content-Type', 'application/json');

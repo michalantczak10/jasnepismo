@@ -3,6 +3,7 @@ const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
 const { parseForm, extractTextFromFile } = require('./extract-utils');
+const metrics = require('./metrics');
 
 // Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
 
@@ -10,6 +11,24 @@ const { parseForm, extractTextFromFile } = require('./extract-utils');
 
 // In-memory fallback
 const rateMap = new Map(); // clientKey => [timestamps]
+
+// Optional Upstash/Redis support via env vars. If UPSTASH_REDIS_REST_URL and
+// UPSTASH_REDIS_REST_TOKEN are set, use Upstash REST API for serverless-friendly rate limiting.
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL || null;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || null;
+const REDIS_URL = process.env.REDIS_URL || null;
+let ioredisClient = null;
+if (REDIS_URL) {
+  try {
+    // lazy require ioredis
+    // eslint-disable-next-line global-require
+    const IORedis = require('ioredis');
+    ioredisClient = new IORedis(REDIS_URL);
+  } catch (e) {
+    console.warn('ioredis not available or failed to connect (safe):', e && e.message ? e.message : e);
+    ioredisClient = null;
+  }
+}
 
 function getClientKey(req) {
   if (req && req.headers) {
@@ -26,12 +45,71 @@ async function checkRateLimit(clientKey) {
 
   const now = Date.now();
   const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  // If a Redis URL is configured, prefer server-backed rate limiting using ioredis.
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  if (ioredisClient) {
+    const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
+    // Retry with exponential backoff to tolerate transient errors
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const count = await ioredisClient.incr(bucket);
+        if (count === 1) await ioredisClient.expire(bucket, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000));
+        if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+        return { ok: true };
+      } catch (err) {
+        // If last attempt, log and continue to fallback
+        if (attempt >= 2) {
+          console.error('Rate limiter Redis error (safe):', err && err.message ? err.message : err);
+        } else {
+          // backoff and retry
+          // eslint-disable-next-line no-await-in-loop
+          await sleep(Math.pow(2, attempt) * 100);
+        }
+      }
+    }
+    // if redis path failed, fall through to Upstash or in-memory fallback
+  }
+
+  if (UPSTASH_URL && UPSTASH_TOKEN) {
+    try {
+      const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
+      const body = `{"cmd":"incr","key":"${bucket}"}`; // minimal command body
+      // Upstash supports multiple ways; use simple REST increment via fetch
+      const resp = await fetch(UPSTASH_URL + `/incr/${encodeURIComponent(bucket)}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+      });
+      if (resp.ok) {
+        const text = await resp.text().catch(() => null);
+        const count = Number(text) || 0;
+        if (count === 1) {
+          // set TTL for the bucket (seconds)
+          try {
+            await fetch(UPSTASH_URL + `/expire/${encodeURIComponent(bucket)}/${Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+            });
+          } catch (e) {
+            // ignore ttl set failure
+          }
+        }
+        if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+        return { ok: true };
+      }
+    } catch (e) {
+      console.error('Rate limiter Upstash error (safe):', e && e.message ? e.message : e);
+      // fall through to in-memory fallback
+    }
+  }
+
   const timestamps = (rateMap.get(clientKey) || []).filter((ts) => ts > windowStart);
   if (timestamps.length >= RATE_LIMIT_MAX) {
+    metrics.inc('rate_limit.blocked');
     return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
   }
   timestamps.push(now);
   rateMap.set(clientKey, timestamps);
+  metrics.inc('rate_limit.allowed');
   return { ok: true };
 }
 
@@ -46,15 +124,18 @@ module.exports = async function handler(req, res) {
 
   // rate limiting
   const clientKey = getClientKey(req);
+  metrics.inc('request.incoming');
   const rl = await checkRateLimit(clientKey);
   if (!rl.ok) {
+    metrics.inc('request.rejected_rate');
     res.setHeader('Retry-After', Math.ceil(rl.retryAfter || RATE_LIMIT_WINDOW_MS / 1000));
     return res.status(429).json({ error: 'Za dużo żądań. Spróbuj ponownie później.' });
   }
 
   let text = '';
 
-  try {
+    try {
+      metrics.inc('request.process.start');
     const headers = req.headers || {};
     const contentType = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
 
@@ -92,57 +173,69 @@ module.exports = async function handler(req, res) {
         }
 
         // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
-        if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
+    if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
           try {
-            const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '') + '/process';
-            const fs = require('fs');
-            // prefer file path when available
-            const filepath =
-              file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
-            let formBody = null;
+            const raw = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '');
+            if (!raw.startsWith('https://')) {
+              console.warn('OCR_WORKER_URL must be https; skipping forward');
+            } else {
+              const OCR_URL = raw + '/process';
+              const fs = require('fs');
+              const filepath = file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
+              let formBody = null;
 
-            // Use global FormData when available (Node 18+), otherwise fall back to form-data package
-            const FormDataCtor =
-              global.FormData ||
-              (() => {
-                try {
-                  return require('form-data');
-                } catch (e) {
-                  return null;
+              const FormDataCtor =
+                global.FormData ||
+                (() => {
+                  try {
+                    return require('form-data');
+                  } catch (e) {
+                    return null;
+                  }
+                })();
+
+              if (
+                filepath &&
+                typeof filepath === 'string' &&
+                fs.existsSync(filepath) &&
+                FormDataCtor
+              ) {
+                const stream = fs.createReadStream(filepath);
+                formBody = new FormDataCtor();
+                if (typeof formBody.append === 'function')
+                  formBody.append('file', stream, file.originalFilename || file.name || 'file');
+              } else if ((file.buffer || file.data) && FormDataCtor) {
+                const buf = file.buffer || file.data;
+                // Prevent sending very large buffers to worker
+                if (Buffer.byteLength(buf) <= 5 * 1024 * 1024) {
+                  formBody = new FormDataCtor();
+                  if (typeof formBody.append === 'function')
+                    formBody.append('file', buf, file.originalFilename || file.name || 'file');
                 }
-              })();
+              }
 
-            if (
-              filepath &&
-              typeof filepath === 'string' &&
-              fs.existsSync(filepath) &&
-              FormDataCtor
-            ) {
-              const stream = fs.createReadStream(filepath);
-              formBody = new FormDataCtor();
-              if (typeof formBody.append === 'function')
-                formBody.append('file', stream, file.originalFilename || file.name || 'file');
-            } else if ((file.buffer || file.data) && FormDataCtor) {
-              const buf = file.buffer || file.data;
-              formBody = new FormDataCtor();
-              if (typeof formBody.append === 'function')
-                formBody.append('file', buf, file.originalFilename || file.name || 'file');
-            }
-
-            if (formBody) {
-              const headers =
-                typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
-              const resp = await fetch(OCR_URL, { method: 'POST', headers, body: formBody });
-              if (resp.ok) {
-                const json = await resp.json().catch(() => null);
-                if (json && json.text) text = json.text;
-                else if (json && json.result && json.result.text) text = json.result.text;
-              } else {
-                console.error('OCR worker responded with', resp.status);
+              if (formBody) {
+                const headers = typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
+                const controller = new AbortController();
+                const t = setTimeout(() => controller.abort(), Number(process.env.OCR_WORKER_TIMEOUT_MS || 20000));
+                try {
+                  const resp = await fetch(OCR_URL, { method: 'POST', headers, body: formBody, signal: controller.signal });
+                  clearTimeout(t);
+                  if (resp.ok) {
+                    const json = await resp.json().catch(() => null);
+                    if (json && json.text) text = json.text;
+                    else if (json && json.result && json.result.text) text = json.result.text;
+                  } else {
+                    console.error('OCR worker responded with status', resp.status);
+                  }
+                } catch (e) {
+                  clearTimeout(t);
+                  console.error('OCR worker forwarding error (safe):', e && e.message ? e.message : e);
+                }
               }
             }
           } catch (e) {
-            console.error('OCR worker forwarding error:', e && e.stack ? e.stack : e);
+            console.error('OCR worker forwarding outer error (safe):', e && e.message ? e.message : e);
           }
         }
       }
@@ -167,7 +260,8 @@ module.exports = async function handler(req, res) {
         .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
     }
 
-    const result = await openai.generateExplanation(text.trim());
+     const result = await openai.generateExplanation(text.trim());
+     metrics.inc('openai.calls');
     const explanation = result && result.explanation;
     const usage = result && result.usage;
     const usedModel = (result && result.model) || process.env.OPENAI_MODEL || null;
