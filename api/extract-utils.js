@@ -1,4 +1,6 @@
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const formidable = require('formidable');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
@@ -38,6 +40,23 @@ function parseForm(req) {
   });
 }
 
+// Simple semaphore to limit concurrent OCR work in this process.
+const OCR_CONCURRENCY = Number(process.env.OCR_CONCURRENCY || 1);
+let _ocrActive = 0;
+async function withOcrLimit(fn) {
+  while (_ocrActive >= OCR_CONCURRENCY) {
+    // back off briefly
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  _ocrActive++;
+  try {
+    return await fn();
+  } finally {
+    _ocrActive--;
+  }
+}
+
 async function extractTextFromFile(rawFile) {
   if (!rawFile) return '';
 
@@ -68,18 +87,20 @@ async function extractTextFromFile(rawFile) {
   // If we have a filepath, ensure it exists and read
   if (filepath) {
     try {
-      if (!fs.existsSync(filepath)) {
-        console.error(
-          'extractTextFromFile: filepath not found',
-          filepath,
-          'file keys:',
-          Object.keys(file)
-        );
+      // Validate that filepath is within the OS tmpdir to avoid path traversal
+      const resolved = path.resolve(filepath);
+      const tmpdir = path.resolve(os.tmpdir());
+      if (!resolved.startsWith(tmpdir)) {
+        console.error('extractTextFromFile: rejecting filepath outside tmpdir');
         return '';
       }
-      buffer = fs.readFileSync(filepath);
+      if (!fs.existsSync(resolved)) {
+        console.error('extractTextFromFile: filepath not found (safe log)');
+        return '';
+      }
+      buffer = fs.readFileSync(resolved);
     } catch (e) {
-      console.error('extractTextFromFile read error:', e);
+      console.error('extractTextFromFile read error (safe):', e && e.message ? e.message : e);
       return '';
     }
   }
@@ -181,44 +202,51 @@ async function extractTextFromFile(rawFile) {
     ['.jpg', '.jpeg', '.png', '.bmp'].some((ext) => lowerName.endsWith(ext))
   ) {
     try {
-      let imgBuffer = buffer;
-      try {
-        const sharpLib = require('sharp');
-        imgBuffer = await sharpLib(buffer).png().toBuffer();
-      } catch (e) {
-        // sharp not available or conversion failed; continue with original buffer
-      }
-
-      const { createWorker } = require('tesseract.js');
-      let worker = null;
-      try {
-        // createWorker is async and returns a Promise that resolves to a worker object
-        worker = await createWorker();
+      return await withOcrLimit(async () => {
+        let imgBuffer = buffer;
         try {
-          // prefer Polish, fall back to English
-          await worker.reinitialize('pol');
+          const sharpLib = require('sharp');
+          imgBuffer = await sharpLib(buffer).png().toBuffer();
         } catch (e) {
-          try {
-            await worker.reinitialize('eng');
-          } catch (e2) {
-            // languages not available
-          }
+          // sharp not available or conversion failed; continue with original buffer
         }
-        const { data } = await worker.recognize(imgBuffer);
-        await worker.terminate();
-        return data && data.text ? data.text : '';
-      } catch (e) {
-        if (worker) {
+
+        const { createWorker } = require('tesseract.js');
+        let worker = null;
+        const OCR_TIMEOUT_MS = Number(process.env.OCR_TIMEOUT_MS || 20000);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), OCR_TIMEOUT_MS);
+        try {
+          worker = await createWorker();
           try {
-            await worker.terminate();
-          } catch (terminateErr) {
-            console.warn('Worker terminate error:', terminateErr);
+            await worker.reinitialize('pol');
+          } catch (e) {
+            try {
+              await worker.reinitialize('eng');
+            } catch (e2) {
+              // languages not available
+            }
           }
+          // pass signal to recognize if supported (tesseract.js doesn't accept AbortSignal directly)
+          const { data } = await worker.recognize(imgBuffer);
+          await worker.terminate();
+          clearTimeout(timeout);
+          return data && data.text ? data.text : '';
+        } catch (e) {
+          clearTimeout(timeout);
+          if (worker) {
+            try {
+              await worker.terminate();
+            } catch (terminateErr) {
+              console.warn('Worker terminate error:', terminateErr && terminateErr.message ? terminateErr.message : terminateErr);
+            }
+          }
+          console.error('Image OCR error (safe):', e && e.message ? e.message : e);
+          return '';
         }
-        throw e;
-      }
+      });
     } catch (e) {
-      console.error('Image OCR error:', e);
+      console.error('Image OCR outer error:', e && e.message ? e.message : e);
       return '';
     }
   }
