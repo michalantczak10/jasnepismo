@@ -14,12 +14,12 @@ Obsługiwane typy plików i użyte biblioteki
 - DOCX — mammoth (serwerowo)
 - ODT — adm-zip + xml2js (czytanie content.xml)
 - DOC / RTF — heurystyczne przetwarzanie RTF -> tekst (best-effort)
-- TXT / text/* — odczyt UTF-8
-- Obrazy (jpg, jpeg, png, bmp, webp, tif) — lokalne OCR przez tesseract.js; obraz jest normalizowany przez sharp (konwersja do PNG) przed rozpoznaniem
+- TXT / text/\* — odczyt UTF-8
+- Obrazy (jpg, jpeg, png, bmp) — OCR przez tesseract.js; obraz normalizowany przez sharp (konwersja do PNG) przed rozpoznaniem
 
 Uwaga o OCR lokalnym
 
-- OCR opiera się na tesseract.js; aby uzyskać lepsze rezultaty w produkcji, zwróć uwagę na dostępność pakietów językowych (traineddata). W repo mogą znajdować się pliki językowe (np. pol.traineddata, eng.traineddata) — można je wykorzystać lub wdrożyć osobny worker.
+- OCR opiera się na tesseract.js. Pliki językowe (pol.traineddata, eng.traineddata) znajdują się w katalogu głównym repozytorium.
 - OCR jest kosztowne obliczeniowo — rozważ cache lub asynchroniczne przetwarzanie dla większych wolumenów.
 
 Główne endpointy API (aktualne)
@@ -28,13 +28,13 @@ Główne endpointy API (aktualne)
   - Przyjmuje JSON: `{ "text": "..." }` lub multipart/form-data z polem `file` i opcjonalnym polem `text`.
   - Jeśli nagłówek `X-Extract-Only: 1` jest obecny, endpoint zwraca `{ "extractedText": "..." }` i nie wywołuje OpenAI.
   - Odpowiedź normalna: `{ "explanation": "...", "usage": {...}, "usedModel": "...", "usedFallback": true|false }`.
-  - Ograniczenia: rate-limit (10 żądań/min na klienta, in-memory), maks. długość tekstu 5000 znaków (413 jeśli przekroczone).
+  - Ograniczenia: rate-limit (10 żądań/min na klienta, in-memory — per instancja serverless, nie globalnie), maks. długość tekstu 5000 znaków (413 jeśli przekroczone).
 
 - GET /api/health
   - Zwraca podstawowy stan aplikacji: `status`, `timestamp`, `uptime_seconds`, `model`.
 
 - GET /api/usage
-  - Zwraca `last_usage` z ostatniego wywołania `/api/explain`.
+  - Zwraca `last_usage` z ostatniego wywołania `/api/explain` (in-memory, per instancja serverless).
 
 Konfiguracja środowiska (ważne zmienne)
 
@@ -43,18 +43,16 @@ Konfiguracja środowiska (ważne zmienne)
 - `OPENAI_FALLBACK_MODEL` (opcjonalne) — model zapasowy w przypadku ograniczeń organizacyjnych.
 - `OPENAI_REQUEST_TIMEOUT_MS` (opcjonalne) — maksymalny czas oczekiwania na odpowiedź OpenAI w milisekundach. Domyślnie `20000`.
 
-Opcjonalne/zaawansowane ustawienia (instrukcje przywrócenia)
+Opcjonalne/zaawansowane ustawienia
 
-Instrukcje poniżej służą do włączenia dodatkowych, opcjonalnych funkcji. README traktuj jako jedyny źródłowy przewodnik — wykonując poniższe kroki, można przywrócić lub dodać funkcje.
-
-1) Zewnętrzny serwis OCR (forwarding)
+1. Zewnętrzny serwis OCR (forwarding)
 
 - Zmienna: `OCR_WORKER_URL` — pełny URL worker'a (np. `https://ocr.example/process`).
 - W kodzie: w `api/explain.js` należy mieć blok, który po nieudanej ekstrakcji wywołuje worker:
 
 ```js
 if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
-  const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/\+$/, '') + '/process';
+  const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '') + '/process';
   // zbuduj FormData (global.FormData lub require('form-data'))
   // dołącz plik (strumień z filepath lub buffer) pod kluczem 'file'
   // wyślij fetch(OCR_URL, { method: 'POST', headers, body: formBody })
@@ -62,9 +60,7 @@ if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
 }
 ```
 
-(Jeśli wolisz nie pisać tego ręcznie, można przywrócić plik `api/explain.js` z historii Git: `git log -- api/explain.js` -> `git checkout <commit> -- api/explain.js`.)
-
-2) Endpoint administracyjny kosztów (opcjonalny)
+2. Endpoint administracyjny kosztów (opcjonalny)
 
 - Aby dodać `GET /api/costs` umieść w `api/costs.js` handler, który:
   - weryfikuje nagłówek `x-admin-token` lub `Authorization: Bearer <token>` i porównuje z `process.env.ADMIN_API_TOKEN`;
@@ -74,21 +70,30 @@ Przykładowy szkic pliku `api/costs.js`:
 
 ```js
 module.exports = async function handler(req, res) {
-  if ((req.method || 'GET').toUpperCase() !== 'GET') { res.setHeader('Allow','GET'); return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.'}); }
+  if ((req.method || 'GET').toUpperCase() !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.' });
+  }
   const adminToken = process.env.ADMIN_API_TOKEN;
-  if (!adminToken) return res.status(501).json({ error: 'Endpoint nie jest skonfigurowany. Brakuje ADMIN_API_TOKEN.' });
+  if (!adminToken)
+    return res
+      .status(501)
+      .json({ error: 'Endpoint nie jest skonfigurowany. Brakuje ADMIN_API_TOKEN.' });
   // sprawdź nagłówek, pobierz OPENAI_ADMIN_KEY itd., wywołaj fetch do OpenAI i zwróć JSON
 };
 ```
 
-3) Oddzielny endpoint ekstrakcji (opcjonalny)
+3. Oddzielny endpoint ekstrakcji (opcjonalny)
 
 - Możesz dodać `api/extract.js` z prostym handlerem:
 
 ```js
 const { parseForm, extractTextFromFile } = require('./extract-utils');
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') { res.setHeader('Allow','POST'); return res.status(405).json({ error: 'Metoda niedozwolona. Użyj POST.' }); }
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Metoda niedozwolona. Użyj POST.' });
+  }
   const parsed = await parseForm(req);
   const files = parsed.files || {};
   const file = files.documentFile || files.file || Object.values(files)[0];
@@ -97,12 +102,6 @@ module.exports = async function handler(req, res) {
   return res.status(200).json({ extractedText: text || '' });
 };
 ```
-
-Przywracanie plików z historii Git
-
-- Aby znaleźć wcześniejsze wersje lub usunięte pliki:
-  - `git log -- <path/to/file>` — historia zmian dla danego pliku
-  - `git checkout <commit_hash> -- <path/to/file>` — przywrócenie pliku z konkretnego commita
 
 Testy i uruchomienie lokalne
 
@@ -127,5 +126,3 @@ Wskazówki operacyjne
 
 - Jeśli przywracasz OCR lokalny w środowisku CI/produkcyjnym, upewnij się, że runner ma wystarczające zasoby i że językowe traineddata są dostępne.
 - Przy większym ruchu rozważ wyodrębnianie OCR do osobnego asynchronicznego procesu/queue.
-
-Jeśli potrzebujesz, mogę teraz: zaktualizować README (zrobię to natychmiast), przywrócić dowolny usunięty plik z historii Git albo wdrożyć dodatkowy endpoint — powiedz, co wykonać dalej.

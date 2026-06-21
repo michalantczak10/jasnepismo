@@ -67,7 +67,9 @@ module.exports = async function handler(req, res) {
         files = parsed.files;
       } catch (e) {
         console.error('Form parse error in /api/explain:', e && e.stack ? e.stack : e);
-        return res.status(400).json({ error: 'Nieprawidłowy format formularza. Upewnij się, że wysyłasz multipart/form-data.' });
+        return res.status(400).json({
+          error: 'Nieprawidłowy format formularza. Upewnij się, że wysyłasz multipart/form-data.',
+        });
       }
 
       text = (fields && fields.text) || '';
@@ -84,7 +86,9 @@ module.exports = async function handler(req, res) {
           text = await extractTextFromFile(file);
         } catch (e) {
           console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
-          return res.status(400).json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
+          return res
+            .status(400)
+            .json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
         }
 
         // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
@@ -93,24 +97,41 @@ module.exports = async function handler(req, res) {
             const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '') + '/process';
             const fs = require('fs');
             // prefer file path when available
-            const filepath = file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
+            const filepath =
+              file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
             let formBody = null;
 
             // Use global FormData when available (Node 18+), otherwise fall back to form-data package
-            const FormDataCtor = global.FormData || (() => { try { return require('form-data'); } catch (e) { return null; } })();
+            const FormDataCtor =
+              global.FormData ||
+              (() => {
+                try {
+                  return require('form-data');
+                } catch (e) {
+                  return null;
+                }
+              })();
 
-            if (filepath && typeof filepath === 'string' && fs.existsSync(filepath) && FormDataCtor) {
+            if (
+              filepath &&
+              typeof filepath === 'string' &&
+              fs.existsSync(filepath) &&
+              FormDataCtor
+            ) {
               const stream = fs.createReadStream(filepath);
               formBody = new FormDataCtor();
-              if (typeof formBody.append === 'function') formBody.append('file', stream, file.originalFilename || file.name || 'file');
+              if (typeof formBody.append === 'function')
+                formBody.append('file', stream, file.originalFilename || file.name || 'file');
             } else if ((file.buffer || file.data) && FormDataCtor) {
               const buf = file.buffer || file.data;
               formBody = new FormDataCtor();
-              if (typeof formBody.append === 'function') formBody.append('file', buf, file.originalFilename || file.name || 'file');
+              if (typeof formBody.append === 'function')
+                formBody.append('file', buf, file.originalFilename || file.name || 'file');
             }
 
             if (formBody) {
-              const headers = typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
+              const headers =
+                typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
               const resp = await fetch(OCR_URL, { method: 'POST', headers, body: formBody });
               if (resp.ok) {
                 const json = await resp.json().catch(() => null);
@@ -155,9 +176,9 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('Error in /api/explain:', error);
 
-
     const isRateLimit =
-      error && error.message &&
+      error &&
+      error.message &&
       (error.message.includes('Too Many Requests') ||
         error.message.includes('rate limit') ||
         error.message.includes('429'));
@@ -170,11 +191,15 @@ module.exports = async function handler(req, res) {
     }
 
     const isTimeout =
-      error && (error.code === 'OPENAI_TIMEOUT' || error.name === 'AbortError' ||
+      error &&
+      (error.code === 'OPENAI_TIMEOUT' ||
+        error.name === 'AbortError' ||
         (error.message && error.message.toLowerCase().includes('timed out')));
     if (isTimeout) {
       res.setHeader('Retry-After', '30');
-      return res.status(504).json({ error: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.' });
+      return res
+        .status(504)
+        .json({ error: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.' });
     }
 
     // Organization not verified error from OpenAI (common when using newer models)
@@ -183,7 +208,7 @@ module.exports = async function handler(req, res) {
       return res.status(403).json({
         error:
           'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.',
-        suggestedModel
+        suggestedModel,
       });
     }
 

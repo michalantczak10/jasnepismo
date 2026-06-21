@@ -13,12 +13,26 @@ function createResponse() {
   const headers = {};
   let body;
   return {
-    setHeader(key, value) { headers[key] = value; },
-    status(code) { statusCode = code; return this; },
-    json(data) { body = data; return this; },
-    getStatus() { return statusCode; },
-    getHeaders() { return headers; },
-    getBody() { return body; },
+    setHeader(key, value) {
+      headers[key] = value;
+    },
+    status(code) {
+      statusCode = code;
+      return this;
+    },
+    json(data) {
+      body = data;
+      return this;
+    },
+    getStatus() {
+      return statusCode;
+    },
+    getHeaders() {
+      return headers;
+    },
+    getBody() {
+      return body;
+    },
   };
 }
 
@@ -107,22 +121,78 @@ describe('e2e: /api/explain file extraction and full flow', () => {
     const pdfBuf = samplePdfBuffer();
 
     const fixtures = [
-      { name: 'txt', buffer: Buffer.from('To jest testowy plik tekstowy\nDruga linia.'), filename: 'sample.txt', mimetype: 'text/plain', expect: 'testowy' },
-      { name: 'pdf', buffer: pdfBuf, filename: 'sample.pdf', mimetype: 'application/pdf', expect: null },
-      { name: 'docx', buffer: makeDocxBuffer('Sample DOCX text for testing - Jasne pismo'), filename: 'sample.docx', mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', expect: 'Sample DOCX' },
-      { name: 'doc', buffer: makeRtfBuffer('Sample RTF content for testing'), filename: 'sample.doc', mimetype: 'application/rtf', expect: 'Sample RTF' },
-      { name: 'odt', buffer: makeOdtBuffer('Sample ODT text for testing - Jasne pismo'), filename: 'sample.odt', mimetype: 'application/vnd.oasis.opendocument.text', expect: 'Sample ODT' },
-      { name: 'png', buffer: imgs.png, filename: 'img.png', mimetype: 'image/png', expect: 'PRZYKŁAD' },
-      { name: 'jpeg', buffer: imgs.jpeg, filename: 'img.jpg', mimetype: 'image/jpeg', expect: 'PRZYKŁAD' },
-      { name: 'bmp', buffer: imgs.png, filename: 'img.bmp', mimetype: 'image/bmp', expect: 'PRZYKŁAD' },
+      {
+        name: 'txt',
+        buffer: Buffer.from('To jest testowy plik tekstowy\nDruga linia.'),
+        filename: 'sample.txt',
+        mimetype: 'text/plain',
+        expect: 'testowy',
+      },
+      {
+        name: 'pdf',
+        buffer: pdfBuf,
+        filename: 'sample.pdf',
+        mimetype: 'application/pdf',
+        expect: null,
+      },
+      {
+        name: 'docx',
+        buffer: makeDocxBuffer('Sample DOCX text for testing - Jasne pismo'),
+        filename: 'sample.docx',
+        mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        expect: 'Sample DOCX',
+      },
+      {
+        name: 'doc',
+        buffer: makeRtfBuffer('Sample RTF content for testing'),
+        filename: 'sample.doc',
+        mimetype: 'application/rtf',
+        expect: 'Sample RTF',
+      },
+      {
+        name: 'odt',
+        buffer: makeOdtBuffer('Sample ODT text for testing - Jasne pismo'),
+        filename: 'sample.odt',
+        mimetype: 'application/vnd.oasis.opendocument.text',
+        expect: 'Sample ODT',
+      },
+      {
+        name: 'png',
+        buffer: imgs.png,
+        filename: 'img.png',
+        mimetype: 'image/png',
+        expect: 'PRZYKŁAD',
+      },
+      {
+        name: 'jpeg',
+        buffer: imgs.jpeg,
+        filename: 'img.jpg',
+        mimetype: 'image/jpeg',
+        expect: 'PRZYKŁAD',
+      },
+      {
+        name: 'bmp',
+        buffer: imgs.png,
+        filename: 'img.bmp',
+        mimetype: 'image/bmp',
+        expect: 'PRZYKŁAD',
+      },
     ];
 
     for (const f of fixtures) {
       // stub form parsing to supply our buffer
-      extractUtils.parseForm = async () => ({ fields: {}, files: { documentFile: { buffer: f.buffer, originalFilename: f.filename, mimetype: f.mimetype } } });
+      extractUtils.parseForm = async () => ({
+        fields: {},
+        files: {
+          documentFile: { buffer: f.buffer, originalFilename: f.filename, mimetype: f.mimetype },
+        },
+      });
 
       let captured = null;
-      openai.generateExplanation = async (text) => { captured = text; return { explanation: `expl:${f.name}`, usage: {} }; };
+      openai.generateExplanation = async (text) => {
+        captured = text;
+        return { explanation: `expl:${f.name}`, usage: {} };
+      };
 
       // require handler after stubbing parseForm so it picks up the stub
       delete require.cache[require.resolve('../../api/explain.js')];
@@ -138,9 +208,11 @@ describe('e2e: /api/explain file extraction and full flow', () => {
       assert.equal(body.explanation, `expl:${f.name}`);
       assert.ok(captured && captured.length > 0, `no extracted text for ${f.name}`);
       if (f.expect) {
-        assert.ok(captured.includes(f.expect), `extracted text for ${f.name} doesn't contain expected substring. Got: ${captured.slice(0,100)}`);
+        assert.ok(
+          captured.includes(f.expect),
+          `extracted text for ${f.name} doesn't contain expected substring. Got: ${captured.slice(0, 100)}`
+        );
       }
     }
   });
 });
-

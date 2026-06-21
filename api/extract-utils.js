@@ -7,8 +7,10 @@ function makeForm(options) {
   // support multiple formidable API shapes across versions
   try {
     if (typeof formidable === 'function') return formidable(options);
-    if (formidable && typeof formidable.formidable === 'function') return formidable.formidable(options);
-    if (formidable && typeof formidable.IncomingForm === 'function') return new formidable.IncomingForm(options);
+    if (formidable && typeof formidable.formidable === 'function')
+      return formidable.formidable(options);
+    if (formidable && typeof formidable.IncomingForm === 'function')
+      return new formidable.IncomingForm(options);
   } catch (e) {
     // fallthrough
   }
@@ -67,7 +69,12 @@ async function extractTextFromFile(rawFile) {
   if (filepath) {
     try {
       if (!fs.existsSync(filepath)) {
-        console.error('extractTextFromFile: filepath not found', filepath, 'file keys:', Object.keys(file));
+        console.error(
+          'extractTextFromFile: filepath not found',
+          filepath,
+          'file keys:',
+          Object.keys(file)
+        );
         return '';
       }
       buffer = fs.readFileSync(filepath);
@@ -138,7 +145,10 @@ async function extractTextFromFile(rawFile) {
       if (contentEntry) {
         const contentXml = contentEntry.getData().toString('utf8');
         try {
-          const parsed = await xml2js.parseStringPromise(contentXml, { explicitArray: false, ignoreAttrs: true });
+          const parsed = await xml2js.parseStringPromise(contentXml, {
+            explicitArray: false,
+            ignoreAttrs: true,
+          });
           const extract = (node) => {
             if (!node) return '';
             if (typeof node === 'string') return node;
@@ -153,7 +163,10 @@ async function extractTextFromFile(rawFile) {
           return text;
         } catch (e) {
           // fallback: strip tags
-          return contentXml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          return contentXml
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
         }
       }
     } catch (e) {
@@ -163,7 +176,10 @@ async function extractTextFromFile(rawFile) {
   }
 
   // Images (OCR)
-  if (type.startsWith('image/') || ['.jpg', '.jpeg', '.png', '.bmp'].some((ext) => lowerName.endsWith(ext))) {
+  if (
+    type.startsWith('image/') ||
+    ['.jpg', '.jpeg', '.png', '.bmp'].some((ext) => lowerName.endsWith(ext))
+  ) {
     try {
       let imgBuffer = buffer;
       try {
@@ -190,7 +206,7 @@ async function extractTextFromFile(rawFile) {
         }
         const { data } = await worker.recognize(imgBuffer);
         await worker.terminate();
-        return (data && data.text) ? data.text : '';
+        return data && data.text ? data.text : '';
       } catch (e) {
         if (worker) {
           try {

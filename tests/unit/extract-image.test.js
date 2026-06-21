@@ -14,7 +14,10 @@ describe('extract-utils (image OCR)', () => {
     const png = await sharp(svg).png().toBuffer();
     const file = { buffer: png, originalFilename: 'img.png', mimetype: 'image/png' };
     const text = await extractTextFromFile(file);
-    assert.ok(text && text.trim().length >= 5, `OCR output too short: "${String(text).slice(0,100)}"`);
+    assert.ok(
+      text && text.trim().length >= 5,
+      `OCR output too short: "${String(text).slice(0, 100)}"`
+    );
   });
 
   it('extracts text from JPEG image (OCR)', async () => {
@@ -22,7 +25,10 @@ describe('extract-utils (image OCR)', () => {
     const jpeg = await sharp(svg).jpeg().toBuffer();
     const file = { buffer: jpeg, originalFilename: 'img.jpg', mimetype: 'image/jpeg' };
     const text = await extractTextFromFile(file);
-    assert.ok(text && text.trim().length >= 5, `OCR output too short: "${String(text).slice(0,100)}"`);
+    assert.ok(
+      text && text.trim().length >= 5,
+      `OCR output too short: "${String(text).slice(0, 100)}"`
+    );
   });
 
   it('extracts text from BMP image (OCR) — using PNG buffer if BMP unsupported', async () => {
@@ -31,7 +37,9 @@ describe('extract-utils (image OCR)', () => {
     const png = await sharp(svg).png().toBuffer();
     const file = { buffer: png, originalFilename: 'img.bmp', mimetype: 'image/bmp' };
     const text = await extractTextFromFile(file);
-    assert.ok(text && text.trim().length >= 5, `OCR output too short: "${String(text).slice(0,100)}"`);
+    assert.ok(
+      text && text.trim().length >= 5,
+      `OCR output too short: "${String(text).slice(0, 100)}"`
+    );
   });
 });
-

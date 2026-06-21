@@ -61,4 +61,3 @@ describe('api/health.js', () => {
     assert.deepEqual(res.getBody(), { error: 'Metoda niedozwolona. Użyj GET.' });
   });
 });
-

@@ -9,12 +9,26 @@ function createResponse() {
   let body;
 
   return {
-    setHeader(key, value) { headers[key] = value; },
-    status(code) { statusCode = code; return this; },
-    json(data) { body = data; return this; },
-    getStatus() { return statusCode; },
-    getHeaders() { return headers; },
-    getBody() { return body; },
+    setHeader(key, value) {
+      headers[key] = value;
+    },
+    status(code) {
+      statusCode = code;
+      return this;
+    },
+    json(data) {
+      body = data;
+      return this;
+    },
+    getStatus() {
+      return statusCode;
+    },
+    getHeaders() {
+      return headers;
+    },
+    getBody() {
+      return body;
+    },
   };
 }
 
@@ -47,7 +61,8 @@ describe('api/usage.js', () => {
     usage(req, res);
 
     assert.equal(res.getStatus(), 200);
-    assert.deepEqual(res.getBody(), { last_usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 } });
+    assert.deepEqual(res.getBody(), {
+      last_usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 },
+    });
   });
 });
-

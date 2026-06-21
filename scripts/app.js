@@ -61,7 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const textareaEl = document.getElementById('documentText');
 
         const lowerName = f.name ? f.name.toLowerCase() : '';
-        if ((f.type && f.type.startsWith('text/')) || lowerName.endsWith('.txt') || lowerName.endsWith('.rtf') || lowerName.endsWith('.md') || lowerName.endsWith('.csv')) {
+        if (
+          (f.type && f.type.startsWith('text/')) ||
+          lowerName.endsWith('.txt') ||
+          lowerName.endsWith('.rtf') ||
+          lowerName.endsWith('.md') ||
+          lowerName.endsWith('.csv')
+        ) {
           const reader = new FileReader();
           extractInProgress = true;
           updateFreeButtonState();
@@ -89,25 +95,34 @@ document.addEventListener('DOMContentLoaded', function () {
           try {
             const formData = new FormData();
             formData.append('file', f, f.name);
-            const resp = await fetch('/api/explain', { method: 'POST', headers: { 'X-Extract-Only': '1' }, body: formData });
+            const resp = await fetch('/api/explain', {
+              method: 'POST',
+              headers: { 'X-Extract-Only': '1' },
+              body: formData,
+            });
             if (resp.ok) {
               const json = await resp.json().catch(() => null);
               const extracted = (json && (json.extractedText || json.text)) || '';
               if (textareaEl && extracted) {
                 textareaEl.value = extracted;
                 updateTextCount(extracted);
-                if (errorMessage) { errorMessage.hidden = true; errorMessage.textContent = ''; }
+                if (errorMessage) {
+                  errorMessage.hidden = true;
+                  errorMessage.textContent = '';
+                }
               } else {
                 if (errorMessage) {
                   errorMessage.hidden = false;
-                  errorMessage.textContent = 'Nie udało się automatycznie wczytać tekstu z pliku. Jeśli to skan, włącz OCR (lokalny OCR) lub wpisz tekst ręcznie.';
+                  errorMessage.textContent =
+                    'Nie udało się automatycznie wczytać tekstu z pliku. Wyślij plik do wyjaśnienia — OCR zostanie wykonany na serwerze. Możesz też wpisać tekst ręcznie.';
                 }
               }
             } else {
               const errJson = await resp.json().catch(() => null);
               if (errorMessage) {
                 errorMessage.hidden = false;
-                errorMessage.textContent = (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
+                errorMessage.textContent =
+                  (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
               }
             }
           } catch (e) {
@@ -271,4 +286,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
-

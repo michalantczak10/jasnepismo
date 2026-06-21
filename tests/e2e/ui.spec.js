@@ -7,8 +7,16 @@ test('form, modal and file input behavior', async ({ page }) => {
     window.fetch = (input, init) => {
       const url = typeof input === 'string' ? input : (input && input.url) || '';
       if (url && url.includes('/api/explain')) {
-        const body = { explanation: 'Testowe wyjaśnienie', usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } };
-        return Promise.resolve(new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        const body = {
+          explanation: 'Testowe wyjaśnienie',
+          usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 },
+        };
+        return Promise.resolve(
+          new Response(JSON.stringify(body), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        );
       }
       return origFetch(input, init);
     };
@@ -21,7 +29,11 @@ test('form, modal and file input behavior', async ({ page }) => {
   const fileInput = page.locator('[data-testid="documentFile"]');
   await expect(fileInput).toHaveCount(1);
 
-  await fileInput.setInputFiles({ name: 'hello.txt', mimeType: 'text/plain', buffer: Buffer.from('Hello world') });
+  await fileInput.setInputFiles({
+    name: 'hello.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('Hello world'),
+  });
 
   // Wait for the input element to report the uploaded file (robust to hidden native input)
   await page.waitForFunction(() => {
@@ -30,7 +42,7 @@ test('form, modal and file input behavior', async ({ page }) => {
   });
   const uploadedName = await page.evaluate(() => {
     const el = document.querySelector('[data-testid="documentFile"]');
-    return (el && el.files && el.files[0]) ? el.files[0].name : '';
+    return el && el.files && el.files[0] ? el.files[0].name : '';
   });
   expect(uploadedName).toBe('hello.txt');
 

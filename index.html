@@ -150,7 +150,7 @@
             <input
               id="documentFile"
               type="file"
-              accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,.jpg,.jpeg,.png,.gif"
+              accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,.jpg,.jpeg,.png"
               class="file-upload-input"
               data-testid="documentFile"
             />
@@ -344,8 +344,8 @@
         <div class="content-block">
           <p>
             Jasne pismo to niezależny, przyjazny projekt, którego celem jest ułatwienie zrozumienia
-            oficjalnych pism i dokumentów. Wklej treść dokumentu, kliknij „Wyjaśnij”, a system zwróci
-            proste podsumowanie i praktyczne wskazówki.
+            oficjalnych pism i dokumentów. Wklej treść dokumentu, kliknij „Wyjaśnij”, a system
+            zwróci proste podsumowanie i praktyczne wskazówki.
           </p>
           <p>
             Chcemy pomagać w sprawach codziennych — pismach urzędowych, spółdzielni, szkoły i innych
@@ -367,8 +367,8 @@
             <h3>W skrócie</h3>
             <ul>
               <li>
-                Wklejony tekst używamy tylko po to, aby przygotować wyjaśnienie. Nie tworzymy kont ani
-                nie przechowujemy historii dokumentów.
+                Wklejony tekst używamy tylko po to, aby przygotować wyjaśnienie. Nie tworzymy kont
+                ani nie przechowujemy historii dokumentów.
               </li>
               <li>
                 Do wygenerowania odpowiedzi korzystamy z usług zewnętrznych (np. dostawca modelu
@@ -394,8 +394,8 @@
           <h3>2. Zakres i cel przetwarzania</h3>
           <p>
             Serwis przetwarza tekst, który użytkownik wprowadza do formularza lub który zostanie
-            odczytany z przesłanego pliku (np. PDF/DOCX) w przeglądarce użytkownika, wyłącznie w celu
-            wygenerowania prostego wyjaśnienia treści dokumentu.
+            odczytany z przesłanego pliku (np. PDF/DOCX) w przeglądarce użytkownika, wyłącznie w
+            celu wygenerowania prostego wyjaśnienia treści dokumentu.
           </p>
           <p>
             Aby wygenerować wyjaśnienie, treść przekazywana jest do zewnętrznego dostawcy usługi AI
@@ -412,9 +412,9 @@
 
           <h3>4. Okres przechowywania</h3>
           <p>
-            Wprowadzone treści są przetwarzane na potrzeby wygenerowania odpowiedzi i nie są przez nas
-            zapisywane w bazie danych jako historia użytkownika. Możemy jednak przetwarzać podstawowe
-            logi techniczne (np. logi serwera/hostingu) przez ograniczony czas w celach
+            Wprowadzone treści są przetwarzane na potrzeby wygenerowania odpowiedzi i nie są przez
+            nas zapisywane w bazie danych jako historia użytkownika. Możemy jednak przetwarzać
+            podstawowe logi techniczne (np. logi serwera/hostingu) przez ograniczony czas w celach
             diagnostycznych i bezpieczeństwa; nie służą one do profilowania użytkowników.
           </p>
 
@@ -439,8 +439,6 @@
           <ul>
             <li>OpenAI — przetwarzanie treści w celu wygenerowania wyjaśnienia.</li>
             <li>Vercel — hosting strony i funkcji API.</li>
-            <li>CDN (np. unpkg, cdnjs, jsDelivr) — dostarczanie bibliotek używanych do odczytu plików i
-              OCR w przeglądarce.</li>
           </ul>
 
           <h3>7. Bezpieczeństwo</h3>
@@ -453,17 +451,23 @@
 
           <h3>8. Zmiany polityki prywatności</h3>
           <p>
-            Polityka prywatności może być aktualizowana. <span class="nowrap">Data ostatniej aktualizacji: <strong>2026-05-29</strong>.</span>
+            Polityka prywatności może być aktualizowana.
+            <span class="nowrap">Data ostatniej aktualizacji: <strong>2026-05-29</strong>.</span>
           </p>
 
           <h3>9. Kontakt</h3>
           <p>
-            W sprawach związanych z ochroną danych prosimy o kontakt: <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+            W sprawach związanych z ochroną danych prosimy o kontakt:
+            <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
           </p>
         </div>
       </section>
 
-      <section id="terms-section" class="section section--app fade-in legal-page" aria-labelledby="terms-heading">
+      <section
+        id="terms-section"
+        class="section section--app fade-in legal-page"
+        aria-labelledby="terms-heading"
+      >
         <div class="section-header">
           <p class="section-tag">Regulamin</p>
           <h2 id="terms-heading">Zasady korzystania z serwisu</h2>
@@ -489,10 +493,14 @@
           <h3>2. Definicje</h3>
           <ul>
             <li><strong>Użytkownik</strong> — osoba korzystająca z Serwisu.</li>
-            <li><strong>Treść</strong> — tekst wpisany przez Użytkownika lub odczytany z pliku w
-              przeglądarce (np. PDF/DOCX).</li>
-            <li><strong>Wynik</strong> — wygenerowane wyjaśnienie Treści (odpowiedź o charakterze
-              informacyjnym).</li>
+            <li>
+              <strong>Treść</strong> — tekst wpisany przez Użytkownika lub odczytany z pliku w
+              przeglądarce (np. PDF/DOCX).
+            </li>
+            <li>
+              <strong>Wynik</strong> — wygenerowane wyjaśnienie Treści (odpowiedź o charakterze
+              informacyjnym).
+            </li>
           </ul>
 
           <h3>3. Charakter usługi</h3>
@@ -504,24 +512,28 @@
           <h3>4. Zasady korzystania</h3>
           <ul>
             <li>Nie przesyłaj Treści, do której nie masz praw lub upoważnienia.</li>
-            <li>Nie umieszczaj danych wrażliwych ani informacji, których nie chcesz udostępniać
-              podmiotom trzecim (np. PESEL, dane zdrowotne, numery dokumentów).</li>
-            <li>Nie wykorzystuj Serwisu do działań bezprawnych, naruszających prawa osób trzecich lub do
-              generowania treści szkodliwych.</li>
+            <li>
+              Nie umieszczaj danych wrażliwych ani informacji, których nie chcesz udostępniać
+              podmiotom trzecim (np. PESEL, dane zdrowotne, numery dokumentów).
+            </li>
+            <li>
+              Nie wykorzystuj Serwisu do działań bezprawnych, naruszających prawa osób trzecich lub
+              do generowania treści szkodliwych.
+            </li>
           </ul>
 
           <h3>5. Wymagania techniczne</h3>
           <p>
             Do korzystania z Serwisu potrzebne są: aktualna przeglądarka internetowa, dostęp do
-            Internetu oraz włączona obsługa JavaScript. Dla przesyłania plików wymagany jest dostęp do
-            systemowego okna wyboru pliku.
+            Internetu oraz włączona obsługa JavaScript. Dla przesyłania plików wymagany jest dostęp
+            do systemowego okna wyboru pliku.
           </p>
 
           <h3>6. Dane i prywatność</h3>
           <p>
             Serwis nie gromadzi kont Użytkowników. Wprowadzona Treść jest przetwarzana w celu
-            wygenerowania Wyniku. Szczegółowe informacje o przetwarzaniu danych i usługach zewnętrznych
-            znajdują się w Polityce prywatności.
+            wygenerowania Wyniku. Szczegółowe informacje o przetwarzaniu danych i usługach
+            zewnętrznych znajdują się w Polityce prywatności.
           </p>
 
           <h3>7. Odpowiedzialność</h3>
@@ -544,7 +556,8 @@
 
           <h3>10. Zmiany regulaminu</h3>
           <p>
-            Regulamin może być aktualizowany. Data ostatniej aktualizacji: <strong>2026-05-29</strong>.
+            Regulamin może być aktualizowany. Data ostatniej aktualizacji:
+            <strong>2026-05-29</strong>.
           </p>
         </div>
       </section>
@@ -619,4 +632,3 @@
     <script defer src="scripts/app.js?v=3"></script>
   </body>
 </html>
-

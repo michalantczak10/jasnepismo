@@ -47,15 +47,16 @@ describe('api/openai.js', () => {
     process.env.OPENAI_API_KEY = 'test-key';
     process.env.OPENAI_REQUEST_TIMEOUT_MS = '10';
 
-    global.fetch = async (_, opts) => new Promise((resolve, reject) => {
-      if (opts && opts.signal) {
-        opts.signal.addEventListener('abort', () => {
-          const err = new Error('The operation was aborted.');
-          err.name = 'AbortError';
-          reject(err);
-        });
-      }
-    });
+    global.fetch = async (_, opts) =>
+      new Promise((resolve, reject) => {
+        if (opts && opts.signal) {
+          opts.signal.addEventListener('abort', () => {
+            const err = new Error('The operation was aborted.');
+            err.name = 'AbortError';
+            reject(err);
+          });
+        }
+      });
 
     await assert.rejects(openai.generateExplanation('Przykładowy tekst'), {
       message: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.',

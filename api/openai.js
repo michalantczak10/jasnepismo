@@ -25,18 +25,30 @@ async function callOpenAI(body) {
     });
     const data = await resp.json().catch(() => null);
     if (!resp.ok) {
-      const errMsg = (data && (data.error?.message || data.message)) || `Błąd połączenia z OpenAI: ${resp.status}`;
+      const errMsg =
+        (data && (data.error?.message || data.message)) ||
+        `Błąd połączenia z OpenAI: ${resp.status}`;
       const err = new Error(errMsg);
       const msg = (errMsg || '').toString().toLowerCase();
       let isOrgUnverified = false;
       if (
-        msg.includes('must be verified') || msg.includes('not verified') || msg.includes('unverified') ||
-        msg.includes('nie jest zweryfik') || msg.includes('zweryfik') ||
-        (msg.includes('organization') && (msg.includes('verify') || msg.includes('verified') || msg.includes('unverified')))
+        msg.includes('must be verified') ||
+        msg.includes('not verified') ||
+        msg.includes('unverified') ||
+        msg.includes('nie jest zweryfik') ||
+        msg.includes('zweryfik') ||
+        (msg.includes('organization') &&
+          (msg.includes('verify') || msg.includes('verified') || msg.includes('unverified')))
       ) {
         isOrgUnverified = true;
       } else if (resp.status === 403 || resp.status === 401) {
-        isOrgUnverified = msg.includes('organization') || msg.includes('org') || msg.includes('verified') || msg.includes('unverified') || msg.includes('must be verified') || msg.includes('not verified');
+        isOrgUnverified =
+          msg.includes('organization') ||
+          msg.includes('org') ||
+          msg.includes('verified') ||
+          msg.includes('unverified') ||
+          msg.includes('must be verified') ||
+          msg.includes('not verified');
       }
       if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
       err.status = resp.status;
@@ -68,9 +80,12 @@ async function generateExplanation(text) {
       {
         role: 'system',
         content:
-          "Jesteś asystentem prawnym, który w przystępny sposób wyjaśnia treść pism urzędowych po polsku. Nie powtarzaj oryginalnego tekstu 1:1. W odpowiedzi podaj:\n\n1) Krótkie streszczenie (1-3 zdania).\n2) Najważniejsze punkty dokumentu (lista punktowana).\n3) Konkretne zalecane kroki lub działania (krótka lista).\n\nJeżeli brakuje istotnych informacji, wskaż które fragmenty wymagają doprecyzowania. Odpowiadaj zwięźle, używaj prostego języka i list punktowanych tam, gdzie to pomaga. Nie cytuj długich fragmentów dokumentu, zamiast tego streszczaj."
+          'Jesteś asystentem prawnym, który w przystępny sposób wyjaśnia treść pism urzędowych po polsku. Nie powtarzaj oryginalnego tekstu 1:1. W odpowiedzi podaj:\n\n1) Krótkie streszczenie (1-3 zdania).\n2) Najważniejsze punkty dokumentu (lista punktowana).\n3) Konkretne zalecane kroki lub działania (krótka lista).\n\nJeżeli brakuje istotnych informacji, wskaż które fragmenty wymagają doprecyzowania. Odpowiadaj zwięźle, używaj prostego języka i list punktowanych tam, gdzie to pomaga. Nie cytuj długich fragmentów dokumentu, zamiast tego streszczaj.',
       },
-      { role: 'user', content: `Oto tekst do wyjaśnienia:\n\n${text.trim()}\n\nProszę przygotować wyjaśnienie według powyższych zasad.` },
+      {
+        role: 'user',
+        content: `Oto tekst do wyjaśnienia:\n\n${text.trim()}\n\nProszę przygotować wyjaśnienie według powyższych zasad.`,
+      },
     ],
     temperature: 0.2,
     max_tokens: 800,
@@ -82,12 +97,21 @@ async function generateExplanation(text) {
     lastUsage = data.usage || null;
     return { explanation, usage: lastUsage, model: OPENAI_MODEL };
   } catch (err) {
-    const msg = (err && err.message) ? err.message.toString().toLowerCase() : '';
-    const isOrgUnverified = err && (err.code === 'ORG_UNVERIFIED' || err.status === 403 || msg.includes('must be verified') || msg.includes('not verified') || msg.includes('unverified') || msg.includes('zweryfik'));
+    const msg = err && err.message ? err.message.toString().toLowerCase() : '';
+    const isOrgUnverified =
+      err &&
+      (err.code === 'ORG_UNVERIFIED' ||
+        err.status === 403 ||
+        msg.includes('must be verified') ||
+        msg.includes('not verified') ||
+        msg.includes('unverified') ||
+        msg.includes('zweryfik'));
 
     if (isOrgUnverified && FALLBACK_MODEL && FALLBACK_MODEL !== OPENAI_MODEL) {
       try {
-        console.warn(`OpenAI model "${OPENAI_MODEL}" failed with organization/permission error; retrying with fallback "${FALLBACK_MODEL}".`);
+        console.warn(
+          `OpenAI model "${OPENAI_MODEL}" failed with organization/permission error; retrying with fallback "${FALLBACK_MODEL}".`
+        );
         const data2 = await callOpenAI(makeReq(FALLBACK_MODEL));
         const explanation = data2.choices?.[0]?.message?.content?.trim();
         lastUsage = data2.usage || null;
@@ -102,6 +126,8 @@ async function generateExplanation(text) {
   }
 }
 
-function getLastUsage() { return lastUsage; }
+function getLastUsage() {
+  return lastUsage;
+}
 
 module.exports = { generateExplanation, getLastUsage };

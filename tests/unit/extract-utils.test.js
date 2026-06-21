@@ -32,7 +32,11 @@ function makeOdtBuffer(text) {
 
 describe('extract-utils', () => {
   it('extracts text from TXT', async () => {
-    const file = { buffer: Buffer.from('To jest testowy plik tekstowy\nDruga linia.'), originalFilename: 'sample.txt', mimetype: 'text/plain' };
+    const file = {
+      buffer: Buffer.from('To jest testowy plik tekstowy\nDruga linia.'),
+      originalFilename: 'sample.txt',
+      mimetype: 'text/plain',
+    };
     const text = await extractTextFromFile(file);
     assert.ok(typeof text === 'string' && text.length > 0);
   });
@@ -40,7 +44,11 @@ describe('extract-utils', () => {
   it('extracts text from DOCX', async () => {
     const sample = 'Sample DOCX text for testing - Jasne pismo';
     const buf = makeDocxBuffer(sample);
-    const file = { buffer: buf, originalFilename: 'sample.docx', mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+    const file = {
+      buffer: buf,
+      originalFilename: 'sample.docx',
+      mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    };
     const text = await extractTextFromFile(file);
     assert.ok(text && text.includes('Sample DOCX'));
   });
@@ -48,16 +56,24 @@ describe('extract-utils', () => {
   it('extracts text from ODT', async () => {
     const sample = 'Sample ODT text for testing - Jasne pismo';
     const buf = makeOdtBuffer(sample);
-    const file = { buffer: buf, originalFilename: 'sample.odt', mimetype: 'application/vnd.oasis.opendocument.text' };
+    const file = {
+      buffer: buf,
+      originalFilename: 'sample.odt',
+      mimetype: 'application/vnd.oasis.opendocument.text',
+    };
     const text = await extractTextFromFile(file);
     assert.ok(text && text.includes('Sample ODT'));
   });
 
   it('extracts text from DOC (RTF heuristic)', async () => {
-    const rtf = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Arial;}}\\f0\\fs24 RTF sample content for testing\\par }";
-    const file = { buffer: Buffer.from(rtf), originalFilename: 'sample.doc', mimetype: 'application/rtf' };
+    const rtf =
+      '{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Arial;}}\\f0\\fs24 RTF sample content for testing\\par }';
+    const file = {
+      buffer: Buffer.from(rtf),
+      originalFilename: 'sample.doc',
+      mimetype: 'application/rtf',
+    };
     const text = await extractTextFromFile(file);
     assert.ok(typeof text === 'string');
   });
 });
-
