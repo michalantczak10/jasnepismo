@@ -2,7 +2,8 @@ name: Publish Worker Image
 
 on:
   push:
-    branches: [main]
+    # Publish images only on semver tags (v*). Avoid running heavy image builds
+    # on every push to main to reduce CI noise and failures.
     tags: ['v*']
 
 permissions:
