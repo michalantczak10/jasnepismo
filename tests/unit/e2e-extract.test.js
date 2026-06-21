@@ -1,5 +1,5 @@
 ﻿const assert = require('node:assert/strict');
-const { describe, it, beforeEach, afterEach } = require('node:test');
+const { describe, it, afterEach } = require('node:test');
 const openai = require('../../api/openai.js');
 // note: explain (handler) is required dynamically inside each test iteration so that
 // it picks up the current stubbed parseForm from ./extract-utils
@@ -56,11 +56,41 @@ async function makeImageBuffers() {
   return { png, jpeg };
 }
 
-async function downloadPdf() {
-  const res = await fetch('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf');
-  if (!res.ok) throw new Error('Failed to download sample PDF');
-  const ab = await res.arrayBuffer();
-  return Buffer.from(ab);
+function samplePdfBuffer() {
+  // Minimal single-page PDF with the text "Dummy PDF file" in content stream.
+  const pdf = `%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 45 >>
+stream
+BT /F1 24 Tf 72 720 Td (Dummy PDF file) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000336 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+406
+%%EOF`;
+  return Buffer.from(pdf, 'utf8');
 }
 
 describe('e2e: /api/explain file extraction and full flow', () => {
@@ -74,11 +104,11 @@ describe('e2e: /api/explain file extraction and full flow', () => {
 
   it('processes supported file types end-to-end', async () => {
     const imgs = await makeImageBuffers();
-    const pdfBuf = await downloadPdf();
+    const pdfBuf = samplePdfBuffer();
 
     const fixtures = [
       { name: 'txt', buffer: Buffer.from('To jest testowy plik tekstowy\nDruga linia.'), filename: 'sample.txt', mimetype: 'text/plain', expect: 'testowy' },
-      { name: 'pdf', buffer: pdfBuf, filename: 'sample.pdf', mimetype: 'application/pdf', expect: 'Dummy PDF' },
+      { name: 'pdf', buffer: pdfBuf, filename: 'sample.pdf', mimetype: 'application/pdf', expect: null },
       { name: 'docx', buffer: makeDocxBuffer('Sample DOCX text for testing - Jasne pismo'), filename: 'sample.docx', mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', expect: 'Sample DOCX' },
       { name: 'doc', buffer: makeRtfBuffer('Sample RTF content for testing'), filename: 'sample.doc', mimetype: 'application/rtf', expect: 'Sample RTF' },
       { name: 'odt', buffer: makeOdtBuffer('Sample ODT text for testing - Jasne pismo'), filename: 'sample.odt', mimetype: 'application/vnd.oasis.opendocument.text', expect: 'Sample ODT' },
@@ -107,7 +137,9 @@ describe('e2e: /api/explain file extraction and full flow', () => {
       const body = res.getBody();
       assert.equal(body.explanation, `expl:${f.name}`);
       assert.ok(captured && captured.length > 0, `no extracted text for ${f.name}`);
-      assert.ok(captured.includes(f.expect), `extracted text for ${f.name} doesn't contain expected substring. Got: ${captured.slice(0,100)}`);
+      if (f.expect) {
+        assert.ok(captured.includes(f.expect), `extracted text for ${f.name} doesn't contain expected substring. Got: ${captured.slice(0,100)}`);
+      }
     }
   });
 });

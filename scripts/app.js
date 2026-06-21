@@ -20,7 +20,7 @@
 
   function updateTextCount(val) {
     const textCountEl = document.getElementById('textCount');
-    if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znakĂłw`;
+    if (textCountEl) textCountEl.textContent = `${(val || '').length} / 5000 znaków`;
   }
 
   function updateFreeButtonState() {
@@ -37,7 +37,7 @@
 
     if (isLoading) {
       freeButton.dataset.orig = freeButton.textContent;
-      freeButton.textContent = 'WyjaĹ›nianieâ€¦';
+      freeButton.textContent = 'Wyjaśnianie...';
       freeButton.setAttribute('aria-busy', 'true');
     } else {
       if (freeButton.dataset.orig) freeButton.textContent = freeButton.dataset.orig;
@@ -54,7 +54,7 @@
 
       if (f) {
         fileDetails.hidden = false;
-        fileDetails.textContent = `${f.name} â€” ${Math.round(f.size / 1024)} KB`;
+        fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
         removeFileButton.disabled = false;
 
         // Try to populate textarea with file contents.
@@ -67,7 +67,7 @@
           updateFreeButtonState();
           if (statusMessage) {
             statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie plikuâ€¦';
+            statusMessage.textContent = 'Wczytywanie pliku...';
           }
           reader.addEventListener('load', function (ev) {
             const content = ev.target.result || '';
@@ -84,7 +84,7 @@
           updateFreeButtonState();
           if (statusMessage) {
             statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie plikuâ€¦';
+            statusMessage.textContent = 'Wczytywanie pliku...';
           }
           try {
             const formData = new FormData();
@@ -100,20 +100,20 @@
               } else {
                 if (errorMessage) {
                   errorMessage.hidden = false;
-                  errorMessage.textContent = 'Nie udaĹ‚o siÄ™ automatycznie wczytaÄ‡ tekstu z pliku. JeĹ›li to skan, wĹ‚Ä…cz OCR (lokalny OCR) lub wpisz tekst rÄ™cznie.';
+                  errorMessage.textContent = 'Nie udało się automatycznie wczytać tekstu z pliku. Jeśli to skan, włącz OCR (lokalny OCR) lub wpisz tekst ręcznie.';
                 }
               }
             } else {
               const errJson = await resp.json().catch(() => null);
               if (errorMessage) {
                 errorMessage.hidden = false;
-                errorMessage.textContent = (errJson && errJson.error) || 'Nie udaĹ‚o siÄ™ wczytaÄ‡ pliku.';
+                errorMessage.textContent = (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
               }
             }
           } catch (e) {
             if (errorMessage) {
               errorMessage.hidden = false;
-              errorMessage.textContent = 'BĹ‚Ä…d wczytywania pliku.';
+              errorMessage.textContent = 'Błąd wczytywania pliku.';
             }
           } finally {
             extractInProgress = false;
@@ -194,7 +194,7 @@
       setLoading(true);
       if (statusMessage) {
         statusMessage.hidden = false;
-        statusMessage.textContent = 'WysyĹ‚anie do serweraâ€¦';
+        statusMessage.textContent = 'Wysyłanie do serwera...';
       }
       if (errorMessage) {
         errorMessage.hidden = true;
@@ -215,7 +215,7 @@
         } else {
           if (!text.trim()) {
             throw new Error(
-              'ProszÄ™ wkleiÄ‡ treĹ›Ä‡ pisma do przetworzenia lub doĹ‚Ä…czyÄ‡ plik z tekstem.'
+              'Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.'
             );
           }
           response = await fetch('/api/explain', {
@@ -227,7 +227,7 @@
 
         if (!response.ok) {
           const json = await response.json().catch(() => null);
-          throw new Error((json && json.error) || 'BĹ‚Ä…d serwera');
+          throw new Error((json && json.error) || 'Błąd serwera');
         }
 
         const data = await response.json();
@@ -239,7 +239,7 @@
           const model = data && data.usedModel;
           const fallback = data && data.usedFallback ? ' (fallback)' : '';
           if (model) {
-            usedModelEl.textContent = `UĹĽyty model: ${model}${fallback}`;
+            usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
             usedModelEl.hidden = false;
           } else {
             usedModelEl.hidden = true;
@@ -250,7 +250,7 @@
       } catch (err) {
         if (errorMessage) {
           errorMessage.hidden = false;
-          errorMessage.textContent = (err && err.message) || 'WystÄ…piĹ‚ bĹ‚Ä…d';
+          errorMessage.textContent = (err && err.message) || 'Wystąpił błąd';
         }
         if (statusMessage) statusMessage.hidden = true;
       } finally {

@@ -1,10 +1,7 @@
-let openai = require('./openai');
-// allow tests or runtime to swap provider by mutating the exported module
-try { if (!openai) openai = require('./openai'); } catch (e) {}
+const openai = require('./openai');
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
-const fs = require('fs');
 const { parseForm, extractTextFromFile } = require('./extract-utils');
 
 // Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
@@ -91,9 +88,9 @@ module.exports = async function handler(req, res) {
         }
 
         // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
-        if (false) {
+        if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
           try {
-            const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/,'') + '/process';
+            const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '') + '/process';
             const fs = require('fs');
             // prefer file path when available
             const filepath = file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
@@ -170,6 +167,14 @@ module.exports = async function handler(req, res) {
       return res
         .status(429)
         .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.' });
+    }
+
+    const isTimeout =
+      error && (error.code === 'OPENAI_TIMEOUT' || error.name === 'AbortError' ||
+        (error.message && error.message.toLowerCase().includes('timed out')));
+    if (isTimeout) {
+      res.setHeader('Retry-After', '30');
+      return res.status(504).json({ error: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.' });
     }
 
     // Organization not verified error from OpenAI (common when using newer models)

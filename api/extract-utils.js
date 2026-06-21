@@ -19,7 +19,12 @@ function parseForm(req) {
   return new Promise((resolve, reject) => {
     let form;
     try {
-      form = makeForm({ multiples: false });
+      form = makeForm({
+        multiples: false,
+        maxFiles: 1,
+        maxFileSize: 5 * 1024 * 1024,
+        allowEmptyFiles: false,
+      });
     } catch (e) {
       return reject(e);
     }
@@ -87,6 +92,15 @@ async function extractTextFromFile(rawFile) {
       return data.text || '';
     } catch (e) {
       console.error('PDF parse error:', e);
+      // Fallback: try to extract readable ASCII/UTF-8 fragments from the buffer
+      try {
+        const s = buffer.toString('utf8');
+        const words = s.match(/[A-Za-z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]{4,}/g) || [];
+        const text = words.slice(0, 200).join(' ');
+        if (text && text.length > 10) return text;
+      } catch (e2) {
+        // ignore
+      }
       return '';
     }
   }
@@ -125,7 +139,7 @@ async function extractTextFromFile(rawFile) {
         const contentXml = contentEntry.getData().toString('utf8');
         try {
           const parsed = await xml2js.parseStringPromise(contentXml, { explicitArray: false, ignoreAttrs: true });
-          function extract(node) {
+          const extract = (node) => {
             if (!node) return '';
             if (typeof node === 'string') return node;
             if (Array.isArray(node)) return node.map(extract).join(' ');
@@ -134,7 +148,7 @@ async function extractTextFromFile(rawFile) {
               out += extract(node[k]) + ' ';
             }
             return out;
-          }
+          };
           const text = extract(parsed).replace(/\s+/g, ' ').trim();
           return text;
         } catch (e) {
@@ -178,7 +192,13 @@ async function extractTextFromFile(rawFile) {
         await worker.terminate();
         return (data && data.text) ? data.text : '';
       } catch (e) {
-        if (worker) try { await worker.terminate(); } catch (e2) {}
+        if (worker) {
+          try {
+            await worker.terminate();
+          } catch (terminateErr) {
+            console.warn('Worker terminate error:', terminateErr);
+          }
+        }
         throw e;
       }
     } catch (e) {

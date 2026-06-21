@@ -11,13 +11,19 @@ function getOpenAIModel() {
 async function callOpenAI(body) {
   const OPENAI_API_KEY = getOpenAIApiKey();
   if (!OPENAI_API_KEY) throw new Error('Brak klucza OpenAI API na serwerze.');
-  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
-    body: JSON.stringify(body),
-  });
-  const data = await resp.json().catch(() => null);
-  if (!resp.ok) {
+  const OPENAI_REQUEST_TIMEOUT_MS = Number(process.env.OPENAI_REQUEST_TIMEOUT_MS || 20000);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), OPENAI_REQUEST_TIMEOUT_MS);
+
+  try {
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${OPENAI_API_KEY}` },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const data = await resp.json().catch(() => null);
+    if (!resp.ok) {
     const errMsg = (data && (data.error?.message || data.message)) || `Błąd połączenia z OpenAI: ${resp.status}`;
     const err = new Error(errMsg);
     // Detect organization verification / permission error message and tag it so caller can respond appropriately
@@ -43,6 +49,17 @@ async function callOpenAI(body) {
     throw err;
   }
   return data;
+  } catch (e) {
+    if (e && e.name === 'AbortError') {
+      const timeoutError = new Error('OpenAI request timed out. Spróbuj ponownie później.');
+      timeoutError.code = 'OPENAI_TIMEOUT';
+      timeoutError.status = 504;
+      throw timeoutError;
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function generateExplanation(text) {

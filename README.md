@@ -41,6 +41,7 @@ Konfiguracja środowiska (ważne zmienne)
 - `OPENAI_API_KEY` (wymagane) — klucz API OpenAI używany przez `/api/explain`.
 - `OPENAI_MODEL` (opcjonalne) — preferowany model.
 - `OPENAI_FALLBACK_MODEL` (opcjonalne) — model zapasowy w przypadku ograniczeń organizacyjnych.
+- `OPENAI_REQUEST_TIMEOUT_MS` (opcjonalne) — maksymalny czas oczekiwania na odpowiedź OpenAI w milisekundach. Domyślnie `20000`.
 
 Opcjonalne/zaawansowane ustawienia (instrukcje przywrócenia)
 
@@ -53,7 +54,7 @@ Instrukcje poniżej służą do włączenia dodatkowych, opcjonalnych funkcji. R
 
 ```js
 if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
-  const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/+$ /,'') + '/process';
+  const OCR_URL = String(process.env.OCR_WORKER_URL).replace(/\/\+$/, '') + '/process';
   // zbuduj FormData (global.FormData lub require('form-data'))
   // dołącz plik (strumień z filepath lub buffer) pod kluczem 'file'
   // wyślij fetch(OCR_URL, { method: 'POST', headers, body: formBody })
@@ -107,8 +108,10 @@ Testy i uruchomienie lokalne
 
 - Wymagania: Node.js >= 24
 - Instalacja: `npm ci`
-- Unit tests: `npm test` (Node test runner)
-- E2E (Playwright): `npm run test:e2e` (upewnij się, że uruchomiłeś `npx playwright install --with-deps` raz)
+- Wszystkie testy: `npm test` (Node test runner)
+- Unit tests: `npm run test:unit`
+- E2E (Playwright): `npm run test:e2e` (upewnij się, że uruchomiłeś `npx playwright install --with-deps chromium` raz)
+- Lint: `npm run lint`
 
 Pliki i lokalizacje istotne dla dewelopera
 
@@ -116,8 +119,8 @@ Pliki i lokalizacje istotne dla dewelopera
 - `api/extract-utils.js` — logika ekstrakcji plików (pdf-parse, mammoth, adm-zip+xml2js, tesseract.js)
 - `api/usage.js` — zwraca ostatnie użycie tokenów
 - `api/health.js` — endpoint zdrowia
-- `specs/` — testy jednostkowe (node --test)
-- `tests/e2e/` — Playwright e2e
+- `tests/unit/` — testy jednostkowe (Node test runner)
+- `tests/e2e/` — testy Playwright E2E
 - `scripts/app.js` — frontend event handling (input pliku, wysyłka)
 
 Wskazówki operacyjne

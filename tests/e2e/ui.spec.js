@@ -23,7 +23,6 @@ test('form, modal and file input behavior', async ({ page }) => {
 
   await fileInput.setInputFiles({ name: 'hello.txt', mimeType: 'text/plain', buffer: Buffer.from('Hello world') });
 
-  const fileDetails = page.locator('[data-testid="fileDetails"]');
   // Wait for the input element to report the uploaded file (robust to hidden native input)
   await page.waitForFunction(() => {
     const el = document.querySelector('[data-testid="documentFile"]');
