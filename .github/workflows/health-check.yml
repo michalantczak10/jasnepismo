@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Health check
         env:
-      HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
         run: |
           if [ -z "$HEALTHCHECK_URL" ]; then
             echo "Missing secret HEALTHCHECK_URL. Set repository secret to your deployment's /api/health endpoint. Skipping health check.";
