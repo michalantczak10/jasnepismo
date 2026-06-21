@@ -83,6 +83,24 @@ Uruchomienie worker-a lokalnie:
 
 Worker zapisuje wynik do Redis pod kluczem `ocr:result:<id>` z TTL 1h.
 
+Docker / Deployment dla worker-a
+
+1. Lokalnie przy użyciu docker-compose:
+   - W katalogu głównym: `docker compose -f worker/docker-compose.yml up --build`
+   - Worker uruchomi Redis i worker, ustawiony jest REDIS_URL na `redis://redis:6379`.
+
+2. Docker image (produkcyjnie):
+   - Zbuduj obraz: `docker build -t jasnepismo-worker -f worker/Dockerfile .`
+   - Uruchom: `docker run -e REDIS_URL=redis://... jasnepismo-worker`
+
+3. Systemd (VM):
+   - Skopiuj `deploy/worker-systemd.service` na serwer i uzupełnij `REDIS_URL`.
+   - Przykładowe komendy:
+     - `sudo cp deploy/worker-systemd.service /etc/systemd/system/jasnepismo-worker.service`
+     - `sudo systemctl daemon-reload`
+     - `sudo systemctl enable --now jasnepismo-worker`
+
+
 
 Opcjonalne/zaawansowane ustawienia
 
