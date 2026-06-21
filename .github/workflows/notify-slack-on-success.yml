@@ -30,11 +30,9 @@ jobs:
           # Extract detail from the event payload using Python to avoid relying on
           # jq being present on the runner.
           if [ "$event" = "workflow_run" ]; then
-            detail=$(python3 -c "import json,sys
-f = open(sys.argv[1]); j = json.load(f); print(j.get('workflow_run',{}).get('conclusion',''))" "$GITHUB_EVENT_PATH") || detail=""
+            detail=$(python3 -c 'import json,sys; f=open(sys.argv[1]); j=json.load(f); print(j.get("workflow_run",{}).get("conclusion",""))' "$GITHUB_EVENT_PATH") || detail=""
           else
-            detail=$(python3 -c "import json,sys
-f = open(sys.argv[1]); j = json.load(f); print(j.get('action',''))" "$GITHUB_EVENT_PATH") || detail=""
+            detail=$(python3 -c 'import json,sys; f=open(sys.argv[1]); j=json.load(f); print(j.get("action",""))' "$GITHUB_EVENT_PATH") || detail=""
           fi
           payload=$(python3 - <<PY
 import json,sys
