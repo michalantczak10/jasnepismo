@@ -68,6 +68,22 @@ Rekomendacje produkcyjne
 - Ustaw `OCR_CONCURRENCY=1` jeżeli zostajesz przy serverless OCR. Przenieś do workerów aby skalować.
 - Dodaj globalny Redis (Upstash lub prywatny Redis) do obsługi rate-limiting, by chronić się przed obejściem limitów w środowiskach wieloinstancyjnych.
 
+OCR queue (worker)
+
+Jeżeli chcesz przenieść OCR do workerów, projekt zawiera prosty przykład:
+
+- POST /api/ocr-queue — dodaje plik do kolejki (multipart/form-data), odpowiada { jobId, id }
+- GET /api/ocr-result?id=<id> — sprawdza wynik (pending | done)
+
+Uruchomienie worker-a lokalnie:
+
+1. Ustaw REDIS_URL w środowisku.
+2. Zainstaluj opcjonalne dependencies (`npm ci --omit=dev` lub `npm i bullmq ioredis`).
+3. Uruchom worker: `node worker/ocr-worker.js`.
+
+Worker zapisuje wynik do Redis pod kluczem `ocr:result:<id>` z TTL 1h.
+
+
 Opcjonalne/zaawansowane ustawienia
 
 1. Zewnętrzny serwis OCR (forwarding)
