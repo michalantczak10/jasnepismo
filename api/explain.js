@@ -73,7 +73,6 @@ async function checkRateLimit(clientKey) {
   if (UPSTASH_URL && UPSTASH_TOKEN) {
     try {
       const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
-      const body = `{"cmd":"incr","key":"${bucket}"}`; // minimal command body
       // Upstash supports multiple ways; use simple REST increment via fetch
       const resp = await fetch(UPSTASH_URL + `/incr/${encodeURIComponent(bucket)}`, {
         method: 'POST',

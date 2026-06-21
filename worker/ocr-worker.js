@@ -28,7 +28,12 @@ const worker = new Worker('ocr', async (job) => {
     const text = await extractTextFromFile(fileObj);
     const key = `ocr:result:${id}`;
     await redis.set(key, JSON.stringify({ text }), 'EX', 60 * 60); // 1h TTL
-    try { fs.unlinkSync(tmp); } catch (e) {}
+    try {
+      fs.unlinkSync(tmp);
+    } catch (e) {
+      // best-effort cleanup; log any error at warn level
+      console.warn('Failed to remove tmp file', e && e.message ? e.message : e);
+    }
     return { id, text };
   } catch (e) {
     console.error('Worker job error (safe):', e && e.message ? e.message : e);
