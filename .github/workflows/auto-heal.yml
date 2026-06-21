@@ -35,7 +35,11 @@ jobs:
           echo "Too many auto-fix attempts (${{ steps.attempts.outputs.attempts }}). Exiting."
 
       - name: Install deps (only for eslint/prettier)
-        run: npm ci --silent
+        # Try to install dev dependencies but avoid failing the job if install has issues
+        # (some runners may fail on optional native modules). We continue on error
+        # because we use npx for prettier/eslint if local install isn't available.
+        continue-on-error: true
+        run: npm ci --omit=optional --silent || true
 
       - name: Run Prettier check
         id: prettier
