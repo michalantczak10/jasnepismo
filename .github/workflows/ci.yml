@@ -23,6 +23,18 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Fail early if auto-heal trigger file exists
+        # This step allows us to intentionally trigger a failure on main for testing
+        # the auto-heal flow. It will exit 1 if the repository contains the
+        # file .auto_heal_fail at the root.
+        run: |
+          if [ -f .auto_heal_fail ]; then
+            echo "Intentional failure triggered by .auto_heal_fail";
+            exit 1;
+          else
+            echo "No intentional failure trigger found.";
+          fi
+
       - name: Use Node.js (LTS)
         uses: actions/setup-node@v5
         with:
