@@ -6,8 +6,8 @@ name: CI
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: ''
 
 on:
-  push:
-    branches: [main]
+  # Run CI on pull requests and manually. Avoid running heavy CI on every push
+  # to main to reduce noise while we stabilize workflows.
   pull_request:
     branches: [main]
   workflow_dispatch: {}
