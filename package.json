@@ -9,7 +9,6 @@
     "test:e2e": "npx playwright test --reporter=html",
     "test:all": "npm run test:unit && npm run test:e2e",
     "lint": "eslint .",
-    "gen:sitemap": "node scripts/generate-sitemap.js",
     "format": "prettier --write ."
   },
   "dependencies": {

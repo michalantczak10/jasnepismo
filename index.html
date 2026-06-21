@@ -81,64 +81,6 @@
     </script>
 
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      /* Inline override: Homepage CTAs (highest priority) */
-      /* Placed after external stylesheet to immediately override cached or CDN-served CSS */
-      .section--app .hero-cta,
-      #freeButton,
-      .form-actions .hero-cta {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex-wrap: nowrap !important;
-        width: min(760px, 92%) !important;
-        max-width: 860px !important;
-        margin: 0 auto 1.2rem !important;
-        padding: 1.05rem 2.2rem !important;
-        border-radius: 999px !important;
-        background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
-        color: #fff !important;
-        font-size: clamp(1.05rem, 2vw, 1.25rem) !important;
-        font-weight: 800 !important;
-        box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24) !important;
-        text-decoration: none !important;
-        box-sizing: border-box !important;
-      }
-
-      /* Make emojis and icons inside CTAs larger and aligned */
-      .section--app .hero-cta .nav-emoji,
-      .section--app .hero-cta .button-icon,
-      #freeButton .nav-emoji,
-      .feature-emoji {
-        font-size: 1.25em !important;
-        vertical-align: middle !important;
-        margin-right: 0 !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex: 0 0 auto !important;
-        height: 1.6rem !important;
-        width: 1.6rem !important;
-        border-radius: 8px !important;
-        background: transparent !important;
-        color: #fff !important;
-        padding: 0.06rem 0.25rem !important;
-      }
-
-      /* Prevent button-fit.js inline widths from shrinking hero CTAs */
-      .section--app .hero-cta,
-      #freeButton {
-        width: min(760px, 92%) !important;
-        max-width: 860px !important;
-      }
-
-      /* Tweak free button specifically */
-      #freeButton {
-        padding: 1.05rem 2.2rem !important;
-        font-size: clamp(1.05rem, 2vw, 1.25rem) !important;
-      }
-    </style>
-    <link rel="stylesheet" href="styles.custom.css" />
   </head>
   <body>
     <a class="skip-link" href="#app-section">Przejdź do treści</a>
@@ -673,44 +615,7 @@
       </div>
     </footer>
 
-    <!-- external libraries (CDN) -->
-
-    <script>
-      // Hard enforce homepage CTA style in case stale stylesheet rules still win in some clients.
-      (function () {
-        const selectors = [
-          '#freeButton',
-          '#clearButton',
-          '#removeFileButton',
-          '#confirmClearButton',
-          '#cancelClearButton',
-          '.section--app .file-upload-button',
-        ];
-
-        function apply() {
-          const buttons = document.querySelectorAll(selectors.join(','));
-          buttons.forEach((el) => {
-            el.style.setProperty(
-              'background',
-              'linear-gradient(90deg,var(--color-primary),#cc2b2b)',
-              'important'
-            );
-            el.style.setProperty('color', '#fff', 'important');
-            el.style.setProperty('border', 'none', 'important');
-            el.style.setProperty('border-radius', '999px', 'important');
-            el.style.setProperty('box-shadow', '0 20px 40px rgba(0,0,0,0.12)', 'important');
-            el.style.setProperty('font-weight', '800', 'important');
-          });
-        }
-
-        document.addEventListener('DOMContentLoaded', apply);
-        window.addEventListener('load', apply);
-        setTimeout(apply, 350);
-        setTimeout(apply, 900);
-      })();
-    </script>
-
-    <!-- application JS (moved out of index.html) -->
+    <!-- application JS -->
     <script defer src="scripts/app.js?v=3"></script>
   </body>
 </html>
