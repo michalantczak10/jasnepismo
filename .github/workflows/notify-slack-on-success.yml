@@ -9,12 +9,12 @@ on:
 
 jobs:
   notify:
+    # Only run this job if a Slack webhook secret is configured and the event is
+    # either a successful workflow_run or an opened pull_request.
+    if: ${{ secrets.SLACK_WEBHOOK_URL != '' && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request' && github.event.action == 'opened')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack (only on success or PR opened)
-        if: |
-          (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
-          (github.event_name == 'pull_request' && github.event.action == 'opened')
         uses: 8398a7/action-slack@v4
         with:
           status: custom
