@@ -39,35 +39,45 @@ jobs:
 
       - name: Run Prettier check
         id: prettier
+        continue-on-error: true
         run: |
-          npx prettier --check . || echo "fail"
+          set +e
+          npx prettier --check .
+          PRETTIER_EXIT=$?
+          set -e
+          echo "prettier_exit=$PRETTIER_EXIT" >> $GITHUB_OUTPUT
 
       - name: Fix Prettier
-        if: steps.prettier.outcome == 'failure' || (steps.prettier.outputs && steps.prettier.outputs.prettier == 'fail')
+        if: steps.prettier.outputs.prettier_exit != '0'
         run: |
           npx prettier --write .
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --staged --quiet; then
+          # git diff --cached --quiet returns 0 when no staged changes
+          if ! git diff --cached --quiet; then
             git commit -m "chore(auto-fix): apply Prettier formatting"
           fi
 
       - name: Run ESLint fix
         id: eslint
         run: |
-          npx eslint . --fix || true
+          set +e
+          npx eslint . --fix
+          ESLINT_EXIT=$?
+          set -e
           git add -A
-          if ! git diff --staged --quiet; then
+          if ! git diff --cached --quiet; then
             git commit -m "chore(auto-fix): apply ESLint --fix"
           fi
+          echo "eslint_exit=$ESLINT_EXIT" >> $GITHUB_OUTPUT
 
       - name: Update package-lock if needed
         id: lock
         run: |
           npm install --package-lock-only
           git add package-lock.json
-          if ! git diff --staged --quiet; then
+          if ! git diff --cached --quiet; then
             git commit -m "chore(auto-fix): update package-lock.json"
             echo "changed=true" >> $GITHUB_OUTPUT
           else
@@ -75,14 +85,14 @@ jobs:
           fi
 
       - name: Push changes to main
-        if: ${{ steps.prettier.outcome == 'failure' || steps.eslint.outcome == 'failure' || steps.lock.outputs.changed == 'true' || github.event.workflow_run.conclusion == 'failure' }}
+        if: ${{ github.event.workflow_run.conclusion == 'failure' || steps.prettier.outputs.prettier_exit == '1' || steps.eslint.outputs.eslint_exit == '1' || steps.lock.outputs.changed == 'true' }}
         run: |
-          # If there are staged commits, push them. Otherwise create an empty commit to trigger rerun only if nothing changed.
+          # If there are commits ready to push, push them. Otherwise create an empty commit to trigger rerun.
           if git rev-parse --verify --quiet HEAD; then
-            if ! git diff --staged --quiet; then
+            if ! git diff --cached --quiet; then
               git push origin HEAD:main
             else
-              echo "No staged changes to push. Creating empty commit to trigger rerun."
+              echo "No changes detected to push. Creating empty commit to trigger rerun."
               git commit --allow-empty -m "chore(auto-fix): trigger rerun after analysis"
               git push origin HEAD:main
             fi
