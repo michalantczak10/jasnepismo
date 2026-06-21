@@ -1,6 +1,6 @@
 name: CI
 
-  env:
+env:
   # Use the latest stable Node.js on runners. Previously forced Node 24 which
   # raised deprecation warnings for some actions targeting Node 20.
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: ''
