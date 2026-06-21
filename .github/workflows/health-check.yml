@@ -7,19 +7,15 @@ on:
 
 jobs:
   health:
-    # Skip scheduled health-checks triggered by dependabot
-    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: ''
     steps:
       - name: Health check
         env:
           HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
         run: |
           if [ -z "$HEALTHCHECK_URL" ]; then
-            echo "Missing secret HEALTHCHECK_URL. Set repository secret to your deployment's /api/health endpoint. Skipping health check.";
-            exit 0;
+            echo "Missing secret HEALTHCHECK_URL. Set repository secret to your deployment's /api/health endpoint.";
+            exit 1;
           fi
           sudo apt-get update -y && sudo apt-get install -y jq curl >/dev/null
           echo "Pinging $HEALTHCHECK_URL"

@@ -243,10 +243,7 @@ async function extractTextFromFile(rawFile) {
             try {
               await worker.terminate();
             } catch (terminateErr) {
-              console.warn(
-                'Worker terminate error:',
-                terminateErr && terminateErr.message ? terminateErr.message : terminateErr
-              );
+              console.warn('Worker terminate error:', terminateErr && terminateErr.message ? terminateErr.message : terminateErr);
             }
           }
           metrics.inc && metrics.inc('ocr.jobs.failed');

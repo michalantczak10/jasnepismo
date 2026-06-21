@@ -74,6 +74,9 @@ jobs:
       - name: Audit dependencies
         run: npm audit --audit-level=moderate || true
 
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate || true
+
       - name: Install Playwright browsers
         # Playwright install can be flaky on some runners; allow it to fail
         # without failing the entire CI (tests depending on it may still fail).

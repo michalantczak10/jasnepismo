@@ -25,10 +25,7 @@ if (REDIS_URL) {
     const IORedis = require('ioredis');
     ioredisClient = new IORedis(REDIS_URL);
   } catch (e) {
-    console.warn(
-      'ioredis not available or failed to connect (safe):',
-      e && e.message ? e.message : e
-    );
+    console.warn('ioredis not available or failed to connect (safe):', e && e.message ? e.message : e);
     ioredisClient = null;
   }
 }
@@ -57,8 +54,7 @@ async function checkRateLimit(clientKey) {
       try {
         const count = await ioredisClient.incr(bucket);
         if (count === 1) await ioredisClient.expire(bucket, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000));
-        if (count > RATE_LIMIT_MAX)
-          return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+        if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
         return { ok: true };
       } catch (err) {
         // If last attempt, log and continue to fallback
@@ -77,6 +73,7 @@ async function checkRateLimit(clientKey) {
   if (UPSTASH_URL && UPSTASH_TOKEN) {
     try {
       const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
+      const body = `{"cmd":"incr","key":"${bucket}"}`; // minimal command body
       // Upstash supports multiple ways; use simple REST increment via fetch
       const resp = await fetch(UPSTASH_URL + `/incr/${encodeURIComponent(bucket)}`, {
         method: 'POST',
@@ -88,20 +85,15 @@ async function checkRateLimit(clientKey) {
         if (count === 1) {
           // set TTL for the bucket (seconds)
           try {
-            await fetch(
-              UPSTASH_URL +
-                `/expire/${encodeURIComponent(bucket)}/${Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)}`,
-              {
-                method: 'POST',
-                headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
-              }
-            );
+            await fetch(UPSTASH_URL + `/expire/${encodeURIComponent(bucket)}/${Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` },
+            });
           } catch (e) {
             // ignore ttl set failure
           }
         }
-        if (count > RATE_LIMIT_MAX)
-          return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+        if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
         return { ok: true };
       }
     } catch (e) {
@@ -142,8 +134,8 @@ module.exports = async function handler(req, res) {
 
   let text = '';
 
-  try {
-    metrics.inc('request.process.start');
+    try {
+      metrics.inc('request.process.start');
     const headers = req.headers || {};
     const contentType = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
 
@@ -181,7 +173,7 @@ module.exports = async function handler(req, res) {
         }
 
         // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
-        if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
+    if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
           try {
             const raw = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '');
             if (!raw.startsWith('https://')) {
@@ -189,8 +181,7 @@ module.exports = async function handler(req, res) {
             } else {
               const OCR_URL = raw + '/process';
               const fs = require('fs');
-              const filepath =
-                file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
+              const filepath = file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
               let formBody = null;
 
               const FormDataCtor =
@@ -224,20 +215,11 @@ module.exports = async function handler(req, res) {
               }
 
               if (formBody) {
-                const headers =
-                  typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
+                const headers = typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
                 const controller = new AbortController();
-                const t = setTimeout(
-                  () => controller.abort(),
-                  Number(process.env.OCR_WORKER_TIMEOUT_MS || 20000)
-                );
+                const t = setTimeout(() => controller.abort(), Number(process.env.OCR_WORKER_TIMEOUT_MS || 20000));
                 try {
-                  const resp = await fetch(OCR_URL, {
-                    method: 'POST',
-                    headers,
-                    body: formBody,
-                    signal: controller.signal,
-                  });
+                  const resp = await fetch(OCR_URL, { method: 'POST', headers, body: formBody, signal: controller.signal });
                   clearTimeout(t);
                   if (resp.ok) {
                     const json = await resp.json().catch(() => null);
@@ -248,18 +230,12 @@ module.exports = async function handler(req, res) {
                   }
                 } catch (e) {
                   clearTimeout(t);
-                  console.error(
-                    'OCR worker forwarding error (safe):',
-                    e && e.message ? e.message : e
-                  );
+                  console.error('OCR worker forwarding error (safe):', e && e.message ? e.message : e);
                 }
               }
             }
           } catch (e) {
-            console.error(
-              'OCR worker forwarding outer error (safe):',
-              e && e.message ? e.message : e
-            );
+            console.error('OCR worker forwarding outer error (safe):', e && e.message ? e.message : e);
           }
         }
       }
@@ -284,8 +260,8 @@ module.exports = async function handler(req, res) {
         .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
     }
 
-    const result = await openai.generateExplanation(text.trim());
-    metrics.inc('openai.calls');
+     const result = await openai.generateExplanation(text.trim());
+     metrics.inc('openai.calls');
     const explanation = result && result.explanation;
     const usage = result && result.usage;
     const usedModel = (result && result.model) || process.env.OPENAI_MODEL || null;

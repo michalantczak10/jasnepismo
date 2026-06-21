@@ -4,7 +4,7 @@ const path = require('path');
 const os = require('os');
 
 module.exports = function handler(req, res) {
-  const method = req && req.method ? req.method.toUpperCase() : 'GET';
+  const method = (req && req.method ? req.method.toUpperCase() : 'GET');
   if (method === 'GET') {
     return res.status(200).json({
       message:
@@ -18,11 +18,7 @@ module.exports = function handler(req, res) {
       const body = req.body || {};
       const requestId = body.requestId || body.id || null;
       const contact = body.contact || body.email || null;
-      const rec = {
-        requestId: requestId || 'unknown',
-        contact: contact || 'none',
-        timestamp: new Date().toISOString(),
-      };
+      const rec = { requestId: requestId || 'unknown', contact: contact || 'none', timestamp: new Date().toISOString() };
       const logfile = path.join(os.tmpdir(), 'jasnepismo-privacy-requests.log');
       try {
         fs.appendFileSync(logfile, JSON.stringify(rec) + '\n');
