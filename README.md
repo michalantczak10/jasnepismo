@@ -103,7 +103,15 @@ Docker / Deployment dla worker-a
 4. Google Cloud Run
    - Wymagania: zainstalowane `gcloud`, aktywowany projekt i włączone Cloud Run API.
    - Ustaw zmienne środowiskowe: `GCP_PROJECT`, `GCP_REGION`, `REDIS_URL`, `GOOGLE_APPLICATION_CREDENTIALS`.
-   - Użyj helpera: `bash deploy/cloudrun-deploy.sh`
+  - Użyj helpera: `bash deploy/cloudrun-deploy.sh`
+
+Publishing worker image to GitHub Container Registry (GHCR)
+
+- Dodano workflow GitHub Actions, które buduje i publikuje obraz workera do GHCR przy pushu na `main` oraz przy tworzeniu tagów `v*`.
+- Obraz będzie dostępny pod: `ghcr.io/<owner>/jasnepismo-worker:latest` oraz z tagiem opartym o commit SHA.
+- Aby pobrać obraz lokalnie: `docker pull ghcr.io/<owner>/jasnepismo-worker:latest`.
+- Jeśli chcesz korzystać z prywatnych obrazów GHCR, utwórz Personal Access Token (scopes: write:packages, read:packages) i zaloguj się: `echo $PAT | docker login ghcr.io -u <user> --password-stdin`.
+
 
 Opcjonalne/zaawansowane ustawienia
 
