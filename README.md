@@ -214,3 +214,17 @@ Husky / auto-format on commit
   2. bash scripts/setup-husky-and-lint-staged.sh
 
 - This will install Husky, create a pre-commit hook and run Prettier on staged files automatically.
+
+AUTOFIX_MERGE_TOKEN i SLACK_WEBHOOK_URL (instrukcja)
+
+- AUTOFIX_MERGE_TOKEN (opcjonalnie):
+  1. Jeśli chcesz, żeby workflow auto-merge mógł zmergować PR-y mimo restrykcyjnych reguł branch-protection, utwórz Personal Access Token (PAT) z zakresem `repo`.
+  2. Na GitHubie przejdź do: Settings -> Developer settings -> Personal access tokens -> Generate new token. Wybierz zakres `repo` i wygeneruj token.
+  3. Skopiuj token (wyświetlany tylko raz) i w repo: Settings -> Secrets -> Actions dodaj secret o nazwie `AUTOFIX_MERGE_TOKEN` z tym tokenem.
+
+- SLACK_WEBHOOK_URL (opcjonalnie):
+  1. Jeśli chcesz powiadomienia do Slack, utwórz Incoming Webhook w Slack (Apps -> Incoming Webhooks) i skopiuj URL.
+  2. W repo: Settings -> Secrets -> Actions dodaj secret `SLACK_WEBHOOK_URL` zawierający ten webhook.
+  3. Workflow `notify-slack-on-success.yml` będzie wysyłać powiadomienia tylko na sukces CI oraz przy otwarciu PR.
+
+Upewnij się, że nie umieszczasz tokenów/API keys w kodzie ani w publicznych miejscach. Używaj GitHub Secrets.
