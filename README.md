@@ -113,6 +113,17 @@ Publishing worker image to GitHub Container Registry (GHCR)
 - Aby pobrać obraz lokalnie: `docker pull ghcr.io/<owner>/jasnepismo-worker:latest`.
 - Jeśli chcesz korzystać z prywatnych obrazów GHCR, utwórz Personal Access Token (scopes: write:packages, read:packages) i zaloguj się: `echo $PAT | docker login ghcr.io -u <user> --password-stdin`.
 
+Publishing worker image to Docker Hub
+
+- Dodano workflow, które buduje i wypycha obraz workera do Docker Hub przy pushu na `main` oraz tagach `v*`.
+- Wymaga utworzenia sekretów w repozytorium: `DOCKERHUB_USERNAME` i `DOCKERHUB_TOKEN`.
+- Obraz będzie dostępny pod: `<DOCKERHUB_USERNAME>/jasnepismo-worker:latest`.
+
+Auto-rerun failed workflows
+
+- Dodano prosty workflow `auto-rerun-failed.yml`, który możesz wywołać ręcznie (workflow_dispatch) aby spróbować ponownie uruchomić ostatni run wskazanego workflow.
+
+
 Opcjonalne/zaawansowane ustawienia
 
 1. Zewnętrzny serwis OCR (forwarding)
