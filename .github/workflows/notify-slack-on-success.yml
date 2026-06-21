@@ -15,14 +15,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Slack (only on success or PR opened)
-        # Run this step only when a Slack webhook secret is configured and the
-        # event is either a successful workflow_run or an opened pull_request.
-        if: ${{ secrets.SLACK_WEBHOOK_URL != '' && ((github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request' && github.event.action == 'opened')) }}
-        uses: 8398a7/action-slack@v4
-        with:
-          status: custom
-          fields: repo,commit,author
-          custom_payload: |
-            {"text":"[JasnePismo] Notification: ${{ github.event_name }} - ${{ github.event.workflow_run.conclusion || github.event.action }}"}
+        # Only gate on event type here (secrets cannot be reliably referenced in
+        # expressions for workflow_run contexts). The step will check for the
+        # presence of the secret at runtime and exit quietly if it's missing.
+        if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') || (github.event_name == 'pull_request' && github.event.action == 'opened') }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "Missing SLACK_WEBHOOK_URL. Set repository secret to enable Slack notifications. Skipping.";
+            exit 0;
+          fi
+          event="$GITHUB_EVENT_NAME"
+          # Extract detail from the event payload using Python to avoid relying on
+          # jq being present on the runner.
+          if [ "$event" = "workflow_run" ]; then
+            detail=$(python3 -c "import json,sys
+f = open(sys.argv[1]); j = json.load(f); print(j.get('workflow_run',{}).get('conclusion',''))" "$GITHUB_EVENT_PATH") || detail=""
+          else
+            detail=$(python3 -c "import json,sys
+f = open(sys.argv[1]); j = json.load(f); print(j.get('action',''))" "$GITHUB_EVENT_PATH") || detail=""
+          fi
+          payload=$(python3 - <<PY
+import json,sys
+print(json.dumps({"text": f"[JasnePismo] Notification: {sys.argv[1]} - {sys.argv[2]}"}))
+PY
+"$event" "$detail")
+          curl -s -X POST -H 'Content-Type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
