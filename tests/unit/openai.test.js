@@ -40,7 +40,6 @@ describe('api/openai.js', () => {
 
     const result = await openai.generateExplanation('Przykładowy tekst');
     assert.equal(result.explanation, 'Wyjaśnienie testowe.');
-    // Single-call pipeline now returns usage from the single request
     assert.deepEqual(result.usage, { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 });
   });
 
@@ -59,9 +58,8 @@ describe('api/openai.js', () => {
     });
 
     await assert.rejects(openai.generateExplanation('Przykładowy tekst'), {
-      message: 'OpenAI request timed out. Spróbuj ponownie później.',
+      message: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.',
       code: 'OPENAI_TIMEOUT',
     });
   });
 });
-

@@ -1,9 +1,9 @@
 let lastUsage = null;
 
-
 function getOpenAIApiKey() {
   return process.env.OPENAI_API_KEY;
 }
+
 function getOpenAIModel() {
   return process.env.OPENAI_MODEL || 'gpt-5-mini';
 }
@@ -11,9 +11,10 @@ function getOpenAIModel() {
 async function callOpenAI(body) {
   const OPENAI_API_KEY = getOpenAIApiKey();
   if (!OPENAI_API_KEY) throw new Error('Brak klucza OpenAI API na serwerze.');
-  const OPENAI_REQUEST_TIMEOUT_MS = Number(process.env.OPENAI_REQUEST_TIMEOUT_MS || 20000);
+
+  const REQUEST_TIMEOUT_MS = Number(process.env.OPENAI_REQUEST_TIMEOUT_MS || 20000);
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), OPENAI_REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const resp = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -24,34 +25,28 @@ async function callOpenAI(body) {
     });
     const data = await resp.json().catch(() => null);
     if (!resp.ok) {
-    const errMsg = (data && (data.error?.message || data.message)) || `Błąd połączenia z OpenAI: ${resp.status}`;
-    const err = new Error(errMsg);
-    // Detect organization verification / permission error message and tag it so caller can respond appropriately
-    const msg = (errMsg || '').toString().toLowerCase();
-    let isOrgUnverified = false;
-    // Heuristics to catch English and Polish variants of the org verification problem
-    if (
-      msg.includes('must be verified') ||
-      msg.includes('not verified') ||
-      msg.includes('unverified') ||
-      msg.includes('nie jest zweryfik') ||
-      msg.includes('zweryfik') ||
-      (msg.includes('organization') && (msg.includes('verify') || msg.includes('verified') || msg.includes('unverified')))
-    ) {
-      isOrgUnverified = true;
-    } else if (resp.status === 403 || resp.status === 401) {
-      // 403/401 often indicate permission/organization restrictions
-      isOrgUnverified = msg.includes('organization') || msg.includes('org') || msg.includes('verified') || msg.includes('unverified') || msg.includes('must be verified') || msg.includes('not verified');
+      const errMsg = (data && (data.error?.message || data.message)) || `Błąd połączenia z OpenAI: ${resp.status}`;
+      const err = new Error(errMsg);
+      const msg = (errMsg || '').toString().toLowerCase();
+      let isOrgUnverified = false;
+      if (
+        msg.includes('must be verified') || msg.includes('not verified') || msg.includes('unverified') ||
+        msg.includes('nie jest zweryfik') || msg.includes('zweryfik') ||
+        (msg.includes('organization') && (msg.includes('verify') || msg.includes('verified') || msg.includes('unverified')))
+      ) {
+        isOrgUnverified = true;
+      } else if (resp.status === 403 || resp.status === 401) {
+        isOrgUnverified = msg.includes('organization') || msg.includes('org') || msg.includes('verified') || msg.includes('unverified') || msg.includes('must be verified') || msg.includes('not verified');
+      }
+      if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
+      err.status = resp.status;
+      console.error(err);
+      throw err;
     }
-    if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
-    err.status = resp.status;
-    console.error(err);
-    throw err;
-  }
-  return data;
+    return data;
   } catch (e) {
     if (e && e.name === 'AbortError') {
-      const timeoutError = new Error('OpenAI request timed out. Spróbuj ponownie później.');
+      const timeoutError = new Error('Żądanie do OpenAI wygasło. Spróbuj ponownie później.');
       timeoutError.code = 'OPENAI_TIMEOUT';
       timeoutError.status = 504;
       throw timeoutError;
@@ -81,14 +76,12 @@ async function generateExplanation(text) {
     max_tokens: 800,
   });
 
-  // Try primary model first
   try {
     const data = await callOpenAI(makeReq(OPENAI_MODEL));
     const explanation = data.choices?.[0]?.message?.content?.trim();
     lastUsage = data.usage || null;
     return { explanation, usage: lastUsage, model: OPENAI_MODEL };
   } catch (err) {
-    // Detect organization/permission issues (English + Polish heuristics)
     const msg = (err && err.message) ? err.message.toString().toLowerCase() : '';
     const isOrgUnverified = err && (err.code === 'ORG_UNVERIFIED' || err.status === 403 || msg.includes('must be verified') || msg.includes('not verified') || msg.includes('unverified') || msg.includes('zweryfik'));
 
@@ -100,7 +93,6 @@ async function generateExplanation(text) {
         lastUsage = data2.usage || null;
         return { explanation, usage: lastUsage, model: FALLBACK_MODEL, fallback: true };
       } catch (err2) {
-        // Preserve original error for diagnostics
         err2.original = err;
         throw err2;
       }
@@ -111,6 +103,5 @@ async function generateExplanation(text) {
 }
 
 function getLastUsage() { return lastUsage; }
-function getCacheStats() { return { hits: 0, misses: 0, size: 0, max_entries: 0, ttl_ms: 0 }; }
 
-module.exports = { generateExplanation, getLastUsage, getCacheStats };
+module.exports = { generateExplanation, getLastUsage };
