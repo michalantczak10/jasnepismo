@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const { describe, it, afterEach } = require('node:test');
 const openai = require('../../api/openai.js');
 // note: explain (handler) is required dynamically inside each test iteration so that

@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('explainForm');
   if (form) {
     // Prevent native form submission which can trigger a GET to /api/explain.

@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const { describe, it } = require('node:test');
 const sharp = require('sharp');
 const { extractTextFromFile } = require('../../api/extract-utils');
