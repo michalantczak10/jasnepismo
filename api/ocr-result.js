@@ -2,7 +2,7 @@ const Redis = require('ioredis');
 const redis = new Redis(process.env.REDIS_URL);
 
 module.exports = async function handler(req, res) {
-  const method = (req && req.method ? req.method.toUpperCase() : 'GET');
+  const method = req && req.method ? req.method.toUpperCase() : 'GET';
   if (method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Metoda niedozwolona. Użyj GET.' });

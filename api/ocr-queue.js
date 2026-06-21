@@ -20,7 +20,10 @@ module.exports = async function handler(req, res) {
     if (!file) return res.status(400).json({ error: 'Brak pliku w żądaniu.' });
 
     const id = uuidv4();
-    const job = await queue.add('ocr-job', { id, file: { buffer: file.buffer || file.data, name: file.originalFilename || file.name } });
+    const job = await queue.add('ocr-job', {
+      id,
+      file: { buffer: file.buffer || file.data, name: file.originalFilename || file.name },
+    });
     return res.status(202).json({ jobId: job.id, id });
   } catch (e) {
     console.error('OCR queue enqueue error:', e && e.message ? e.message : e);

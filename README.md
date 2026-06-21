@@ -98,16 +98,12 @@ Docker / Deployment dla worker-a
    - Przykładowe komendy:
      - `sudo cp deploy/worker-systemd.service /etc/systemd/system/jasnepismo-worker.service`
      - `sudo systemctl daemon-reload`
-    - `sudo systemctl enable --now jasnepismo-worker`
+   - `sudo systemctl enable --now jasnepismo-worker`
 
 4. Google Cloud Run
-
    - Wymagania: zainstalowane `gcloud`, aktywowany projekt i włączone Cloud Run API.
    - Ustaw zmienne środowiskowe: `GCP_PROJECT`, `GCP_REGION`, `REDIS_URL`, `GOOGLE_APPLICATION_CREDENTIALS`.
    - Użyj helpera: `bash deploy/cloudrun-deploy.sh`
-
-
-
 
 Opcjonalne/zaawansowane ustawienia
 
