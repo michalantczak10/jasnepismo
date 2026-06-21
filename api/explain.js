@@ -3,6 +3,7 @@ const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max requests per window
 
 const { parseForm, extractTextFromFile } = require('./extract-utils');
+const metrics = require('./metrics');
 
 // Server-side PDF/DOCX/TXT parsing only. Image OCR is not enabled on Vercel by default.
 
@@ -44,18 +45,29 @@ async function checkRateLimit(clientKey) {
 
   const now = Date.now();
   const windowStart = now - RATE_LIMIT_WINDOW_MS;
-  // If Upstash is configured, use REST API to INCR the key with TTL.
+  // If a Redis URL is configured, prefer server-backed rate limiting using ioredis.
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   if (ioredisClient) {
-    try {
-      const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
-      const count = await ioredisClient.incr(bucket);
-      if (count === 1) await ioredisClient.expire(bucket, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000));
-      if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
-      return { ok: true };
-    } catch (e) {
-      console.error('Rate limiter Redis error (safe):', e && e.message ? e.message : e);
-      // fall through to Upstash or in-memory fallback
+    const bucket = `rl:${clientKey}:${Math.floor(now / RATE_LIMIT_WINDOW_MS)}`;
+    // Retry with exponential backoff to tolerate transient errors
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const count = await ioredisClient.incr(bucket);
+        if (count === 1) await ioredisClient.expire(bucket, Math.ceil(RATE_LIMIT_WINDOW_MS / 1000));
+        if (count > RATE_LIMIT_MAX) return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+        return { ok: true };
+      } catch (err) {
+        // If last attempt, log and continue to fallback
+        if (attempt >= 2) {
+          console.error('Rate limiter Redis error (safe):', err && err.message ? err.message : err);
+        } else {
+          // backoff and retry
+          // eslint-disable-next-line no-await-in-loop
+          await sleep(Math.pow(2, attempt) * 100);
+        }
+      }
     }
+    // if redis path failed, fall through to Upstash or in-memory fallback
   }
 
   if (UPSTASH_URL && UPSTASH_TOKEN) {
@@ -92,10 +104,12 @@ async function checkRateLimit(clientKey) {
 
   const timestamps = (rateMap.get(clientKey) || []).filter((ts) => ts > windowStart);
   if (timestamps.length >= RATE_LIMIT_MAX) {
+    metrics.inc('rate_limit.blocked');
     return { ok: false, retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
   }
   timestamps.push(now);
   rateMap.set(clientKey, timestamps);
+  metrics.inc('rate_limit.allowed');
   return { ok: true };
 }
 
@@ -110,15 +124,18 @@ module.exports = async function handler(req, res) {
 
   // rate limiting
   const clientKey = getClientKey(req);
+  metrics.inc('request.incoming');
   const rl = await checkRateLimit(clientKey);
   if (!rl.ok) {
+    metrics.inc('request.rejected_rate');
     res.setHeader('Retry-After', Math.ceil(rl.retryAfter || RATE_LIMIT_WINDOW_MS / 1000));
     return res.status(429).json({ error: 'Za dużo żądań. Spróbuj ponownie później.' });
   }
 
   let text = '';
 
-  try {
+    try {
+      metrics.inc('request.process.start');
     const headers = req.headers || {};
     const contentType = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
 
@@ -243,7 +260,8 @@ module.exports = async function handler(req, res) {
         .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.` });
     }
 
-    const result = await openai.generateExplanation(text.trim());
+     const result = await openai.generateExplanation(text.trim());
+     metrics.inc('openai.calls');
     const explanation = result && result.explanation;
     const usage = result && result.usage;
     const usedModel = (result && result.model) || process.env.OPENAI_MODEL || null;

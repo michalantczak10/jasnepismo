@@ -43,6 +43,31 @@ Konfiguracja środowiska (ważne zmienne)
 - `OPENAI_FALLBACK_MODEL` (opcjonalne) — model zapasowy w przypadku ograniczeń organizacyjnych.
 - `OPENAI_REQUEST_TIMEOUT_MS` (opcjonalne) — maksymalny czas oczekiwania na odpowiedź OpenAI w milisekundach. Domyślnie `20000`.
 
+Dodatkowe zmienne konfiguracji (rate limiter / OCR / Redis)
+
+- `UPSTASH_REDIS_REST_URL` i `UPSTASH_REDIS_REST_TOKEN` — opcjonalne, używane do serverless-friendly rate limiting (Upstash). Jeśli je ustawisz, aplikacja użyje Upstash dla limitów.
+- `REDIS_URL` — opcjonalne, jeśli posiadasz prywatny Redis preferowany zamiast Upstash. Format: `redis://:password@host:port` lub `rediss://`.
+- `OCR_CONCURRENCY` — maksymalna liczba równoległych OCR jobów na jedną instancję (domyślnie `1`).
+- `OCR_TIMEOUT_MS` — timeout OCR w milisekundach (domyślnie `20000`).
+- `OCR_WORKER_TIMEOUT_MS` — timeout fetch do zewnętrznego OCR worker (domyślnie `20000`).
+
+Vercel — szybkiek kroki:
+
+1. W panelu projektu -> Settings -> Environment Variables dodaj wymienione zmienne.
+2. Jeśli korzystasz z Upstash, dodaj `UPSTASH_REDIS_REST_URL` i `UPSTASH_REDIS_REST_TOKEN`.
+3. Jeśli korzystasz z prywatnego Redis, ustaw `REDIS_URL` i opcjonalnie usuń Upstash.
+
+Monitoring i health-check
+
+- Endpoint: `GET /api/health` zwraca teraz metryki per-instance (uptime, memory i podstawowe liczniki: OCR jobs, rate limit hits, etc.).
+- Prosty GitHub Action `health-check` jest dodany (`.github/workflows/health-check.yml`) i może być uruchomiony co 5 minut. Dodaj repo secret `HEALTHCHECK_URL` ustawiony na `https://<your-deploy>/api/health`.
+
+Rekomendacje produkcyjne
+
+- Na Vercel nie zalecamy wykonywać ciężkiego OCR bezpośrednio w funkcji serverless; rozważ oddzielny worker z kolejką (np. Cloud Run/Bunq/BullMQ) dla produkcji.
+- Ustaw `OCR_CONCURRENCY=1` jeżeli zostajesz przy serverless OCR. Przenieś do workerów aby skalować.
+- Dodaj globalny Redis (Upstash lub prywatny Redis) do obsługi rate-limiting, by chronić się przed obejściem limitów w środowiskach wieloinstancyjnych.
+
 Opcjonalne/zaawansowane ustawienia
 
 1. Zewnętrzny serwis OCR (forwarding)

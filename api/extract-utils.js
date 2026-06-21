@@ -4,6 +4,7 @@ const os = require('os');
 const formidable = require('formidable');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
+const metrics = require('./metrics');
 
 function makeForm(options) {
   // support multiple formidable API shapes across versions
@@ -51,9 +52,11 @@ async function withOcrLimit(fn) {
   }
   _ocrActive++;
   try {
+    metrics.set && metrics.inc && metrics.inc('ocr.concurrent');
     return await fn();
   } finally {
     _ocrActive--;
+    metrics.set && metrics.dec && metrics.dec('ocr.concurrent');
   }
 }
 
@@ -203,6 +206,7 @@ async function extractTextFromFile(rawFile) {
   ) {
     try {
       return await withOcrLimit(async () => {
+        metrics.inc && metrics.inc('ocr.jobs.started');
         let imgBuffer = buffer;
         try {
           const sharpLib = require('sharp');
@@ -231,6 +235,7 @@ async function extractTextFromFile(rawFile) {
           const { data } = await worker.recognize(imgBuffer);
           await worker.terminate();
           clearTimeout(timeout);
+          metrics.inc && metrics.inc('ocr.jobs.succeeded');
           return data && data.text ? data.text : '';
         } catch (e) {
           clearTimeout(timeout);
@@ -241,6 +246,7 @@ async function extractTextFromFile(rawFile) {
               console.warn('Worker terminate error:', terminateErr && terminateErr.message ? terminateErr.message : terminateErr);
             }
           }
+          metrics.inc && metrics.inc('ocr.jobs.failed');
           console.error('Image OCR error (safe):', e && e.message ? e.message : e);
           return '';
         }
