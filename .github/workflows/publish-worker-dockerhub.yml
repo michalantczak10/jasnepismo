@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   build-and-push:
-    if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+    # Skip Docker Hub publishes for dependabot to avoid leaking tokens/credentials
+    if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' && github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: ''
