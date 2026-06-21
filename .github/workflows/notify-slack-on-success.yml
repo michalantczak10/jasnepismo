@@ -1,0 +1,25 @@
+name: Notify Slack On Success And PR Open
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+  pull_request:
+    types: [opened]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack (only on success or PR opened)
+        if: |
+          (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+          (github.event_name == 'pull_request' && github.event.action == 'opened')
+        uses: 8398a7/action-slack@v4
+        with:
+          status: custom
+          fields: repo,commit,author
+          custom_payload: |
+            {"text":"[JasnePismo] Notification: ${{ github.event_name }} - ${{ github.event.workflow_run ? github.event.workflow_run.conclusion : github.event.action }}"}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,33 @@
+name: Auto Merge Auto-Fix PRs
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+jobs:
+  auto-merge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Auto-merge PRs labeled auto-fix for successful CI
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const headSha = context.payload.workflow_run.head_sha;
+            const pulls = await github.rest.pulls.list({ owner, repo, state: 'open', per_page: 100 });
+            for (const pr of pulls.data) {
+              const details = await github.rest.pulls.get({ owner, repo, pull_number: pr.number });
+              if (details.data.head && details.data.head.sha === headSha) {
+                const labels = (details.data.labels || []).map(l => (typeof l === 'string' ? l : l.name));
+                if (labels.includes('auto-fix')) {
+                  core.info(`Merging PR #${pr.number} (${details.data.title})`);
+                  await github.rest.pulls.merge({ owner, repo, pull_number: pr.number, merge_method: 'squash' });
+                }
+              }
+            }
