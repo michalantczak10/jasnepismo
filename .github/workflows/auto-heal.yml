@@ -84,18 +84,39 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Push changes to main
-        if: ${{ github.event.workflow_run.conclusion == 'failure' || steps.prettier.outputs.prettier_exit == '1' || steps.eslint.outputs.eslint_exit == '1' || steps.lock.outputs.changed == 'true' }}
+      - name: Detect local auto-fix commits
+        id: detect_changes
         run: |
-          # If there are commits ready to push, push them. Otherwise create an empty commit to trigger rerun.
-          if git rev-parse --verify --quiet HEAD; then
-            if ! git diff --cached --quiet; then
-              git push origin HEAD:main
-            else
-              echo "No changes detected to push. Creating empty commit to trigger rerun."
-              git commit --allow-empty -m "chore(auto-fix): trigger rerun after analysis"
-              git push origin HEAD:main
-            fi
+          set -e
+          # Ensure we have origin/main to compare against
+          git fetch origin main --quiet || true
+          # Count commits on HEAD that are not on origin/main
+          COUNT=$(git rev-list --count origin/main..HEAD || echo 0)
+          if [ "$COUNT" -gt 0 ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
           else
-            echo "No HEAD verified. Exiting."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Create branch and open PR with fixes
+        if: ${{ (github.event.workflow_run.conclusion == 'failure' || steps.prettier.outputs.prettier_exit == '1' || steps.eslint.outputs.eslint_exit == '1' || steps.lock.outputs.changed == 'true') && steps.detect_changes.outputs.has_changes == 'true' }}
+        env:
+          PR_BRANCH: auto-fix/${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "Creating branch $PR_BRANCH"
+          git branch "$PR_BRANCH"
+          git push origin "$PR_BRANCH"
+
+      - name: Create Pull Request (if branch pushed)
+        if: ${{ (github.event.workflow_run.conclusion == 'failure' || steps.prettier.outputs.prettier_exit == '1' || steps.eslint.outputs.eslint_exit == '1' || steps.lock.outputs.changed == 'true') && steps.detect_changes.outputs.has_changes == 'true' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: auto-fix/${{ github.run_id }}
+          title: "chore(auto-fix): apply Prettier/ESLint/package-lock fixes"
+          body: |
+            This PR contains automatic fixes applied by the auto-heal workflow for run: ${{ github.event.workflow_run.html_url }}.
+            Please review the changes and merge when appropriate.
+          labels: auto-fix
