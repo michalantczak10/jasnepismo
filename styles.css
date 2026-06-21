@@ -1,24 +1,25 @@
 ﻿:root {
-  --color-primary: #8b0000; /* darker red for stronger contrast */
+  /* Modern minimal palette */
+  --color-primary: #0f172a; /* deep neutral for headings */
   --color-primary-contrast: #ffffff;
-  --color-accent: #ffb300; /* slightly deeper yellow */
-  --color-accent-strong: #f2a900;
-  --color-accent-soft: #fff6cf;
-  --color-accent-muted: #fffbea;
-  --color-accent-border: rgba(255, 179, 0, 0.45);
-  --color-accent-text: #111; /* text color when on accent background */
-  --color-danger: #9b1d1d;
+  --color-accent: #2563eb; /* calm blue accent */
+  --color-accent-strong: #1e40af;
+  --color-accent-soft: #e6eefc;
+  --color-accent-muted: #f3f8ff;
+  --color-accent-border: rgba(37, 99, 235, 0.18);
+  --color-accent-text: #fff; /* text color when on accent background */
+  --color-danger: #b91c1c;
   --color-danger-soft: #fff5f5;
-  --color-danger-border: rgba(179, 0, 0, 0.16);
-  --color-bg: #fff;
-  --color-text: #111; /* slightly darker for better readability */
-  --radius: 22px;
+  --color-danger-border: rgba(185, 28, 28, 0.12);
+  --color-bg: #fbfdff;
+  --color-text: #0f172a; /* darker neutral for readability */
+  --radius: 12px;
   --radius-pill: 999px;
-  --radius-card: 24px;
+  --radius-card: 14px;
   --control-width: min(420px, 100%);
   --button-width: var(--control-width);
-  --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05);
-  --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.05);
+  --shadow-button: 0 8px 20px rgba(16, 24, 40, 0.08);
+  --shadow-soft: 0 8px 18px rgba(16, 24, 40, 0.04);
 }
 
 * {
@@ -75,9 +76,9 @@ a {
   text-align: center;
   gap: 28px;
   background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 35%),
-    linear-gradient(180deg, #e50000 0%, #8b0000 100%);
-  color: #fff;
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.04), transparent 35%),
+    linear-gradient(180deg, rgba(247, 250, 252, 1) 0%, rgba(255,255,255,1) 100%);
+  color: var(--color-text);
   overflow: hidden;
 }
 
@@ -143,8 +144,8 @@ button,
   max-width: min(100%, 680px);
   padding: 1.15rem 1.75rem;
   border-radius: var(--radius-pill);
-  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
-  color: #fff;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-strong));
+  color: var(--color-accent-text);
   font-weight: 800;
   font-size: 1.25rem;
   line-height: 1.25;
