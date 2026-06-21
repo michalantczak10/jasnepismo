@@ -123,7 +123,6 @@ Auto-rerun failed workflows
 
 - Dodano prosty workflow `auto-rerun-failed.yml`, który możesz wywołać ręcznie (workflow_dispatch) aby spróbować ponownie uruchomić ostatni run wskazanego workflow.
 
-
 Opcjonalne/zaawansowane ustawienia
 
 1. Zewnętrzny serwis OCR (forwarding)
