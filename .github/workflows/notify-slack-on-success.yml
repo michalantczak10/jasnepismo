@@ -34,9 +34,7 @@ jobs:
           else
             detail=$(python3 -c 'import json,sys; f=open(sys.argv[1]); j=json.load(f); print(j.get("action",""))' "$GITHUB_EVENT_PATH") || detail=""
           fi
-          payload=$(python3 - <<PY
-import json,sys
-print(json.dumps({"text": f"[JasnePismo] Notification: {sys.argv[1]} - {sys.argv[2]}"}))
-PY
-"$event" "$detail")
+          # Build a simple JSON payload without a here-doc to avoid YAML
+          # parsing issues. Use printf to safely interpolate shell variables.
+          payload=$(printf '%s' "{\"text\":\"[JasnePismo] Notification: %s - %s\"}" "$event" "$detail")
           curl -s -X POST -H 'Content-Type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" || true
