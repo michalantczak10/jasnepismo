@@ -206,3 +206,11 @@ Wskazówki operacyjne
 
 - Jeśli przywracasz OCR lokalny w środowisku CI/produkcyjnym, upewnij się, że runner ma wystarczające zasoby i że językowe traineddata są dostępne.
 - Przy większym ruchu rozważ wyodrębnianie OCR do osobnego asynchronicznego procesu/queue.
+
+Husky / auto-format on commit
+
+- To ensure formatting never fails CI, we added Husky + lint-staged pre-commit hooks. After pulling, run:
+  1. npm install
+  2. bash scripts/setup-husky-and-lint-staged.sh
+
+- This will install Husky, create a pre-commit hook and run Prettier on staged files automatically.

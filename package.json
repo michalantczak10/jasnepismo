@@ -12,6 +12,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
+  "lint-staged": {
+    "*.{js,jsx,json,md,css,html,yml,yaml}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "dependencies": {
     "formidable": "^3.0.0",
     "mammoth": "^1.4.19",
@@ -29,6 +35,8 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.3",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0",
     "@playwright/test": "^1.40.0"
   },
   "engines": {
