@@ -85,7 +85,7 @@
   </head>
   <body>
     <a class="skip-link" href="#app-section">Przejdź do treści</a>
-    <header class="hero" data-testid="header-hero">
+    <header id="header" class="hero" data-testid="header-hero">
       <div class="hero-bg-svg" aria-hidden="true" data-testid="hero-bg-svg">
         <svg
           width="100%"
@@ -265,17 +265,17 @@
         </article>
       </section>
 
-      <section id="sections-nav" class="section fade-in" aria-labelledby="sections-nav-heading">
+      <section id="sections-nav" class="section fade-in" aria-labelledby="sections-nav-heading" data-testid="section-nav">
         <div class="section-header">
-          <p class="section-tag">Nawigacja</p>
-          <h2 id="sections-nav-heading">Przejdź do sekcji</h2>
+          <p class="section-tag" data-testid="section-nav-tag">Nawigacja</p>
+          <h2 id="sections-nav-heading" data-testid="section-nav-heading">Przejdź do sekcji</h2>
         </div>
         <nav class="footer-nav" aria-label="Nawigacja po sekcjach">
-          <a href="#app-section" class="hero-cta cta-warm"
+          <a href="#app-section" class="hero-cta cta-warm" data-testid="link-app"
             ><span class="nav-emoji" aria-hidden="true">📝</span
             ><span class="btn-label">Jak to działa</span></a
           >
-          <a href="#info-section" class="hero-cta cta-warm"
+          <a href="#info-section" class="hero-cta cta-warm" data-testid="link-info"
             ><span class="nav-emoji" aria-hidden="true">🔒</span
             ><span class="btn-label">Bezpieczeństwo</span></a
           >
@@ -291,7 +291,7 @@
             ><span class="nav-emoji" aria-hidden="true">📜</span
             ><span class="btn-label">Regulamin</span></a
           >
-          <a href="#contact-section" class="hero-cta cta-warm"
+          <a href="#contact-section" class="hero-cta cta-warm" data-testid="link-contact"
             ><span class="nav-emoji" aria-hidden="true">✉️</span
             ><span class="btn-label">Kontakt</span></a
           >
@@ -336,10 +336,10 @@
         </div>
       </section>
 
-      <section id="about-section" class="section fade-in" aria-labelledby="about-heading">
+      <section id="about-section" class="section fade-in" aria-labelledby="about-heading" data-testid="section-about">
         <div class="section-header">
-          <p class="section-tag">O nas</p>
-          <h2 id="about-heading">Dlaczego Jasne pismo?</h2>
+          <p class="section-tag" data-testid="section-about-tag">O nas</p>
+          <h2 id="about-heading" data-testid="section-about-heading">Dlaczego Jasne pismo?</h2>
           <p>Pomagamy zrozumieć oficjalne pisma prostym językiem i bez prawniczego żargonu.</p>
         </div>
         <div class="content-block">
@@ -354,14 +354,14 @@
           </p>
         </div>
         <div class="content-actions">
-          <a class="hero-cta cta-warm" href="#about-section">Dowiedz się więcej</a>
+          <a class="hero-cta cta-warm" href="#about-section" data-testid="link-about-cta">Dowiedz się więcej</a>
         </div>
       </section>
 
-      <section id="privacy-section" class="section section--app fade-in legal-page" aria-labelledby="privacy-heading">
+      <section id="privacy-section" class="section section--app fade-in legal-page" aria-labelledby="privacy-heading" data-testid="section-privacy">
         <div class="section-header">
-          <p class="section-tag">Polityka prywatności</p>
-          <h2 id="privacy-heading">Jak przetwarzamy dane</h2>
+          <p class="section-tag" data-testid="section-privacy-tag">Polityka prywatności</p>
+          <h2 id="privacy-heading" data-testid="section-privacy-heading">Jak przetwarzamy dane</h2>
         </div>
         <div class="content-block">
           <div class="summary">
@@ -468,10 +468,11 @@
         id="terms-section"
         class="section section--app fade-in legal-page"
         aria-labelledby="terms-heading"
+        data-testid="section-terms"
       >
         <div class="section-header">
-          <p class="section-tag">Regulamin</p>
-          <h2 id="terms-heading">Zasady korzystania z serwisu</h2>
+          <p class="section-tag" data-testid="section-terms-tag">Regulamin</p>
+          <h2 id="terms-heading" data-testid="section-terms-heading">Zasady korzystania z serwisu</h2>
           <p>Usługa ma charakter informacyjny i nie zastępuje porady prawnej.</p>
         </div>
         <div class="content-block">
@@ -564,10 +565,10 @@
       </section>
     </main>
 
-    <section id="contact-section" class="section fade-in" aria-labelledby="contact-heading">
+    <section id="contact-section" class="section fade-in" aria-labelledby="contact-heading" data-testid="section-contact">
       <div class="section-header">
-        <p class="section-tag">Kontakt</p>
-        <h2 id="contact-heading">Skontaktuj się z nami</h2>
+        <p class="section-tag" data-testid="section-contact-tag">Kontakt</p>
+        <h2 id="contact-heading" data-testid="section-contact-heading">Skontaktuj się z nami</h2>
       </div>
       <div class="content-block">
         <div class="contact-card">
@@ -579,7 +580,7 @@
       </div>
     </section>
 
-    <footer class="site-footer" data-testid="site-footer">
+    <footer id="footer" class="site-footer" data-testid="site-footer">
       <div class="footer-inner">
         <p class="footer-legal-note" aria-hidden="true">
           Materiały mają charakter informacyjny i nie zastępują porady prawnej.
