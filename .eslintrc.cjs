@@ -4,12 +4,6 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  globals: {
-    JSZip: 'readonly',
-    mammoth: 'readonly',
-    pdfjsLib: 'readonly',
-    Tesseract: 'readonly',
-  },
   extends: ['eslint:recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: 2021,

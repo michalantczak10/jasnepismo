@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const errorMessage = document.getElementById('errorMessage');
 
   let extractInProgress = false;
+  let lastFocusedElement = null;
 
   function updateTextCount(val) {
     const textCountEl = document.getElementById('textCount');
@@ -48,16 +49,36 @@ document.addEventListener('DOMContentLoaded', function () {
   if (fileInput && fileDetails && removeFileButton) {
     fileInput.addEventListener('change', async function () {
       const f = fileInput.files && fileInput.files[0];
-      // when file selection starts, mark extraction in progress and update button state
-      extractInProgress = false; // reset then set if needed
+      extractInProgress = false;
       updateFreeButtonState();
 
       if (f) {
+        const MAX_SIZE = 5 * 1024 * 1024;
+        if (f.size > MAX_SIZE) {
+          if (errorMessage) {
+            errorMessage.textContent = 'Plik jest za duży. Maksymalny rozmiar to 5 MB.';
+            errorMessage.hidden = false;
+          }
+          fileInput.value = '';
+          return;
+        }
+
+        const allowedExtensions = ['.doc', '.dotx', '.docx', '.odt', '.pdf', '.rtf', '.txt', '.jpg', '.jpeg', '.png'];
+        const fileName = f.name ? f.name.toLowerCase() : '';
+        const hasValidExtension = allowedExtensions.some(function (ext) { return fileName.endsWith(ext); });
+        if (!hasValidExtension) {
+          if (errorMessage) {
+            errorMessage.textContent = 'Nieobsługiwany format pliku. Dozwolone: PDF, DOCX, JPG, PNG, TXT, RTF, ODT.';
+            errorMessage.hidden = false;
+          }
+          fileInput.value = '';
+          return;
+        }
+
         fileDetails.hidden = false;
         fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
         removeFileButton.disabled = false;
 
-        // Try to populate textarea with file contents.
         const textareaEl = document.getElementById('documentText');
 
         const lowerName = f.name ? f.name.toLowerCase() : '';
@@ -161,7 +182,12 @@ document.addEventListener('DOMContentLoaded', function () {
   if (clearButton) {
     clearButton.addEventListener('click', function () {
       const confirmModal = document.getElementById('confirmModal');
-      if (confirmModal) confirmModal.hidden = false;
+      if (confirmModal) {
+        lastFocusedElement = clearButton;
+        confirmModal.hidden = false;
+        const firstFocusable = confirmModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable) firstFocusable.focus();
+      }
     });
   }
 
@@ -181,6 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
       updateFreeButtonState();
       const confirmModal = document.getElementById('confirmModal');
       if (confirmModal) confirmModal.hidden = true;
+      if (lastFocusedElement) lastFocusedElement.focus();
+      lastFocusedElement = null;
     });
   }
 
@@ -188,6 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
     cancelClearButton.addEventListener('click', function () {
       const confirmModal = document.getElementById('confirmModal');
       if (confirmModal) confirmModal.hidden = true;
+      if (lastFocusedElement) lastFocusedElement.focus();
+      lastFocusedElement = null;
     });
   }
 

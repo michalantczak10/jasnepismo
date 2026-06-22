@@ -1,22 +1,27 @@
 ﻿:root {
-  --color-primary: #8b0000; /* darker red for stronger contrast */
+  --color-primary: #b30000;
   --color-primary-contrast: #ffffff;
-  --color-accent: #ffb300; /* slightly deeper yellow */
+  --color-accent: #ffb300;
   --color-accent-strong: #f2a900;
   --color-accent-soft: #fff6cf;
   --color-accent-muted: #fffbea;
   --color-accent-border: rgba(255, 179, 0, 0.45);
-  --color-accent-text: #111; /* text color when on accent background */
+  --color-accent-text: #111;
   --color-danger: #9b1d1d;
   --color-danger-soft: #fff5f5;
   --color-danger-border: rgba(179, 0, 0, 0.16);
-  --color-bg: #fff;
-  --color-text: #111; /* slightly darker for better readability */
+  --color-bg: #fafafa;
+  --color-text: #111;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --surface: #f8fafc;
   --radius: 22px;
   --radius-pill: 999px;
   --radius-card: 24px;
   --control-width: min(420px, 100%);
   --button-width: var(--control-width);
+  --button-label-font-size: 1.05rem;
+  --min-button-font-size: 10px;
   --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 8px rgba(0, 0, 0, 0.05);
   --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.05);
 }
@@ -47,11 +52,23 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Liberation Sans',
+    sans-serif;
+  background: linear-gradient(180deg, var(--bg), #ffffff);
+  color: #0f172a;
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 img {
@@ -290,6 +307,12 @@ section:last-of-type {
   margin-bottom: 0;
 }
 
+.section--app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.25rem 1rem;
+}
+
 .section h2 {
   margin: 0 0 24px;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
@@ -521,8 +544,8 @@ section:last-of-type {
 }
 
 .site-footer {
-  padding: 36px 32px 46px;
-  background: linear-gradient(180deg, #fffdf2 0%, #fff7e6 100%);
+  padding: 1.5rem 1rem;
+  background: transparent;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -1708,29 +1731,8 @@ a:focus-visible,
   font-weight: 800;
 }
 
-.result-card {
-  margin-top: 2rem;
-  padding: 1.75rem 1.5rem;
-  border-radius: var(--radius-card);
-  background: linear-gradient(180deg, #fffef8 0%, var(--color-accent-muted) 100%);
-  border: 1px solid var(--color-accent-border);
-  box-shadow: var(--shadow-soft);
-}
-
 .result-card.fade-in {
   animation: fadeInSlide 0.35s ease-out both;
-}
-
-.result-card h3 {
-  margin: 0 0 1rem;
-  color: var(--color-primary);
-  font-size: 1.5rem;
-}
-
-.result-text {
-  line-height: 1.8;
-  color: var(--color-text);
-  white-space: pre-wrap;
 }
 
 .result-actions {
@@ -1761,10 +1763,6 @@ a:focus-visible,
 }
 
 /* Icon and label spacing - unified sizes and CSS vars */
-:root {
-  --button-label-font-size: 1.05rem;
-  --min-button-font-size: 10px;
-}
 
 .nav-emoji,
 .footer-emoji,
@@ -1962,40 +1960,6 @@ a:focus-visible,
   width: 1.6rem !important;
 }
 
-/* Custom appearance improvements for Jasne pismo */
-:root {
-  --color-primary: #b30000;
-  --muted: #6b7280;
-  --bg: #fafafa;
-  --card-bg: #ffffff;
-  --surface: #f8fafc;
-}
-
-/* Layout tweaks */
-body {
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    'Noto Sans',
-    'Liberation Sans',
-    sans-serif;
-  background: linear-gradient(180deg, var(--bg), #ffffff);
-  color: #0f172a;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.section--app {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2.25rem 1rem;
-}
-
 /* Result card */
 .result-card {
   background: var(--card-bg);
@@ -2063,12 +2027,6 @@ body {
 .result-actions .hero-cta {
   padding: 0.55rem 1rem;
   font-size: 0.95rem;
-}
-
-/* Footer adjustments */
-.site-footer {
-  padding: 1.5rem 1rem;
-  background: transparent;
 }
 
 /* Responsive tweaks */
