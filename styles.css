@@ -1239,7 +1239,7 @@ a:focus-visible,
   }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 320px) {
   .hero {
     padding: 24px 16px;
   }
