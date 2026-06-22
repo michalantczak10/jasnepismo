@@ -481,17 +481,17 @@ section:last-of-type {
 }
 
 .contact-card {
-  background: #fff4b8;
-  border: 1px solid rgba(255, 204, 0, 0.35);
+  background: #fff7e0;
+  border: 1px solid rgba(255, 204, 0, 0.34);
   border-radius: var(--radius);
-  padding: 34px 30px;
+  padding: 28px 26px;
   text-align: center;
-  box-shadow: 0 16px 40px rgba(255, 187, 0, 0.14);
+  box-shadow: 0 16px 40px rgba(255, 204, 0, 0.16);
 }
 
 .contact-card-secondary {
-  background: #fffbe0;
-  border: 1px solid rgba(255, 204, 0, 0.25);
+  background: #fffdf2;
+  border: 1px solid rgba(255, 204, 0, 0.16);
 }
 
 .contact-phone,
@@ -1253,20 +1253,6 @@ a:focus-visible,
   .benefit-card {
     min-width: 0;
   }
-}
-
-.contact-card {
-  background: #fff7e0;
-  border: 1px solid rgba(255, 204, 0, 0.34);
-  border-radius: var(--radius);
-  padding: 28px 26px;
-  text-align: center;
-  box-shadow: 0 16px 40px rgba(255, 204, 0, 0.16);
-}
-
-.contact-card-secondary {
-  background: #fffdf2;
-  border: 1px solid rgba(255, 204, 0, 0.16);
 }
 
 .contact-phone {
