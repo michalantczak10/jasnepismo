@@ -658,90 +658,8 @@ a:focus-visible,
 }
 
 .footer-contact {
-  font-style: normal; /* address domyślnie jest kursywą */
+  font-style: normal;
   margin: 0.35rem 0 0;
-}
-
-.footer-contact-card {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.7rem 0.9rem;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 250, 240, 0.98));
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-  max-width: 640px;
-  margin: 0.35rem auto 0;
-}
-
-.footer-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 1.15rem 1.75rem;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
-  color: #111;
-  font-weight: 800;
-  font-size: 1.25rem;
-  line-height: 1.25;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  box-shadow: var(--shadow-button);
-  transition:
-    transform 0.24s ease,
-    filter 0.24s ease,
-    box-shadow 0.24s ease,
-    background-color 0.24s ease;
-}
-
-.footer-cta:hover,
-.footer-cta:focus-visible {
-  transform: translateY(-3px) scale(1.01);
-  filter: brightness(1.04);
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.16),
-    0 8px 16px rgba(0, 0, 0, 0.08);
-  outline: none;
-}
-
-.footer-contact-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin-left: 0.6rem;
-}
-
-.footer-contact-note {
-  font-size: 0.92rem;
-  color: rgba(17, 17, 17, 0.78);
-  margin: 0;
-}
-
-.footer-badge {
-  display: inline-block;
-  padding: 0.2rem 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 999px;
-  font-size: 0.82rem;
-  color: var(--color-primary);
-  font-weight: 700;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  align-self: start;
-}
-
-/* Prominent red variant used for the "48h" status in the footer */
-.footer-badge--prominent {
-  display: inline-block;
-  padding: 0.18rem 0.6rem;
-  background: transparent;
-  border-radius: 999px;
-  font-size: 1rem;
-  color: var(--color-primary);
-  font-weight: 800;
-  border: none;
-  align-self: center;
-  margin-top: 0.35rem;
 }
 
 @media (min-width: 880px) {
@@ -879,9 +797,6 @@ a:focus-visible,
   stroke: currentColor;
   fill: none;
 }
-.footer-email-link::before {
-  content: none;
-}
 .footer-nav .nav-icon {
   display: inline-block;
   width: 16px;
@@ -891,16 +806,6 @@ a:focus-visible,
   stroke: currentColor;
   fill: none;
   vertical-align: middle;
-}
-
-/* CTA variant classes - two options to preview */
-.footer-email-link.cta-warm {
-  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
-  color: #fff;
-}
-.footer-email-link.cta-blue {
-  background: linear-gradient(90deg, #2f80ed, #1a73e8);
-  color: #fff;
 }
 
 .footer-legal {
@@ -953,12 +858,6 @@ a:focus-visible,
   text-align: center !important;
 }
 
-/* Prominent red contact button styling */
-.site-footer .hero-cta.footer-cta,
-.site-footer .footer-email-link {
-  width: min(640px, 92%) !important;
-}
-
 /* Main page form primary CTA: match footer/terms yellow pill */
 .form-actions .hero-cta.cta-warm,
 .form-actions button.hero-cta.cta-warm {
@@ -989,28 +888,6 @@ a:focus-visible,
   justify-content: center !important;
   height: 1.6rem !important;
   width: 1.6rem !important;
-}
-.site-footer .hero-cta.footer-cta,
-.site-footer .footer-email-link {
-  width: min(640px, 92%) !important;
-  max-width: 720px !important;
-  display: block !important;
-  margin: 1rem auto !important;
-  padding: 1.15rem 2rem !important;
-  border-radius: 40px !important;
-  background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
-  color: #fff !important;
-  font-size: 1.12rem !important;
-  font-weight: 800 !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25) !important;
-  text-align: center !important;
-}
-
-/* Slightly enlarge the emoji in contact CTA */
-.site-footer .footer-email-link .footer-emoji,
-.site-footer .hero-cta .footer-emoji {
-  font-size: 1.4rem !important;
-  margin-right: 0.75rem !important;
 }
 
 .content-actions {
@@ -1362,21 +1239,20 @@ a:focus-visible,
   }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 360px) {
   .hero {
-    padding: 28px 22px;
+    padding: 24px 16px;
   }
 
   section {
-    padding: 32px 22px;
+    padding: 28px 16px;
   }
 
   .site-footer {
-    padding: 24px 32px 32px;
+    padding: 24px 16px 32px;
   }
 
   .footer-inner {
-    padding: 0 32px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1384,22 +1260,7 @@ a:focus-visible,
     text-align: center;
   }
 
-  /* Force vertical footer layout across all screen sizes */
-  .site-footer .footer-inner,
-  .footer-inner,
-  .footer-branding,
-  .footer-nav,
-  .footer-contact-card {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 1rem !important;
-    text-align: center !important;
-  }
-
   .footer-nav a,
-  .footer-cta,
-  .footer-contact-card,
   .footer-branding {
     width: 100% !important;
     max-width: 680px !important;
@@ -1407,19 +1268,14 @@ a:focus-visible,
     box-sizing: border-box !important;
   }
 
-  .footer-branding,
-  .footer-nav,
-  .footer-contact-card {
-    width: 100%;
-    max-width: 860px;
-    margin: 0.4rem auto;
-  }
-
   .footer-nav {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.6rem;
+    width: 100%;
+    max-width: 860px;
+    margin: 0.4rem auto;
   }
 
   .footer-nav a {
@@ -1428,21 +1284,20 @@ a:focus-visible,
     margin-inline: auto;
   }
 
-  .footer-contact-card {
-    justify-content: center;
-  }
-
-  .footer-cta,
-  .footer-email-link {
-    width: 100%;
-    max-width: 520px;
-    box-sizing: border-box;
+  .section-tag {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.7rem;
   }
 
   .modal-window {
     width: min(100%, 96vw);
     padding: 1.25rem;
   }
+
+  .contact-mail {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+  }
+}
 }
 
 .sr-only {
