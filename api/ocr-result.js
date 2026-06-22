@@ -1,5 +1,5 @@
 const Redis = require('ioredis');
-const redis = new Redis(process.env.REDIS_URL);
+const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
 
 module.exports = async function handler(req, res) {
   const method = req && req.method ? req.method.toUpperCase() : 'GET';
@@ -10,6 +10,11 @@ module.exports = async function handler(req, res) {
 
   const id = (req.query && req.query.id) || (req && req.headers && req.headers['x-job-id']);
   if (!id) return res.status(400).json({ error: 'Brak id param' });
+
+  if (!redis) {
+    console.error('Redis client not configured');
+    return res.status(503).json({ error: 'Usługa niedostępna' });
+  }
 
   try {
     const key = `ocr:result:${id}`;
