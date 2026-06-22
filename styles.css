@@ -462,53 +462,31 @@ section:last-of-type {
   line-height: 1.7;
 }
 
-.contact-bg-accent {
-  position: absolute;
-  top: -80px;
-  right: -60px;
-  width: 240px;
-  height: 240px;
-  pointer-events: none;
-  z-index: 0;
+#contact-section {
+  position: relative;
+}
+
+#contact-section .section-tag {
+  margin-bottom: 0.5rem;
 }
 
 .contact-card {
   position: relative;
-  background: linear-gradient(145deg, #fffaf0, #fff5e6);
-  border: 1px solid rgba(179, 0, 0, 0.12);
+  background: #fffcf5;
+  border: 1px solid rgba(179, 0, 0, 0.1);
   border-radius: 20px;
   padding: 48px 40px;
   text-align: center;
-  box-shadow:
-    0 4px 24px rgba(179, 0, 0, 0.06),
-    0 12px 48px rgba(179, 0, 0, 0.04);
-  max-width: 520px;
+  max-width: 480px;
   margin: 0 auto;
-  overflow: hidden;
-}
-
-.contact-card-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #b30000, #ff6b35, #b30000);
-  background-size: 200% 100%;
-  animation: shimmer 3s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 .contact-icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   margin: 0 auto 1.25rem;
   border-radius: 50%;
   background: linear-gradient(135deg, rgba(179, 0, 0, 0.08), rgba(255, 107, 53, 0.08));
@@ -516,15 +494,19 @@ section:last-of-type {
 }
 
 .contact-icon-wrapper svg {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+}
+
+#contact-section h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
 }
 
 .contact-mail {
-  margin: 0 0 0.75rem;
-  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
 }
 
 .contact-mail a {
@@ -543,14 +525,14 @@ section:last-of-type {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  margin: 0.25rem 0 1.5rem;
+  margin: 0 0 1.5rem;
   color: #666;
   font-size: 0.9rem;
 }
 
 .contact-response-row svg {
   flex-shrink: 0;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .contact-note {
