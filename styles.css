@@ -835,11 +835,6 @@ a:focus-visible,
     margin: 0 auto !important;
     text-align: center !important;
   }
-  .footer-contact-card {
-    width: calc(100% - 48px) !important;
-    max-width: none;
-    padding: 1rem;
-  }
   .footer-branding {
     display: flex;
     flex-direction: column;
@@ -852,33 +847,6 @@ a:focus-visible,
   }
   .footer-art {
     display: none;
-  }
-  .footer-contact-meta {
-    margin-left: 0;
-    align-items: center;
-    text-align: center;
-    gap: 0.6rem;
-  }
-  .footer-badge--prominent {
-    color: var(--color-primary);
-    display: block;
-    font-size: 1.05rem;
-    font-weight: 800;
-    text-align: center;
-  }
-  .footer-cta.footer-email-link,
-  .footer-email-link.cta-warm,
-  .hero-cta.footer-cta {
-    width: calc(100% - 48px) !important;
-    max-width: 520px !important;
-    background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
-    color: #fff !important;
-    padding: 1.15rem 1.4rem !important;
-    border-radius: 28px !important;
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18) !important;
-    display: block !important;
-    margin: 0 auto !important;
-    text-align: center !important;
   }
 }
 @media (min-width: 880px) {
@@ -1372,7 +1340,6 @@ a:focus-visible,
   .contact-actions,
   .form-feedback,
   .footer-nav a,
-  .footer-email-link,
   button,
   .hero-cta {
     width: 100%;
@@ -2018,10 +1985,13 @@ a:focus-visible,
 /* Responsive tweaks */
 @media (max-width: 640px) {
   .section--app {
-    padding: 1rem;
+    padding: 1.75rem 1rem;
   }
   .hero-cta {
     width: 100% !important;
+  }
+  .contact-card {
+    padding: 20px 16px;
   }
 }
 
