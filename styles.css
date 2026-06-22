@@ -333,20 +333,6 @@ section:last-of-type {
   transform: translateX(-50%);
 }
 
-.contact-section {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  position: relative;
-  padding: clamp(64px, 7vw, 90px) 0;
-  background: linear-gradient(180deg, #fff2b8 0%, #fff9e0 55%, #f9f1d4 100%);
-}
-
-.contact-section .contact-panel {
-  padding: 0 24px;
-  text-align: center;
-}
-
 .section-header {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -476,58 +462,119 @@ section:last-of-type {
   line-height: 1.7;
 }
 
-.contact-intro {
-  margin: 0 0 1.5rem;
+.contact-bg-accent {
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .contact-card {
-  background: #fff7e0;
-  border: 1px solid rgba(255, 204, 0, 0.34);
-  border-radius: var(--radius);
-  padding: 28px 26px;
+  position: relative;
+  background: linear-gradient(145deg, #fffaf0, #fff5e6);
+  border: 1px solid rgba(179, 0, 0, 0.12);
+  border-radius: 20px;
+  padding: 48px 40px;
   text-align: center;
-  box-shadow: 0 16px 40px rgba(255, 204, 0, 0.16);
+  box-shadow:
+    0 4px 24px rgba(179, 0, 0, 0.06),
+    0 12px 48px rgba(179, 0, 0, 0.04);
+  max-width: 520px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
-.contact-card-secondary {
-  background: #fffdf2;
-  border: 1px solid rgba(255, 204, 0, 0.16);
+.contact-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #b30000, #ff6b35, #b30000);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
 }
 
-.contact-phone,
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.contact-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(179, 0, 0, 0.08), rgba(255, 107, 53, 0.08));
+  color: #b30000;
+}
+
+.contact-icon-wrapper svg {
+  width: 32px;
+  height: 32px;
+}
+
 .contact-mail {
   margin: 0 0 0.75rem;
-  font-size: clamp(1.6rem, 3vw, 2rem);
-  font-weight: 800;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* Styl dla linku e-mail w sekcji Kontakt: ikona pod adresem i powiększona */
-.contact-mail-link {
-  display: inline-block; /* pozwala centrować elementy w kolumnie */
-  text-align: center;
+.contact-mail a {
+  color: var(--color-heading);
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.contact-mail-icon {
-  display: block; /* umieszcza ikonę pod tekstem */
-  margin: 0.5rem auto 0;
-  width: clamp(36px, 6vw, 56px); /* responsywne powiększenie ikony */
-  height: auto;
-  object-fit: contain;
+.contact-mail a:hover,
+.contact-mail a:focus {
+  color: #b30000;
+  text-decoration: underline;
+}
+
+.contact-response-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.25rem 0 1.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.contact-response-row svg {
+  flex-shrink: 0;
+  opacity: 0.6;
 }
 
 .contact-note {
-  margin: 0 0 1.35rem;
-  color: var(--color-text);
-  line-height: 1.6;
+  margin: 0;
+  line-height: 1.5;
 }
 
-.contact-actions {
-  margin-bottom: 1.5rem;
+.contact-card .hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.contact-panel {
-  max-width: 760px;
-  margin: 0 auto;
+.contact-card .hero-cta svg {
+  transition: transform 0.2s ease;
+}
+
+.contact-card .hero-cta:hover svg,
+.contact-card .hero-cta:focus svg {
+  transform: translateX(3px);
+}
+
+#contact-section {
+  position: relative;
 }
 
 .footer-inner {
@@ -1063,7 +1110,7 @@ a:focus-visible,
   .benefit-card,
   .product-features li,
   .contact-card {
-    padding: 22px;
+    padding: 32px 20px;
     min-width: 0;
   }
 
@@ -1071,20 +1118,6 @@ a:focus-visible,
     width: 100%;
     padding: 32px 14px;
     margin-bottom: 24px;
-  }
-
-  .contact-section {
-    width: 100%;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: clamp(48px, 6vw, 70px) 0;
-  }
-
-  .contact-card {
-    width: 100%;
-    max-width: 100%;
-    text-align: center;
   }
 
   .contact-panel {
@@ -1098,36 +1131,6 @@ a:focus-visible,
   .benefit-card {
     min-width: 0;
   }
-}
-
-.contact-phone {
-  margin: 0 0 0.75rem;
-  font-size: clamp(1.6rem, 3vw, 2rem);
-  font-weight: 800;
-}
-
-.contact-mail {
-  margin: 0 0 0.75rem;
-  display: inline-block;
-  max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  font-size: clamp(1rem, 3vw, 2.2rem);
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  text-align: center;
-}
-
-.contact-note {
-  margin: 0 0 1.35rem;
-  color: var(--color-text);
-  line-height: 1.6;
-}
-
-.contact-card a {
-  display: inline-block;
 }
 
 .about-highlights li,
@@ -1846,7 +1849,7 @@ a:focus-visible,
     width: 100% !important;
   }
   .contact-card {
-    padding: 20px 16px;
+    padding: 28px 18px;
   }
 }
 
