@@ -29,6 +29,6 @@
     "@playwright/test": "^1.40.0"
   },
   "engines": {
-    "node": "26.x"
+    "node": "24.x"
   }
 }
