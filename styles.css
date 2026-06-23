@@ -598,28 +598,10 @@ section:last-of-type {
   pointer-events: none;
 }
 
-.footer-legal-note {
-  margin: 0 0 12px;
-  color: rgba(17, 17, 17, 0.72);
-  font-size: 0.9rem;
-  text-align: center;
-}
-
 .site-footer p {
   margin: 0;
   color: rgba(17, 17, 17, 0.92);
   font-size: 0.96rem;
-}
-
-.footer-subtitle {
-  margin: 0.35rem 0 0.9rem;
-  color: rgba(17, 17, 17, 0.92);
-  font-size: 1.02rem;
-  font-weight: 700;
-  max-width: 860px;
-  margin-inline: auto;
-  text-align: center;
-  letter-spacing: 0.2px;
 }
 
 /* Stopka: linki mniej "krzykliwe" niż w innych miejscach */
@@ -677,22 +659,12 @@ section:last-of-type {
 }
 
 .hero-cta:focus-visible,
-.footer-cta:focus-visible,
 a:focus-visible,
 .site-footer a:focus-visible {
   outline: 3px solid rgba(242, 194, 0, 0.95);
   outline-offset: 3px;
   box-shadow: none;
   border-color: rgba(0, 0, 0, 0.06);
-}
-
-.footer-sep {
-  opacity: 0.55;
-}
-
-.footer-contact {
-  font-style: normal;
-  margin: 0.35rem 0 0;
 }
 
 @media (min-width: 880px) {
@@ -703,8 +675,7 @@ a:focus-visible,
     gap: 1.6rem;
     text-align: center;
   }
-  .footer-tagline,
-  .footer-subtitle {
+  .footer-tagline {
     text-align: center;
   }
   .footer-nav {
@@ -712,10 +683,6 @@ a:focus-visible,
     flex-direction: column;
     justify-content: center;
     gap: 0.8rem;
-  }
-  .footer-contact-card {
-    margin: 0;
-    justify-self: unset;
   }
   .footer-nav a {
     width: auto;
@@ -757,15 +724,6 @@ a:focus-visible,
   outline: 3px solid var(--color-accent);
 }
 @media (max-width: 879px) {
-  .footer-cta {
-    width: 100% !important;
-    justify-content: center;
-    box-sizing: border-box;
-    padding: 1.15rem 1.6rem !important;
-    border-radius: 28px !important;
-    font-size: 1.18rem !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
-  }
   .footer-nav {
     width: 100%;
     display: flex;
@@ -821,15 +779,6 @@ a:focus-visible,
 }
 
 /* replace emoji with inline svg icons */
-.footer-email-icon {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
-  vertical-align: middle;
-  stroke: currentColor;
-  fill: none;
-}
 .footer-nav .nav-icon {
   display: inline-block;
   width: 16px;
@@ -839,11 +788,6 @@ a:focus-visible,
   stroke: currentColor;
   fill: none;
   vertical-align: middle;
-}
-
-.footer-legal {
-  margin-top: 0.45rem;
-  opacity: 0.8;
 }
 
 .content-block {
@@ -1561,10 +1505,7 @@ a:focus-visible,
 
 /* Icon and label spacing - unified sizes and CSS vars */
 
-.nav-emoji,
-.footer-emoji,
-.hero-cta .button-icon,
-.footer-cta .button-icon {
+.nav-emoji {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -1576,10 +1517,7 @@ a:focus-visible,
 }
 
 /* Button label: consistent size and single-line behavior */
-.hero-cta .btn-label,
-.footer-cta .btn-label,
-.hero-cta .footer-email-text,
-.footer-email-link .footer-email-text {
+.hero-cta .btn-label {
   display: inline-block;
   flex: 0 0 auto;
   min-width: 0;
@@ -1593,37 +1531,9 @@ a:focus-visible,
 }
 
 /* Keep pill content vertically centered and small gap */
-.hero-cta,
-.footer-cta {
+.hero-cta {
   align-items: center;
   gap: 0.25rem; /* ensure small consistent gap */
-}
-
-/* Additional tight/compact button variants used by button-fit.js when space is constrained */
-.hero-cta.button-fit-tight,
-.footer-cta.button-fit-tight {
-  padding: 0.9rem 1.05rem;
-}
-
-.hero-cta.button-fit-tight .button-icon,
-.footer-cta.button-fit-tight .button-icon,
-.hero-cta.button-fit-tight .nav-emoji,
-.footer-cta.button-fit-tight .nav-emoji {
-  font-size: 1rem;
-  margin-right: 0.18rem;
-}
-
-.hero-cta.button-fit-compact,
-.footer-cta.button-fit-compact {
-  padding: 0.72rem 0.9rem;
-}
-
-.hero-cta.button-fit-compact .button-icon,
-.footer-cta.button-fit-compact .button-icon,
-.hero-cta.button-fit-compact .nav-emoji,
-.footer-cta.button-fit-compact .nav-emoji {
-  font-size: 0.9rem;
-  margin-right: 0.12rem;
 }
 
 /* Global responsive enhancements (2026-06-06)
