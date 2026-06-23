@@ -903,10 +903,29 @@ a:focus-visible,
 }
 
 .legal-page .content-block {
+  counter-reset: legal-counter;
   text-align: left;
   max-width: 840px;
   margin-left: auto;
   margin-right: auto;
+  background: linear-gradient(180deg, rgba(255, 248, 193, 0.3) 0%, rgba(255, 254, 242, 0.5) 100%);
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  border-radius: var(--radius);
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.legal-page .content-block h3 {
+  counter-increment: legal-counter;
+  margin: 1.8rem 0 0.5rem;
+  font-size: 1.15rem;
+  color: rgba(17, 17, 17, 0.92);
+}
+
+.legal-page .content-block h3::before {
+  content: counter(legal-counter) ". ";
+  color: var(--color-primary);
+  font-weight: 700;
 }
 
 .legal-page .content-block p {

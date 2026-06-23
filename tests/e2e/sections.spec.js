@@ -143,8 +143,8 @@ test.describe('section-terms', () => {
     await expect(section.locator('.summary')).toBeVisible();
     await expect(section.locator('.summary h3')).toHaveText('W skrócie');
 
-    await expect(section.locator('h3:has-text("1. O serwisie")')).toBeVisible();
-    await expect(section.locator('h3:has-text("8. Własność intelektualna")')).toBeVisible();
+    await expect(section.locator('h3:has-text("O serwisie")')).toBeVisible();
+    await expect(section.locator('h3:has-text("Własność intelektualna")')).toBeVisible();
   });
 });
 
