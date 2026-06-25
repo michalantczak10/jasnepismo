@@ -943,13 +943,6 @@ a:focus-visible,
   margin: 0.35rem 0;
   line-height: 1.8;
 }
-
-.legal-page .content-block h3 {
-  margin: 1.8rem 0 0.5rem;
-  font-size: 1.15rem;
-  color: rgba(17, 17, 17, 0.92);
-}
-
 .legal-page .nowrap {
   white-space: nowrap;
 }

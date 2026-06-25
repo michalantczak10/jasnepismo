@@ -14,10 +14,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon-192x192.png?v=7" />
     <link rel="manifest" href="/site.webmanifest?v=7" />
     <link rel="canonical" href="https://jasnepismo.pl/" />
-    <title>Jasne pismo — wyjaśnij pismo urzędowe prostym językiem</title>
+    <title>Jasne pismo — zrozumiesz każde pismo z urzędu</title>
     <meta
       name="description"
-      content="Wyjaśniamy pisma prostym językiem — wklej tekst i otrzymaj krótkie wyjaśnienie."
+      content="Wklej pismo z urzędu. Dostaniesz proste wyjaśnienie napisane po ludzku."
     />
     <meta name="robots" content="index, follow" />
     <meta
@@ -30,10 +30,10 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jasnepismo.pl/" />
-    <meta property="og:title" content="Jasne pismo — wyjaśnij pismo urzędowe prostym językiem" />
+    <meta property="og:title" content="Jasne pismo — zrozumiesz każde pismo z urzędu" />
     <meta
       property="og:description"
-      content="Wklej tekst pisma, otrzymasz krótkie wyjaśnienie i praktyczne wskazówki."
+      content="Wklej pismo z urzędu. Wyjaśnimy ci prostym językiem, co znaczy."
     />
     <meta property="og:image" content="/img/hero.jpg" />
     <meta property="og:image:alt" content="Ilustracja Jasne pismo" />
@@ -42,10 +42,10 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Jasne pismo — wyjaśnij pismo urzędowe prostym językiem" />
+    <meta name="twitter:title" content="Jasne pismo — zrozumiesz każde pismo z urzędu" />
     <meta
       name="twitter:description"
-      content="Wklej treść oficjalnego pisma i otrzymasz krótkie, proste wyjaśnienie."
+      content="Wklej pismo z urzędu. Dostaniesz prostą odpowiedź."
     />
     <meta name="twitter:image" content="/img/hero.jpg" />
     <meta name="twitter:image:alt" content="Ilustracja Jasne pismo" />
@@ -56,7 +56,7 @@
         "@type": "WebSite",
         "name": "Jasne pismo",
         "url": "https://jasnepismo.pl/",
-        "description": "Proste wyjaśnienia pism urzędowych za pomocą modelu AI.",
+        "description": "Wyjaśniamy pisma z urzędu prostym językiem.",
         "publisher": {
           "@type": "Organization",
           "name": "Jasne pismo"
@@ -106,11 +106,10 @@
       <div class="hero-copy" data-testid="hero-copy">
         <p class="section-tag" data-testid="hero-section-tag">Jasne pismo</p>
         <h1 data-testid="hero-heading">
-          Masz pismo? Wklej tekst — wyjaśnimy prosto, krok po kroku.
+          Masz pismo z urzędu? Wklej je tutaj. Wyjaśnimy ci je po ludzku.
         </h1>
         <p data-testid="hero-subtitle">
-          Wklej tekst i kliknij „Wyjaśnij”. Otrzymasz krótkie wyjaśnienie oraz jasne wskazówki, co
-          zrobić dalej.
+          Wklej tekst urzędowego pisma. Kliknij „Wyjaśnij”. Dostaniesz odpowiedź napisaną prostym językiem.
         </p>
       </div>
     </header>
@@ -122,13 +121,12 @@
         data-testid="section-app"
       >
         <div class="section-header">
-          <p class="section-tag" data-testid="section-app-tag">Jak to działa</p>
+          <p class="section-tag" data-testid="section-app-tag">Jak to działa?</p>
           <h2 id="app-heading" data-testid="section-app-heading">
-            Szybkie wyjaśnienie oficjalnego pisma
+            Wklej pismo — my wyjaśniamy
           </h2>
           <p data-testid="section-app-intro">
-            Wklej pełną treść oficjalnego pisma (np. decyzja, wezwanie, pismo urzędowe) i kliknij
-            „Wyjaśnij”. Otrzymasz proste wyjaśnienie i jasne kroki, co robić dalej.
+            Wklej cały tekst z pisma (np. z urzędu, z ZUS-u, z sądu). Kliknij „Wyjaśnij”. My napiszemy ci prostym językiem, co to znaczy i co masz zrobić.
           </p>
         </div>
         <form id="explainForm" class="explain-form" data-testid="form-explain">
@@ -139,13 +137,12 @@
             rows="12"
             maxlength="5000"
             aria-describedby="textCount"
-            placeholder="Wklej tekst pisma tutaj..."
+            placeholder="Wklej tutaj tekst z pisma..."
             data-testid="documentText"
           ></textarea>
           <p id="textCount" class="field-note" data-testid="textCount">0 / 5000 znaków</p>
           <label class="file-upload-label" for="documentFile" data-testid="file-upload-label">
-            Możesz też wysłać skan lub plik (np. PDF, JPG). Tekst pojawi się w polu i możesz go
-            poprawić. (opcjonalnie, max 5 MB)
+            Możesz też dodać zdjęcie lub skan pisma (PDF, JPG, DOCX). Tekst sam wgramy w pole wyżej. (opcjonalnie, max 5 MB)
           </label>
           <div class="file-upload-row">
             <input
@@ -221,10 +218,9 @@
         >
           <div class="modal-window">
             <div class="modal-copy">
-              <h3 id="confirmModalTitle" data-testid="confirmModalTitle">Wyczyścić tekst?</h3>
+              <h3 id="confirmModalTitle" data-testid="confirmModalTitle">Usunąć tekst?</h3>
               <p data-testid="confirmModalText">
-                Czy na pewno chcesz wyczyścić cały tekst w polu? Ta akcja usunie także bieżący
-                wynik.
+                Czy na pewno chcesz usunąć cały tekst? Zniknie też odpowiedź, którą dostaliśmy.
               </p>
             </div>
             <div class="modal-actions">
@@ -277,7 +273,7 @@
           >
           <a href="#info-section" class="hero-cta cta-warm" data-testid="link-info"
             ><span class="nav-emoji" aria-hidden="true">🔒</span
-            ><span class="btn-label">Bezpieczeństwo</span></a
+            ><span class="btn-label">Twoje dane</span></a
           >
           <a href="#about-section" class="hero-cta cta-warm" data-testid="link-about"
             ><span class="nav-emoji" aria-hidden="true">ℹ️</span
@@ -285,7 +281,7 @@
           >
           <a href="#privacy-section" class="hero-cta cta-warm" data-testid="link-privacy"
             ><span class="nav-emoji" aria-hidden="true">🛡️</span
-            ><span class="btn-label">Polityka prywatności</span></a
+            ><span class="btn-label">Prywatność</span></a
           >
           <a href="#terms-section" class="hero-cta cta-warm" data-testid="link-terms"
             ><span class="nav-emoji" aria-hidden="true">📜</span
@@ -306,30 +302,29 @@
       >
         <div class="product-inner">
           <div class="section-header">
-            <p class="section-tag" data-testid="section-info-tag">Bezpieczeństwo</p>
-            <h2 id="info-heading" data-testid="info-heading">Twoje pismo nie jest przechowywane</h2>
+            <p class="section-tag" data-testid="section-info-tag">Twoje dane</p>
+            <h2 id="info-heading" data-testid="info-heading">Nie przechowujemy twoich pism</h2>
             <p data-testid="section-info-intro">
-              Twój tekst służy tylko do przygotowania wyjaśnienia. Nie prowadzimy historii Twoich
-              dokumentów i nie zapisujemy ich u nas na stałe.
+              Twój tekst jest używany tylko do przygotowania wyjaśnienia. Nie zapisujemy go na stałe. Nie prowadzimy historii twoich pism.
             </p>
           </div>
           <ul class="product-features">
             <li>
-              <span class="feature-emoji">🔒</span><strong>Brak logowania</strong
+              <span class="feature-emoji">🔒</span><strong>Nie musisz się logować</strong
               ><span class="feature-note"
-                >Nie zbieramy danych osobowych ani historii dokumentów.</span
+                >Nie zbieramy twoich danych ani historii pism.</span
               >
             </li>
             <li>
-              <span class="feature-emoji">⚡</span><strong>Szybkie działanie</strong
+              <span class="feature-emoji">⚡</span><strong>Szybko dostajesz odpowiedź</strong
               ><span class="feature-note"
-                >Wyjaśnienie powstaje w kilka sekund, a wynik jest wyświetlany natychmiast.</span
+                >Wyjaśnienie jest gotowe w kilka sekund.</span
               >
             </li>
             <li>
-              <span class="feature-emoji">🌐</span><strong>Bezpieczne połączenie</strong
+              <span class="feature-emoji">🌐</span><strong>Bezpieczna strona</strong
               ><span class="feature-note"
-                >Połączenie ze stroną jest szyfrowane, żeby lepiej chronić Twoje dane.</span
+                >Strona jest szyfrowana, żeby chronić twoje dane.</span
               >
             </li>
           </ul>
@@ -339,45 +334,37 @@
       <section id="about-section" class="section fade-in" aria-labelledby="about-heading" data-testid="section-about">
         <div class="section-header">
           <p class="section-tag" data-testid="section-about-tag">O nas</p>
-          <h2 id="about-heading" data-testid="section-about-heading">Dlaczego Jasne pismo?</h2>
-          <p>Pomagamy zrozumieć oficjalne pisma prostym językiem i bez prawniczego żargonu.</p>
+          <h2 id="about-heading" data-testid="section-about-heading">Kim jesteśmy?</h2>
+          <p>Pomagamy zrozumieć pisma z urzędów. Piszemy prostym językiem, bez trudnych słów.</p>
         </div>
         <div class="content-block">
           <p>
-            Jasne pismo to niezależny, przyjazny projekt, którego celem jest ułatwienie zrozumienia
-            oficjalnych pism i dokumentów. Wklej treść dokumentu, kliknij „Wyjaśnij”, a system
-            zwróci proste podsumowanie i praktyczne wskazówki.
+            Jasne pismo to mały, niezależny projekt. Nasz cel: pomóc ci zrozumieć pisma z urzędu. Wklejasz tekst, klikasz „Wyjaśnij”, dostajesz prostą odpowiedź.
           </p>
           <p>
-            Chcemy pomagać w sprawach codziennych — pismach urzędowych, spółdzielni, szkoły i innych
-            instytucji. To, co piszemy, to informacje — nie zastępują porady prawnika.
+            Pomagamy w codziennych sprawach: z urzędu, ze spółdzielni, ze szkoły i innych. Pamiętaj: to, co piszemy, to informacje, a nie porada prawnika.
           </p>
         </div>
-        <div class="content-actions">
-          <a class="hero-cta cta-warm" href="#about-section" data-testid="link-about-cta">Dowiedz się więcej</a>
-        </div>
+
       </section>
 
       <section id="privacy-section" class="section fade-in legal-page" aria-labelledby="privacy-heading" data-testid="section-privacy">
         <div class="section-header">
-          <p class="section-tag" data-testid="section-privacy-tag">Polityka prywatności</p>
-          <h2 id="privacy-heading" data-testid="section-privacy-heading">Jak przetwarzamy dane</h2>
+          <p class="section-tag" data-testid="section-privacy-tag">Prywatność</p>
+          <h2 id="privacy-heading" data-testid="section-privacy-heading">Co robimy z twoimi danymi?</h2>
         </div>
         <div class="content-block">
           <div class="summary">
-            <h3>W skrócie</h3>
+            <h3>Krótko i po ludzku</h3>
             <ul>
               <li>
-                Wklejony tekst używamy tylko po to, aby przygotować wyjaśnienie. Nie tworzymy kont
-                ani nie przechowujemy historii dokumentów.
+                Twój tekst jest używany tylko do przygotowania wyjaśnienia. Nie zakładamy kont i nie przechowujemy twoich pism.
               </li>
               <li>
-                Do wygenerowania odpowiedzi korzystamy z usług zewnętrznych (np. dostawca modelu
-                językowego).
+                Do zrobienia odpowiedzi używamy zewnętrznych usług (dostawcy AI).
               </li>
               <li>
-                Mogą być przechowywane krótkie logi techniczne (tylko w celach diagnostycznych i
-                bezpieczeństwa).
+                Zapisujemy tylko krótkie informacje techniczne (dla bezpieczeństwa).
               </li>
               <li>
                 Kontakt w sprawie danych:
@@ -386,79 +373,64 @@
             </ul>
           </div>
 
-          <h3>Administrator danych</h3>
+          <h3>Kto odpowiada za twoje dane?</h3>
           <p>
-            Administratorem danych osobowych jest: Jasne pismo. Kontakt:
+            Za twoje dane odpowiada: Jasne pismo.
             <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
           </p>
 
-          <h3>Zakres i cel przetwarzania</h3>
+          <h3>Do czego używamy twojego tekstu?</h3>
           <p>
-            Serwis przetwarza tekst, który użytkownik wprowadza do formularza lub który zostanie
-            odczytany z przesłanego pliku (np. PDF/DOCX) w przeglądarce użytkownika, wyłącznie w
-            celu wygenerowania prostego wyjaśnienia treści dokumentu.
+            Twój tekst (wpisany w formularz lub wczytany z pliku) jest używany tylko do jednego celu: zrobienia prostego wyjaśnienia.
           </p>
           <p>
-            Aby wygenerować wyjaśnienie, treść przekazywana jest do zewnętrznego dostawcy usługi AI
-            (OpenAI). Nie tworzymy kont użytkowników ani nie budujemy historii dokumentów.
+            Żeby zrobić wyjaśnienie, twój tekst jest wysyłany do zewnętrznej usługi AI (OpenAI). Nie zakładamy kont. Nie trzymamy historii twoich pism.
           </p>
 
-          <h3>Podstawa prawna</h3>
+          <h3>Podstawa prawna — dla chętnych</h3>
           <p>
-            Podstawą prawną przetwarzania jest niezbędność przetwarzania do wykonania usługi na
-            żądanie użytkownika (art. 6 ust. 1 lit. b RODO). W zakresie logów technicznych podstawą
-            jest uzasadniony interes administratora (art. 6 ust. 1 lit. f RODO) — np. potrzeby
-            operacyjne i bezpieczeństwo.
+            Twoje dane przetwarzamy, bo tego trzeba, żeby wykonać usługę, o którą prosisz (art. 6 ust. 1 lit. b RODO). Logi techniczne trzymamy dla bezpieczeństwa (art. 6 ust. 1 lit. f RODO).
           </p>
 
-          <h3>Okres przechowywania</h3>
+          <h3>Jak długo trzymamy dane?</h3>
           <p>
-            Wprowadzone treści są przetwarzane na potrzeby wygenerowania odpowiedzi i nie są przez
-            nas zapisywane w bazie danych jako historia użytkownika. Możemy jednak przetwarzać
-            podstawowe logi techniczne (np. logi serwera/hostingu) przez ograniczony czas w celach
-            diagnostycznych i bezpieczeństwa; nie służą one do profilowania użytkowników.
+            Twojego tekstu nie zapisujemy na stałe. Po zrobieniu wyjaśnienia nie mamy go u siebie. Krótkie logi techniczne (np. adres IP) możemy trzymać przez ograniczony czas dla bezpieczeństwa.
           </p>
 
-          <h3>Prawa użytkownika</h3>
+          <h3>Twoje prawa</h3>
           <ul>
-            <li>Prawo dostępu do danych.</li>
-            <li>Prawo do sprostowania danych.</li>
-            <li>Prawo do usunięcia (prawo do bycia zapomnianym).</li>
+            <li>Prawo dostępu do danych — możesz zapytać, jakie dane o tobie mamy.</li>
+            <li>Prawo do poprawienia danych.</li>
+            <li>Prawo do usunięcia danych.</li>
             <li>Prawo do ograniczenia przetwarzania.</li>
-            <li>Prawo do przenoszenia danych.</li>
-            <li>Prawo wniesienia sprzeciwu wobec przetwarzania danych.</li>
+            <li>Prawo do przeniesienia danych.</li>
+            <li>Prawo do sprzeciwu.</li>
           </ul>
 
-          <h3>Cookies i usługi zewnętrzne</h3>
+          <h3>Cookies i zewnętrzne usługi</h3>
           <p>
-            Serwis nie wykorzystuje własnych plików cookies do prowadzenia kont użytkowników. W
-            zależności od środowiska (hosting, przeglądarka, dostawcy CDN) mogą jednak pojawić się
-            techniczne cookies lub nagłówki związane z bezpieczeństwem i poprawnym dostarczaniem
-            zasobów.
+            Nie używamy własnych cookies do śledzenia cię. Twoja przeglądarka lub dostawca hostingu mogą jednak używać swoich technicznych cookies.
           </p>
-          <p>Korzystamy z usług zewnętrznych w celu działania serwisu, w szczególności:</p>
+          <p>Korzystamy z zewnętrznych usług:</p>
           <ul>
-            <li>OpenAI — przetwarzanie treści w celu wygenerowania wyjaśnienia.</li>
-            <li>Vercel — hosting strony i funkcji API.</li>
+            <li>OpenAI — żeby zrobić wyjaśnienie twojego pisma.</li>
+            <li>Vercel — żeby strona działała w internecie.</li>
           </ul>
 
           <h3>Bezpieczeństwo</h3>
           <p>
-            Wszystkie połączenia odbywają się przez HTTPS. Stosujemy dobre praktyki zabezpieczeń
-            aplikacji i ograniczamy dostęp do wrażliwych danych. Mimo to zalecamy nieudostępnianie w
-            formularzu informacji szczególnie wrażliwych (np. danych zdrowotnych, numerów PESEL czy
-            szczegółów finansowych).
+            Strona działa przez bezpieczne połączenie (HTTPS). Staramy się dobrze chronić twoje dane. Mimo to nie przesyłaj w formularzu bardzo wrażliwych informacji (np. numeru PESEL, danych zdrowotnych, danych karty).
           </p>
 
-          <h3>Zmiany polityki prywatności</h3>
+          <h3>Zmiany w polityce prywatności</h3>
           <p>
-            Polityka prywatności może być aktualizowana.
-            <span class="nowrap">Data ostatniej aktualizacji: <strong>2026-05-29</strong>.</span>
+            Możemy aktualizować tę politykę.
+            <span class="nowrap">Ostatnia aktualizacja: <strong>2026-05-29</strong>.</span>
           </p>
 
           <h3>Kontakt</h3>
           <p>
-            W sprawach związanych z ochroną danych prosimy o kontakt:
+            Masz pytania o dane? Napisz:
             <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
           </p>
         </div>
@@ -472,84 +444,67 @@
       >
         <div class="section-header">
           <p class="section-tag" data-testid="section-terms-tag">Regulamin</p>
-          <h2 id="terms-heading" data-testid="section-terms-heading">Zasady korzystania z serwisu</h2>
+          <h2 id="terms-heading" data-testid="section-terms-heading">Zasady korzystania — po ludzku</h2>
         </div>
         <div class="content-block">
           <div class="summary">
-            <h3>W skrócie</h3>
+            <h3>Krótko i po ludzku</h3>
             <ul>
-              <li>Serwis wyjaśnia treść pism urzędowych prostym językiem.</li>
-              <li>Wynik ma charakter informacyjny i może zawierać uproszczenia.</li>
-              <li>Nie przesyłaj danych szczególnie wrażliwych.</li>
-              <li>Korzystaj z serwisu zgodnie z prawem i dobrymi obyczajami.</li>
+              <li>Wyjaśniamy ci, co znaczy urzędowe pismo. Piszemy prosto.</li>
+              <li>Nasza odpowiedź to informacja, nie porada prawnika. Może mieć uproszczenia.</li>
+              <li>Nie przesyłaj bardzo wrażliwych danych (np. PESEL, zdrowie, konto w banku).</li>
+              <li>Używaj serwisu zgodnie z prawem.</li>
             </ul>
           </div>
 
-          <h3>O serwisie</h3>
+          <h3>Co to za serwis?</h3>
           <p>
-            Serwis Jasne pismo („Serwis”) udostępnia narzędzie do generowania prostego wyjaśnienia
-            treści dokumentów urzędowych (np. pism, wezwań, decyzji).
+            Jasne pismo to narzędzie, które pomaga ci zrozumieć urzędowe pisma. Wklejasz tekst, my wyjaśniamy.
           </p>
 
-          <h3>Definicje</h3>
-          <ul>
-            <li><strong>Użytkownik</strong> — osoba korzystająca z Serwisu.</li>
-            <li>
-              <strong>Treść</strong> — tekst wpisany przez Użytkownika lub odczytany z pliku w
-              przeglądarce (np. PDF/DOCX).
-            </li>
-            <li>
-              <strong>Wynik</strong> — wygenerowane wyjaśnienie Treści (odpowiedź o charakterze
-              informacyjnym).
-            </li>
-          </ul>
-
-          <h3>Charakter usługi</h3>
+          <h3>Ważne: to nie jest porada prawnika</h3>
           <p>
-            Usługa ma charakter informacyjny. Wynik nie stanowi porady prawnej, administracyjnej ani
-            podatkowej i nie jest oficjalnym stanowiskiem żadnego urzędu.
+            Nasza odpowiedź to informacja, a nie porada prawna, administracyjna ani podatkowa. Nie mówimy ci, co masz robić — tylko wyjaśniamy, co pismo znaczy. Jeśli potrzebujesz porady, idź do prawnika.
           </p>
 
-          <h3>Zasady korzystania</h3>
+          <h3>Zasady dla ciebie</h3>
           <ul>
-            <li>Nie przesyłaj Treści, do której nie masz praw lub upoważnienia.</li>
-            <li>
-              Nie umieszczaj danych wrażliwych ani informacji, których nie chcesz udostępniać
-              podmiotom trzecim (np. PESEL, dane zdrowotne, numery dokumentów).
-            </li>
-            <li>
-              Nie wykorzystuj Serwisu do działań bezprawnych, naruszających prawa osób trzecich lub
-              do generowania treści szkodliwych.
-            </li>
+            <li>Nie wysyłaj cudzych tekstów bez zgody.</li>
+            <li>Nie podawaj danych, których nie chcesz nikomu pokazywać (PESEL, zdrowie, numery kont).</li>
+            <li>Nie używaj serwisu do złych rzeczy.</li>
           </ul>
 
-          <h3>Wymagania techniczne</h3>
+          <h3>Czego potrzebujesz, żeby korzystać?</h3>
           <p>
-            Do korzystania z Serwisu potrzebne są: aktualna przeglądarka internetowa, dostęp do
-            Internetu oraz włączona obsługa JavaScript. Dla przesyłania plików wymagany jest dostęp
-            do systemowego okna wyboru pliku.
+            Nowoczesnej przeglądarki, internetu i włączonego JavaScriptu. Żeby dodać plik, musisz go wybrać na swoim komputerze.
           </p>
 
           <h3>Dane i prywatność</h3>
           <p>
-            Serwis nie gromadzi kont Użytkowników. Wprowadzona Treść jest przetwarzana w celu
-            wygenerowania Wyniku. Szczegółowe informacje o przetwarzaniu danych i usługach
-            zewnętrznych znajdują się w Polityce prywatności.
+            Nie zakładamy kont. Twój tekst jest używany tylko do zrobienia wyjaśnienia. Więcej w <a href="#privacy-section">polityce prywatności</a>.
           </p>
 
-          <h3>Odpowiedzialność</h3>
+          <h3>Kto odpowiada?</h3>
           <p>
-            Użytkownik korzysta z Serwisu na własną odpowiedzialność. Autorzy Serwisu nie ponoszą
-            odpowiedzialności za decyzje podjęte na podstawie Wyniku.
+            Używasz serwisu na własną odpowiedzialność. My nie odpowiadamy za decyzje, które podejmiesz na podstawie naszych wyjaśnień.
           </p>
 
-          <h3>Własność intelektualna</h3>
+          <h3>Prawa autorskie</h3>
           <p>
-            Elementy Serwisu (w tym układ, identyfikacja wizualna, kod i treści opracowane przez
-            autorów) mogą podlegać ochronie prawnej.
+            Wygląd strony, kod i treści napisane przez nas są chronione prawem.
           </p>
 
+          <h3>Zmiany regulaminu</h3>
+          <p>
+            Możemy aktualizować ten regulamin.
+            <span class="nowrap">Ostatnia aktualizacja: <strong>2026-06-24</strong>.</span>
+          </p>
 
+          <h3>Kontakt</h3>
+          <p>
+            Masz pytania? Napisz:
+            <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+          </p>
         </div>
       </section>
     </main>
@@ -563,7 +518,7 @@
           </svg>
         </div>
         <p class="section-tag" data-testid="section-contact-tag">Kontakt</p>
-        <h2 id="contact-heading" data-testid="section-contact-heading">Skontaktuj się z nami</h2>
+        <h2 id="contact-heading" data-testid="section-contact-heading">Napisz do nas</h2>
         <p class="contact-mail" aria-label="Adres e-mail">
           <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>
         </p>
@@ -607,7 +562,7 @@
           </div>
           <div class="footer-branding-text">
             <p class="footer-tagline" data-testid="footer-text">
-              Jasne pismo — wyjaśniamy oficjalne pisma prostym językiem.
+              Jasne pismo — wyjaśniamy pisma z urzędu prostym językiem.
             </p>
           </div>
         </div>
