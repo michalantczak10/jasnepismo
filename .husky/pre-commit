@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname "$0")/_/husky.sh"
-
-# Run lint-staged to format staged files before committing. If lint-staged
-# fixes files it re-adds them to the index; this ensures every commit is
-# formatted.
-npx --no-install lint-staged
