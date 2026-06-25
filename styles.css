@@ -274,29 +274,6 @@ button[disabled],
   margin-top: 1.5rem;
 }
 
-.hero-cta .button-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.05em;
-  height: 1.05em;
-  aspect-ratio: 1 / 1;
-  font-size: 1em;
-  line-height: 1;
-  overflow: visible;
-  transform: translateY(0.12em);
-  margin-right: 0.25rem;
-  background: transparent;
-  color: #fff;
-  border: none;
-  object-fit: contain;
-  transition: transform 0.2s ease;
-}
-
-.hero-cta:hover .button-icon {
-  transform: translateY(0.12em) scale(1.04);
-}
-
 section {
   width: min(100%, 920px);
   margin: 0 auto 38px;
@@ -612,52 +589,6 @@ section:last-of-type {
   cursor: pointer !important;
 }
 
-.footer-nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-}
-
-.footer-nav a.hero-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--button-width);
-  max-width: 100%;
-  padding: 1.15rem 1.75rem;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%);
-  color: #111;
-  font-weight: 800;
-  font-size: 1.25rem;
-  line-height: 1.25;
-  white-space: normal;
-  text-align: center;
-  box-shadow: var(--shadow-button);
-  letter-spacing: 0.02em;
-  transition:
-    transform 0.24s ease,
-    filter 0.24s ease,
-    box-shadow 0.24s ease,
-    background-color 0.24s ease;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  text-decoration: none;
-  gap: 0.85rem;
-  margin-inline: auto;
-}
-
-.footer-nav a.hero-cta:hover,
-.footer-nav a.hero-cta:focus-visible {
-  transform: translateY(-3px) scale(1.01);
-  filter: brightness(1.04);
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.16),
-    0 8px 16px rgba(0, 0, 0, 0.08);
-  background: linear-gradient(90deg, var(--color-primary), #cc2b2b);
-}
-
 .hero-cta:focus-visible,
 a:focus-visible,
 .site-footer a:focus-visible {
@@ -677,16 +608,6 @@ a:focus-visible,
   }
   .footer-tagline {
     text-align: center;
-  }
-  .footer-nav {
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.8rem;
-  }
-  .footer-nav a {
-    width: auto;
-    padding: 0.55rem 0.85rem;
   }
 }
 
@@ -724,26 +645,6 @@ a:focus-visible,
   outline: 3px solid var(--color-accent);
 }
 @media (max-width: 879px) {
-  .footer-nav {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    align-items: center;
-  }
-  .footer-nav a.hero-cta {
-    width: calc(100% - 48px) !important;
-    max-width: 520px !important;
-    padding: 1rem 1.15rem !important;
-    font-size: 1.08rem !important;
-    border-radius: 28px !important;
-    background: linear-gradient(180deg, #ffe066 0%, var(--color-accent) 100%) !important;
-    color: #111 !important;
-    box-shadow: 0 20px 50px rgba(255, 190, 0, 0.12) !important;
-    display: block !important;
-    margin: 0 auto !important;
-    text-align: center !important;
-  }
   .footer-branding {
     display: flex;
     flex-direction: column;
@@ -778,18 +679,6 @@ a:focus-visible,
   }
 }
 
-/* replace emoji with inline svg icons */
-.footer-nav .nav-icon {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  margin-right: 0.6rem;
-  stroke: currentColor;
-  fill: none;
-  vertical-align: middle;
-}
-
 .content-block {
   max-width: 840px;
   margin: 0 auto;
@@ -819,22 +708,6 @@ a:focus-visible,
   text-align: center !important;
 }
 
-/* Yellow stacked buttons in the footer (centered pills) */
-.site-footer .footer-nav a.hero-cta {
-  width: min(420px, 86%) !important;
-  max-width: 520px !important;
-  display: block !important;
-  margin: 0.9rem auto !important;
-  padding: 1rem 1.4rem !important;
-  border-radius: 36px !important;
-  background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
-  color: #111 !important;
-  font-size: 1.12rem !important;
-  font-weight: 800 !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
-  text-align: center !important;
-}
-
 /* Main page form primary CTA: match footer/terms yellow pill */
 .form-actions .hero-cta.cta-warm,
 .form-actions button.hero-cta.cta-warm {
@@ -850,21 +723,6 @@ a:focus-visible,
   font-weight: 800 !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
   text-align: center !important;
-}
-
-.form-actions .hero-cta.cta-warm .nav-emoji,
-.form-actions .hero-cta.cta-warm .button-icon {
-  background: #2f80ed !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  padding: 0.06rem 0.25rem !important;
-  font-size: 1rem !important;
-  margin-right: 0.6rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 1.6rem !important;
-  width: 1.6rem !important;
 }
 
 .content-actions {
@@ -1184,18 +1042,10 @@ a:focus-visible,
   .result-actions,
   .contact-actions,
   .form-feedback,
-  .footer-nav a,
   button,
   .hero-cta {
     width: 100%;
     max-width: 100%;
-  }
-
-  .hero-cta .button-icon {
-    width: 1.1em;
-    height: 1.1em;
-    margin-right: 0.2rem;
-    transform: translateY(0.06em);
   }
 
   .product-inner {
@@ -1228,28 +1078,11 @@ a:focus-visible,
     text-align: center;
   }
 
-  .footer-nav a,
   .footer-branding {
     width: 100% !important;
     max-width: 680px !important;
     margin-inline: auto !important;
     box-sizing: border-box !important;
-  }
-
-  .footer-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
-    width: 100%;
-    max-width: 860px;
-    margin: 0.4rem auto;
-  }
-
-  .footer-nav a {
-    width: auto;
-    padding: 0.55rem 0.85rem;
-    margin-inline: auto;
   }
 
   .section-tag {
@@ -1538,33 +1371,6 @@ a:focus-visible,
   }
 }
 
-/* Icon and label spacing - unified sizes and CSS vars */
-
-.nav-emoji {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem; /* increased for visibility */
-  margin-right: 0.6rem; /* increased gap between icon and label */
-  line-height: 1;
-  vertical-align: middle;
-}
-
-/* Button label: consistent size and single-line behavior */
-.hero-cta .btn-label {
-  display: inline-block;
-  flex: 0 0 auto;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--button-label-font-size);
-  font-weight: 800;
-  line-height: 1.1;
-  text-align: center; /* keep label centered inside pill */
-}
-
 /* Keep pill content vertically centered and small gap */
 .hero-cta {
   align-items: center;
@@ -1611,9 +1417,6 @@ a:focus-visible,
     padding: 0.95rem 1rem !important;
     font-size: 1.05rem !important;
   }
-  .hero-cta .button-icon {
-    font-size: 1.15rem;
-  }
   .benefit-grid {
     grid-template-columns: 1fr;
   }
@@ -1650,21 +1453,6 @@ a:focus-visible,
   text-align: center !important;
 }
 
-#freeButton.hero-cta.cta-warm .nav-emoji,
-#freeButton.hero-cta.cta-warm .button-icon {
-  background: #2f80ed !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  padding: 0.06rem 0.25rem !important;
-  font-size: 1rem !important;
-  margin-right: 0.6rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 1.6rem !important;
-  width: 1.6rem !important;
-}
-
 /* Homepage: style all hero-cta inside .section--app to match legal/terms yellow pill */
 .section--app .hero-cta,
 .section--app .hero-cta.cta-warm,
@@ -1685,21 +1473,6 @@ a:focus-visible,
   font-weight: 800 !important;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
   text-align: center !important;
-}
-
-.section--app .hero-cta .button-icon,
-.section--app .hero-cta .nav-emoji {
-  background: #2f80ed !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  padding: 0.06rem 0.25rem !important;
-  font-size: 1rem !important;
-  margin-right: 0.6rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 1.6rem !important;
-  width: 1.6rem !important;
 }
 
 /* Result card */
@@ -1815,10 +1588,7 @@ svg {
   box-sizing: border-box !important;
 }
 
-/* Emojis and icons inside CTAs */
-.section--app .hero-cta .nav-emoji,
-.section--app .hero-cta .button-icon,
-#freeButton .nav-emoji,
+/* Emojis and icons */
 .feature-emoji {
   font-size: 1.25em !important;
   vertical-align: middle !important;
