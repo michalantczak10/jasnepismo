@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (
           (f.type && f.type.startsWith('text/')) ||
           lowerName.endsWith('.txt') ||
-          lowerName.endsWith('.rtf') ||
           lowerName.endsWith('.md') ||
           lowerName.endsWith('.csv')
         ) {
