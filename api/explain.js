@@ -237,7 +237,7 @@ module.exports = async function handler(req, res) {
 
     // Organization not verified error from OpenAI (common when using newer models)
     if (error && error.code === 'ORG_UNVERIFIED') {
-      const suggestedModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
+      const suggestedModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4o-mini';
       return res.status(403).json({
         error:
           'Twoja organizacja nie jest zweryfikowana do korzystania z wybranego modelu OpenAI. Zaloguj się na https://platform.openai.com/settings/organization/general i zweryfikuj organizację, lub ustaw inny model w zmiennej OPENAI_MODEL.',

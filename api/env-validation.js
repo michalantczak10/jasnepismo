@@ -13,8 +13,8 @@ function validateEnvironment() {
   };
 
   const optional = {
-    OPENAI_MODEL: 'gpt-3.5-turbo',
-    OPENAI_FALLBACK_MODEL: 'gpt-3.5-turbo',
+    OPENAI_MODEL: 'gpt-4o-mini',
+    OPENAI_FALLBACK_MODEL: 'gpt-4o-mini',
     REDIS_URL: null,
     UPSTASH_REDIS_REST_URL: null,
     UPSTASH_REDIS_REST_TOKEN: null,

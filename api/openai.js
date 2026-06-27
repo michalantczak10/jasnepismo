@@ -5,7 +5,7 @@ function getOpenAIApiKey() {
 }
 
 function getOpenAIModel() {
-  return process.env.OPENAI_MODEL || 'gpt-5-mini';
+  return process.env.OPENAI_MODEL || 'gpt-4o-mini';
 }
 
 async function callOpenAI(body) {
@@ -72,7 +72,7 @@ async function callOpenAI(body) {
 async function generateExplanation(text) {
   if (!text || !text.trim()) throw new Error('Brak treści do przetworzenia.');
   const OPENAI_MODEL = getOpenAIModel();
-  const FALLBACK_MODEL = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
+  const FALLBACK_MODEL = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4o-mini';
 
   const makeReq = (model) => ({
     model,

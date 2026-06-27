@@ -10,7 +10,7 @@ module.exports = function handler(req, res) {
     status: 'ok',
     service: 'jasnepismo',
     environment: process.env.VERCEL ? 'vercel' : 'local',
-    model: process.env.OPENAI_MODEL || 'gpt-5-mini',
+    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
     timestamp: new Date().toISOString(),
     uptime_seconds: uptimeSeconds,
     metrics: metrics.getAll(),
