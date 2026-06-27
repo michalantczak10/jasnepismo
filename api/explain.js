@@ -209,12 +209,15 @@ module.exports = async function handler(req, res) {
   } catch (error) {
     console.error('Error in /api/explain [%s]:', requestId, error);
 
+    const errMsg = (error && error.message) || '';
+    const errLower = errMsg.toLowerCase();
+    const errStatus = error && error.status;
+
     const isRateLimit =
-      error &&
-      error.message &&
-      (error.message.includes('Too Many Requests') ||
-        error.message.includes('rate limit') ||
-        error.message.includes('429'));
+      errStatus === 429 ||
+      errLower.includes('too many requests') ||
+      errLower.includes('rate limit') ||
+      errLower.includes('429');
 
     if (isRateLimit) {
       res.setHeader('Retry-After', '60');
@@ -223,11 +226,25 @@ module.exports = async function handler(req, res) {
         .json({ error: 'OpenAI API rate limit exceeded. Spróbuj ponownie za chwilę.', requestId });
     }
 
+    if (errStatus === 401 || errLower.includes('incorrect api key') || errLower.includes('invalid api key') || errLower.includes('api key')) {
+      return res.status(500).json({
+        error: 'Klucz API OpenAI jest nieprawidłowy lub wygasł. Sprawdź zmienną środowiskową OPENAI_API_KEY.',
+        requestId,
+      });
+    }
+
+    if (errLower.includes('quota') || errLower.includes('insufficient') || errLower.includes('exceeded your current quota')) {
+      return res.status(500).json({
+        error: 'Limit zapytań do OpenAI został wyczerpany. Doładuj konto w panelu OpenAI.',
+        requestId,
+      });
+    }
+
     const isTimeout =
       error &&
       (error.code === 'OPENAI_TIMEOUT' ||
         error.name === 'AbortError' ||
-        (error.message && error.message.toLowerCase().includes('timed out')));
+        errLower.includes('timed out'));
     if (isTimeout) {
       res.setHeader('Retry-After', '30');
       return res
@@ -235,7 +252,14 @@ module.exports = async function handler(req, res) {
         .json({ error: 'Żądanie do OpenAI wygasło. Spróbuj ponownie później.', requestId });
     }
 
-    // Organization not verified error from OpenAI (common when using newer models)
+    if (errLower.includes('model') && (errLower.includes('not found') || errLower.includes('does not exist') || errLower.includes('not supported'))) {
+      const model = process.env.OPENAI_MODEL || 'nieznany';
+      return res.status(500).json({
+        error: `Model "${model}" nie jest dostępny. Sprawdź zmienną OPENAI_MODEL.`,
+        requestId,
+      });
+    }
+
     if (error && error.code === 'ORG_UNVERIFIED') {
       const suggestedModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4o-mini';
       return res.status(403).json({

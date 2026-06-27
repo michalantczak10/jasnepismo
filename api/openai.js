@@ -30,6 +30,10 @@ async function callOpenAI(body) {
         `Błąd połączenia z OpenAI: ${resp.status}`;
       const err = new Error(errMsg);
       const msg = (errMsg || '').toString().toLowerCase();
+      err.status = resp.status;
+      if (data && data.error && data.error.code) {
+        err.openaiCode = data.error.code;
+      }
       let isOrgUnverified = false;
       if (
         msg.includes('must be verified') ||
@@ -51,7 +55,6 @@ async function callOpenAI(body) {
           msg.includes('not verified');
       }
       if (isOrgUnverified) err.code = 'ORG_UNVERIFIED';
-      err.status = resp.status;
       console.error(err);
       throw err;
     }
