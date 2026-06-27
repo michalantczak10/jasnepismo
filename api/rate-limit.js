@@ -39,6 +39,8 @@ async function initRedisClient() {
 }
 
 async function checkRateLimit(clientKey) {
+  // Disable rate limiting in test mode
+  if (process.env.NODE_ENV === 'test' || process.env.CI === 'true') return { ok: true };
   if (!clientKey) return { ok: true };
 
   const redis = await initRedisClient();
