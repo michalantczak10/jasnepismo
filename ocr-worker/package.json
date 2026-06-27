@@ -1,0 +1,9 @@
+{
+  "name": "jasnepismo-ocr-worker",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "formidable": "^3.0.0",
+    "tesseract.js": "^7.0.0"
+  }
+}

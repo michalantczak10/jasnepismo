@@ -25,8 +25,8 @@ function parseForm(req) {
     let form;
     try {
       form = makeForm({
-        multiples: false,
-        maxFiles: 1,
+        multiples: true,
+        maxFiles: 10,
         maxFileSize: 5 * 1024 * 1024,
         allowEmptyFiles: false,
       });

@@ -24,7 +24,8 @@
       name="keywords"
       content="pismo urzędowe, wyjaśnienie, ai, jasne pismo, dokumenty urzędowe"
     />
-    <meta name="theme-color" content="#b30000" />
+    <meta name="theme-color" content="#b30000" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
     <meta name="author" content="Jasne pismo" />
 
     <!-- Open Graph -->
@@ -126,7 +127,7 @@
             Wklej pismo — my wyjaśniamy
           </h2>
           <p data-testid="section-app-intro">
-            Wklej cały tekst z pisma (np. z urzędu, z ZUS-u, z sądu). Kliknij „Wyjaśnij”. My napiszemy Ci prostym językiem, co to znaczy i co masz zrobić.
+            Wklej tekst pisma lub wyślij plik (PDF, JPG, DOCX). Możesz wysłać kilka plików — zostaną połączone w jeden tekst. Kliknij „Wyjaśnij”. Dostaniesz odpowiedź napisaną prostym językiem.
           </p>
         </div>
         <form id="explainForm" class="explain-form" data-testid="form-explain">
@@ -143,12 +144,13 @@
           ></textarea>
           <p id="textCount" class="field-note" data-testid="textCount">0 / 5000 znaków</p>
           <label class="file-upload-label" for="documentFile" data-testid="file-upload-label">
-            Możesz też dodać zdjęcie lub skan pisma (PDF, JPG, DOCX). Tekst sam wgramy w pole wyżej. (opcjonalnie, max 5 MB)
+            Możesz też dodać zdjęcie, skan lub kilka plików. Tekst sam wgramy w pole wyżej. (opcjonalnie, maks. 10 plików po 5 MB)
           </label>
           <div class="file-upload-row">
             <input
               id="documentFile"
               type="file"
+              multiple
               accept=".doc,.dotx,.docx,.odt,.pdf,.rtf,.txt,.jpg,.jpeg,.png"
               class="file-upload-input"
               data-testid="documentFile"
@@ -260,6 +262,15 @@
             </button>
           </div>
         </article>
+        <details class="file-info-details" data-testid="fileInfoDetails">
+          <summary>Jak działa wysyłanie plików?</summary>
+          <ul>
+            <li><strong>Kilka plików naraz</strong> — wybierz kilka plików (PDF, JPG, DOCX itd.). Zostaną posortowane alfabetycznie po nazwie i połączone w jeden tekst.</li>
+            <li><strong>Limit 5000 znaków</strong> — tekst ze wszystkich plików nie może przekroczyć 5000 znaków. Tekst powyżej tego limitu nie zmieści się w polu edycji.</li>
+            <li><strong>Ograniczenia</strong> — maks. 10 plików, każdy do 5 MB. Zdjęcia i skany są czytane przez OCR — jakość zależy od czytelności obrazu.</li>
+            <li><strong>Obsługiwane formaty</strong> — PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF. Pliki .txt są wczytywane od razu w przeglądarce, pozostałe formaty są przetwarzane na serwerze.</li>
+          </ul>
+        </details>
       </section>
 
 

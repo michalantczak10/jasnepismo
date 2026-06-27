@@ -65,7 +65,7 @@ test.describe('Przesyłanie plików', () => {
     });
 
     await expect(page.locator('[data-testid="errorMessage"]')).toBeVisible();
-    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('Nieobsługiwany format');
+    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('nieobsługiwany format');
   });
 
   test('powinien pokazać błąd dla pliku za dużego (powyżej 5 MB)', async ({ page }) => {

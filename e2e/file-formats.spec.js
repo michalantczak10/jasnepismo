@@ -138,6 +138,152 @@ test.describe('Obsługa formatów plików — extract-only', () => {
   }
 });
 
+test.describe('Multi-page PDF', () => {
+  const multiPageFile = { name: 'test-3-strony.pdf', mime: 'application/pdf' };
+  const multiPagePath = path.join(SAMPLES_DIR, multiPageFile.name);
+  const hasMultiPage = fs.existsSync(multiPagePath);
+
+  test('test-3-strony.pdf (3 strony) — upload i wyjaśnienie', async ({ page }) => {
+    test.skip(!hasMultiPage, 'test-3-strony.pdf nie istnieje');
+    await page.route('**/api/explain', async (route) => {
+      await new Promise(r => setTimeout(r, 100));
+      const headers = route.request().headers();
+      const isExtractOnly = headers['x-extract-only'] === '1';
+      if (isExtractOnly) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ extractedText: 'Wyodrębniony tekst z 3 stron.' }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          explanation: MOCK_EXPLANATION,
+          usedModel: 'gpt-4o-mini',
+          usedFallback: false,
+        }),
+      });
+    });
+
+    await page.goto('/');
+    const fileBuffer = fs.readFileSync(multiPagePath);
+    await page.locator('[data-testid="documentFile"]').setInputFiles({
+      name: multiPageFile.name,
+      mimeType: multiPageFile.mime,
+      buffer: fileBuffer,
+    });
+
+    await page.waitForTimeout(500);
+    await expect(page.locator('[data-testid="fileDetails"]')).toBeVisible();
+    await expect(page.locator('[data-testid="fileDetails"]')).toContainText(multiPageFile.name);
+
+    await page.locator('[data-testid="freeButton"]').click();
+    await expect(page.locator('[data-testid="statusMessage"]')).toBeVisible({ timeout: 3000 });
+    await expect(page.locator('[data-testid="resultCard"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid="resultText"]')).toContainText('To jest podsumowanie pisma.');
+    await expect(page.locator('[data-testid="usedModel"]')).toContainText('gpt-4o-mini');
+  });
+});
+
+test.describe('Multi-file upload — kilka plików', () => {
+  const pageFiles = ['page1.pdf', 'page2.pdf', 'page3.pdf'];
+  const existingPages = pageFiles.filter(n => fs.existsSync(path.join(SAMPLES_DIR, n)));
+  test.skip(existingPages.length < 3, 'brak plików page1/2/3.pdf');
+
+  test('wysyła kilka plików — extract-only zwraca scalony tekst', async ({ page }) => {
+    let extractBody = null;
+
+    await page.route('**/api/explain', async (route) => {
+      const headers = route.request().headers();
+      if (headers['x-extract-only'] === '1') {
+        // Read the request body to verify multi-file was sent
+        const postBody = route.request().postDataBuffer();
+        if (postBody) extractBody = postBody;
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ extractedText: 'Scalony tekst z 3 plików.' }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ explanation: MOCK_EXPLANATION }),
+      });
+    });
+
+    await page.goto('/');
+    const fileBuffers = pageFiles.map(n => ({
+      name: n,
+      mimeType: 'application/pdf',
+      buffer: fs.readFileSync(path.join(SAMPLES_DIR, n)),
+    }));
+
+    await page.locator('[data-testid="documentFile"]').setInputFiles(fileBuffers);
+    await page.waitForTimeout(1500);
+
+    // extract-only should have been called with multiple files
+    expect(extractBody).not.toBeNull();
+
+    // fileDetails should show multiple files
+    await expect(page.locator('[data-testid="fileDetails"]')).toBeVisible();
+    await expect(page.locator('[data-testid="fileDetails"]')).toContainText('3 plik');
+    await expect(page.locator('[data-testid="fileDetails"]')).toContainText('page1.pdf');
+
+    // textarea should contain the concatenated response
+    const textarea = page.locator('[data-testid="documentText"]');
+    await expect(textarea).toHaveValue(/Scalony tekst z 3 plików/);
+  });
+
+  test('wysyła kilka plików — wyjaśnienie działa', async ({ page }) => {
+    await page.route('**/api/explain', async (route) => {
+      await new Promise(r => setTimeout(r, 100));
+      const headers = route.request().headers();
+      if (headers['x-extract-only'] === '1') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ extractedText: 'Scalony tekst.' }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          explanation: MOCK_EXPLANATION,
+          usedModel: 'gpt-4o-mini',
+          usedFallback: false,
+        }),
+      });
+    });
+
+    await page.goto('/');
+    const fileBuffers = pageFiles.map(n => ({
+      name: n,
+      mimeType: 'application/pdf',
+      buffer: fs.readFileSync(path.join(SAMPLES_DIR, n)),
+    }));
+
+    await page.locator('[data-testid="documentFile"]').setInputFiles(fileBuffers);
+    await page.waitForTimeout(1500);
+
+    // Wait for extract-only to complete and fill textarea
+    const textarea = page.locator('[data-testid="documentText"]');
+    await expect(textarea).toHaveValue(/Scalony tekst/, { timeout: 5000 });
+
+    await page.locator('[data-testid="freeButton"]').click();
+    await expect(page.locator('[data-testid="statusMessage"]')).toBeVisible({ timeout: 3000 });
+    await expect(page.locator('[data-testid="resultCard"]')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[data-testid="resultText"]')).toContainText('To jest podsumowanie pisma.');
+    await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
+  });
+});
+
 test.describe('Odrzucanie nieobsługiwanych formatów', () => {
   test('plik .exe powinien zostać odrzucony', async ({ page }) => {
     await page.goto('/');
@@ -149,7 +295,7 @@ test.describe('Odrzucanie nieobsługiwanych formatów', () => {
 
     await page.waitForTimeout(300);
     await expect(page.locator('[data-testid="errorMessage"]')).toBeVisible();
-    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('Nieobsługiwany format');
+    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('nieobsługiwany format');
   });
 
   test('plik .zip powinien zostać odrzucony', async ({ page }) => {
@@ -162,7 +308,7 @@ test.describe('Odrzucanie nieobsługiwanych formatów', () => {
 
     await page.waitForTimeout(300);
     await expect(page.locator('[data-testid="errorMessage"]')).toBeVisible();
-    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('Nieobsługiwany format');
+    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('nieobsługiwany format');
   });
 
   test('zbyt duży plik (>5 MB) powinien zostać odrzucony', async ({ page }) => {
@@ -177,6 +323,6 @@ test.describe('Odrzucanie nieobsługiwanych formatów', () => {
 
     await page.waitForTimeout(300);
     await expect(page.locator('[data-testid="errorMessage"]')).toBeVisible();
-    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('Plik jest za duży');
+    await expect(page.locator('[data-testid="errorMessage"]')).toContainText('za duży');
   });
 });

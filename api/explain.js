@@ -74,34 +74,61 @@ module.exports = async function handler(req, res) {
       } else if (typeof text === 'object' && text !== null) {
         text = String(text);
       }
-      const file = files && (files.documentFile || files.file || Object.values(files)[0]);
-      // If text is empty or whitespace, prefer extracting from file when available
-      if ((!text || !String(text).trim()) && file) {
-        try {
-          text = await extractTextFromFile(file);
-        } catch (e) {
-          console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
+      // Collect all files (support multi-file upload via field name 'file')
+      let allFiles = [];
+      if (files) {
+        const raw = files.file;
+        if (raw) {
+          allFiles = Array.isArray(raw) ? raw : [raw];
+          // Sort by original filename for consistent concatenation order
+          allFiles.sort(function (a, b) {
+            var na = (a.originalFilename || a.name || '').toLowerCase();
+            var nb = (b.originalFilename || b.name || '').toLowerCase();
+            return na.localeCompare(nb);
+          });
+        }
+      }
+
+      // If text is empty or whitespace, extract from file(s)
+      if ((!text || !String(text).trim()) && allFiles.length > 0) {
+        var extractedParts = [];
+        var extractionError = false;
+        for (var fi = 0; fi < allFiles.length; fi++) {
+          var f = allFiles[fi];
+          try {
+            var part = await extractTextFromFile(f);
+            if (part) extractedParts.push(part);
+          } catch (e) {
+            console.error('File extraction error in /api/explain:', e && e.stack ? e.stack : e);
+            extractionError = true;
+          }
+        }
+
+        if (extractionError && extractedParts.length === 0) {
           return res
             .status(400)
             .json({ error: 'Nie udało się odczytać pliku. Upewnij się, że plik jest prawidłowy.' });
         }
 
-        // If no text extracted and an OCR worker is configured, forward the file to the OCR worker
-        if ((!text || !String(text).trim()) && process.env.OCR_WORKER_URL) {
+        text = extractedParts.join('\n');
+
+        // If no text extracted and an OCR worker is configured, forward the single file to the OCR worker
+        if ((!text || !String(text).trim()) && allFiles.length === 1 && process.env.OCR_WORKER_URL) {
+          var file = allFiles[0];
           try {
-            const raw = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '');
-            if (!raw.startsWith('https://')) {
+            const raw2 = String(process.env.OCR_WORKER_URL).replace(/\/+$/, '');
+            if (!raw2.startsWith('https://')) {
               console.warn('OCR_WORKER_URL must be https; skipping forward');
             } else {
-              const OCR_URL = raw + '/process';
-              const fs = require('fs');
-              const filepath =
+              var OCR_URL = raw2 + '/process';
+              var fs2 = require('fs');
+              var filepath2 =
                 file.filepath || file.path || file.tempFilePath || file.tempFile || file.file;
-              let formBody = null;
+              var formBody2 = null;
 
-              const FormDataCtor =
+              var FormDataCtor2 =
                 global.FormData ||
-                (() => {
+                (function () {
                   try {
                     return require('form-data');
                   } catch (e) {
@@ -110,61 +137,60 @@ module.exports = async function handler(req, res) {
                 })();
 
               if (
-                filepath &&
-                typeof filepath === 'string' &&
-                fs.existsSync(filepath) &&
-                FormDataCtor
+                filepath2 &&
+                typeof filepath2 === 'string' &&
+                fs2.existsSync(filepath2) &&
+                FormDataCtor2
               ) {
-                const stream = fs.createReadStream(filepath);
-                formBody = new FormDataCtor();
-                if (typeof formBody.append === 'function')
-                  formBody.append('file', stream, file.originalFilename || file.name || 'file');
-              } else if ((file.buffer || file.data) && FormDataCtor) {
-                const buf = file.buffer || file.data;
-                // Prevent sending very large buffers to worker
-                if (Buffer.byteLength(buf) <= 5 * 1024 * 1024) {
-                  formBody = new FormDataCtor();
-                  if (typeof formBody.append === 'function')
-                    formBody.append('file', buf, file.originalFilename || file.name || 'file');
+                var stream2 = fs2.createReadStream(filepath2);
+                formBody2 = new FormDataCtor2();
+                if (typeof formBody2.append === 'function')
+                  formBody2.append('file', stream2, file.originalFilename || file.name || 'file');
+              } else if ((file.buffer || file.data) && FormDataCtor2) {
+                var buf2 = file.buffer || file.data;
+                if (Buffer.byteLength(buf2) <= 5 * 1024 * 1024) {
+                  formBody2 = new FormDataCtor2();
+                  if (typeof formBody2.append === 'function')
+                    formBody2.append('file', buf2, file.originalFilename || file.name || 'file');
                 }
               }
 
-              if (formBody) {
-                const headers =
-                  typeof formBody.getHeaders === 'function' ? formBody.getHeaders() : {};
-                const controller = new AbortController();
-                const t = setTimeout(
-                  () => controller.abort(),
+              if (formBody2) {
+                var headers2 =
+                  typeof formBody2.getHeaders === 'function' ? formBody2.getHeaders() : {};
+                var controller2 = new AbortController();
+                var t2 = setTimeout(
+                  function () { controller2.abort(); },
                   Number(process.env.OCR_WORKER_TIMEOUT_MS || 20000)
                 );
                 try {
-                  const resp = await fetch(OCR_URL, {
+                  var resp2 = await fetch(OCR_URL, {
                     method: 'POST',
-                    headers,
-                    body: formBody,
-                    signal: controller.signal,
+                    headers: headers2,
+                    body: formBody2,
+                    signal: controller2.signal,
                   });
-                  clearTimeout(t);
-                  if (resp.ok) {
-                    const json = await resp.json().catch(() => null);
-                    if (json && json.text) text = json.text;
-                    else if (json && json.result && json.result.text) text = json.result.text;
+                  clearTimeout(t2);
+                  if (resp2.ok) {
+                    var json2 = await resp2.json().catch(function () { return null; });
+                    if (json2 && json2.text) text = json2.text;
+                    else if (json2 && json2.result && json2.result.text) text = json2.result.text;
                   } else {
-                    console.error('OCR worker responded with status', resp.status);
+                    console.error('OCR worker responded with status', resp2.status);
                   }
-                } catch (e) {
-                  clearTimeout(t);
+                } catch (e2) {
+                  clearTimeout(t2);
                   console.error(
                     'OCR worker forwarding error (safe):',
-                    e && e.message ? e.message : e
+                    e2 && e2.message ? e2.message : e2
                   );
                 }
               }
             }
-          } catch (e) {
+          } catch (e3) {
             console.error(
               'OCR worker forwarding outer error (safe):',
-              e && e.message ? e.message : e
+              e3 && e3.message ? e3.message : e3
             );
           }
         }

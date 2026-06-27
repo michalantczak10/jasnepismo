@@ -49,113 +49,148 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (fileInput && fileDetails && removeFileButton) {
     fileInput.addEventListener('change', async function () {
-      const f = fileInput.files && fileInput.files[0];
+      var files = fileInput.files;
       extractInProgress = false;
       updateFreeButtonState();
 
-      if (f) {
-        const MAX_SIZE = 5 * 1024 * 1024;
-        if (f.size > MAX_SIZE) {
-          if (errorMessage) {
-            errorMessage.textContent = 'Plik jest za duży. Maksymalny rozmiar to 5 MB.';
-            errorMessage.hidden = false;
+      if (files && files.length > 0) {
+        var fileArray = Array.prototype.slice.call(files);
+        var MAX_SIZE = 5 * 1024 * 1024;
+        var allowedExtensions = ['.doc', '.dotx', '.docx', '.odt', '.pdf', '.rtf', '.txt', '.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+
+        // Validate all files
+        var validFiles = [];
+        var hasError = false;
+
+        for (var fi = 0; fi < fileArray.length; fi++) {
+          var g = fileArray[fi];
+
+          if (g.size > MAX_SIZE) {
+            if (errorMessage) {
+              errorMessage.textContent = 'Plik "' + g.name + '" jest za duży. Maksymalny rozmiar to 5 MB.';
+              errorMessage.hidden = false;
+            }
+            fileInput.value = '';
+            hasError = true;
+            break;
           }
-          fileInput.value = '';
+
+          var fname = g.name ? g.name.toLowerCase() : '';
+          var validExt = allowedExtensions.some(function (ext) { return fname.endsWith(ext); });
+          if (!validExt) {
+            if (errorMessage) {
+              errorMessage.textContent = 'Plik "' + g.name + '" ma nieobsługiwany format. Dozwolone: PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF.';
+              errorMessage.hidden = false;
+            }
+            fileInput.value = '';
+            hasError = true;
+            break;
+          }
+
+          validFiles.push(g);
+        }
+
+        if (hasError) {
+          updateFreeButtonState();
           return;
         }
 
-        const allowedExtensions = ['.doc', '.dotx', '.docx', '.odt', '.pdf', '.rtf', '.txt', '.jpg', '.jpeg', '.png', '.gif', '.bmp'];
-        const fileName = f.name ? f.name.toLowerCase() : '';
-        const hasValidExtension = allowedExtensions.some(function (ext) { return fileName.endsWith(ext); });
-        if (!hasValidExtension) {
-          if (errorMessage) {
-            errorMessage.textContent = 'Nieobsługiwany format pliku. Dozwolone: PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF.';
-            errorMessage.hidden = false;
-          }
-          fileInput.value = '';
-          return;
-        }
-
+        // Show file details
         fileDetails.hidden = false;
-        fileDetails.textContent = `${f.name} — ${Math.round(f.size / 1024)} KB`;
+        if (validFiles.length === 1) {
+          fileDetails.textContent = validFiles[0].name + ' — ' + Math.round(validFiles[0].size / 1024) + ' KB';
+        } else {
+          var names = validFiles.map(function (x) { return x.name; }).join(', ');
+          var totalSize = validFiles.reduce(function (sum, x) { return sum + x.size; }, 0);
+          fileDetails.textContent = validFiles.length + ' plików: ' + names + ' — ' + Math.round(totalSize / 1024) + ' KB łącznie';
+        }
         removeFileButton.disabled = false;
 
-        const textareaEl = document.getElementById('documentText');
+        var textareaEl = document.getElementById('documentText');
 
-        const lowerName = f.name ? f.name.toLowerCase() : '';
-        if (
-          (f.type && f.type.startsWith('text/')) ||
-          lowerName.endsWith('.txt') ||
-          lowerName.endsWith('.md') ||
-          lowerName.endsWith('.csv')
-        ) {
-          const reader = new FileReader();
-          extractInProgress = true;
-          updateFreeButtonState();
-          if (statusMessage) {
-            statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie pliku...';
+        // Single .txt/.md/.csv file: read locally (instant)
+        if (validFiles.length === 1) {
+          var singleFile = validFiles[0];
+          var lowerName = singleFile.name ? singleFile.name.toLowerCase() : '';
+          if (
+            (singleFile.type && singleFile.type.startsWith('text/')) ||
+            lowerName.endsWith('.txt') ||
+            lowerName.endsWith('.md') ||
+            lowerName.endsWith('.csv')
+          ) {
+            (function (f) {
+              var reader = new FileReader();
+              extractInProgress = true;
+              updateFreeButtonState();
+              if (statusMessage) {
+                statusMessage.hidden = false;
+                statusMessage.textContent = 'Wczytywanie pliku...';
+              }
+              reader.addEventListener('load', function (ev) {
+                var content = ev.target.result || '';
+                if (textareaEl) textareaEl.value = content;
+                updateTextCount(content);
+                extractInProgress = false;
+                if (statusMessage) statusMessage.hidden = true;
+                updateFreeButtonState();
+              });
+              reader.readAsText(f, 'utf-8');
+            })(singleFile);
+            return;
           }
-          reader.addEventListener('load', function (ev) {
-            const content = ev.target.result || '';
-            if (textareaEl) textareaEl.value = content;
-            updateTextCount(content);
-            extractInProgress = false;
-            if (statusMessage) statusMessage.hidden = true;
-            updateFreeButtonState();
+        }
+
+        // Multiple files or binary files: send to server for extraction
+        extractInProgress = true;
+        updateFreeButtonState();
+        if (statusMessage) {
+          statusMessage.hidden = false;
+          statusMessage.textContent = 'Wczytywanie pliku...';
+        }
+        try {
+          var formData = new FormData();
+          for (var fi2 = 0; fi2 < validFiles.length; fi2++) {
+            formData.append('file', validFiles[fi2], validFiles[fi2].name);
+          }
+          var resp = await fetch('/api/explain', {
+            method: 'POST',
+            headers: { 'X-Extract-Only': '1' },
+            body: formData,
           });
-          reader.readAsText(f, 'utf-8');
-        } else {
-          // Fallback: ask server to extract text and return it (without generating explanation)
-          extractInProgress = true;
-          updateFreeButtonState();
-          if (statusMessage) {
-            statusMessage.hidden = false;
-            statusMessage.textContent = 'Wczytywanie pliku...';
-          }
-          try {
-            const formData = new FormData();
-            formData.append('file', f, f.name);
-            const resp = await fetch('/api/explain', {
-              method: 'POST',
-              headers: { 'X-Extract-Only': '1' },
-              body: formData,
-            });
-            if (resp.ok) {
-              const json = await resp.json().catch(() => null);
-              const extracted = (json && (json.extractedText || json.text)) || '';
-              if (textareaEl && extracted) {
-                textareaEl.value = extracted;
-                updateTextCount(extracted);
-                if (errorMessage) {
-                  errorMessage.hidden = true;
-                  errorMessage.textContent = '';
-                }
-              } else {
-                if (errorMessage) {
-                  errorMessage.hidden = false;
-                  errorMessage.textContent =
-                    'Nie udało się automatycznie wczytać tekstu z pliku. Wyślij plik do wyjaśnienia — OCR zostanie wykonany na serwerze. Możesz też wpisać tekst ręcznie.';
-                }
+          if (resp.ok) {
+            var json = await resp.json().catch(function () { return null; });
+            var extracted = (json && (json.extractedText || json.text)) || '';
+            if (textareaEl && extracted) {
+              textareaEl.value = extracted;
+              updateTextCount(extracted);
+              if (errorMessage) {
+                errorMessage.hidden = true;
+                errorMessage.textContent = '';
               }
             } else {
-              const errJson = await resp.json().catch(() => null);
               if (errorMessage) {
                 errorMessage.hidden = false;
                 errorMessage.textContent =
-                  (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
+                  'Nie udało się automatycznie wczytać tekstu z pliku. Wyślij plik do wyjaśnienia — OCR zostanie wykonany na serwerze. Możesz też wpisać tekst ręcznie.';
               }
             }
-          } catch (e) {
+          } else {
+            var errJson = await resp.json().catch(function () { return null; });
             if (errorMessage) {
               errorMessage.hidden = false;
-              errorMessage.textContent = 'Błąd wczytywania pliku.';
+              errorMessage.textContent =
+                (errJson && errJson.error) || 'Nie udało się wczytać pliku.';
             }
-          } finally {
-            extractInProgress = false;
-            if (statusMessage) statusMessage.hidden = true;
-            updateFreeButtonState();
           }
+        } catch (e) {
+          if (errorMessage) {
+            errorMessage.hidden = false;
+            errorMessage.textContent = 'Błąd wczytywania pliku.';
+          }
+        } finally {
+          extractInProgress = false;
+          if (statusMessage) statusMessage.hidden = true;
+          updateFreeButtonState();
         }
       } else {
         fileDetails.hidden = true;
@@ -292,13 +327,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
       try {
         const text = (textarea && textarea.value) || '';
-        const file = fileInput && fileInput.files && fileInput.files[0];
+        const uploadFiles = fileInput && fileInput.files;
 
         let response;
-        if (file) {
+        if (uploadFiles && uploadFiles.length > 0) {
           const formData = new FormData();
           if (text.trim()) formData.append('text', text);
-          formData.append('file', file, file.name);
+          for (var fi3 = 0; fi3 < uploadFiles.length; fi3++) {
+            formData.append('file', uploadFiles[fi3], uploadFiles[fi3].name);
+          }
           response = await fetch('/api/explain', { method: 'POST', body: formData });
         } else {
           if (!text.trim()) {
@@ -357,6 +394,13 @@ document.addEventListener('DOMContentLoaded', function () {
         target.focus();
         target.removeAttribute('tabindex');
       }
+    });
+  }
+
+  // Register service worker for offline support (skip in automation/Playwright)
+  if ('serviceWorker' in navigator && !navigator.webdriver) {
+    navigator.serviceWorker.register('/sw.js').catch(function () {
+      // SW registration failed silently (e.g. file protocol, no HTTPS)
     });
   }
 });
