@@ -686,9 +686,13 @@ a:focus-visible,
   }
 }
 
-/* make footer CTA full-width on small screens and add footer-art */
+/* footer icon (letter SVG) */
 .footer-art {
-  display: none;
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  color: var(--color-primary);
 }
 
 /* Respect users who prefer reduced motion */
@@ -730,18 +734,13 @@ a:focus-visible,
   .footer-branding-text {
     max-width: 100%;
   }
-  .footer-art {
-    display: none;
-  }
 }
 @media (min-width: 880px) {
   .footer-art {
-    display: block;
     width: 56px;
     height: 56px;
     flex: 0 0 56px;
     margin-right: 0.8rem;
-    color: var(--color-primary);
   }
   .footer-branding {
     display: flex;
@@ -1165,9 +1164,7 @@ a:focus-visible,
     width: min(100%, 96vw);
     padding: 1.25rem;
   }
-
-}
-}
+  }
 
 .sr-only {
   position: absolute;
