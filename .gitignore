@@ -46,3 +46,10 @@ scripts/vendor/
 .MyOllamaEnhancer/
 .e2e_tmp/
 
+# Tesseract.js language data
+*.traineddata
+
+# Generated sample files
+e2e/tmp/samples/
+e2e/tmp/gen-*.js
+

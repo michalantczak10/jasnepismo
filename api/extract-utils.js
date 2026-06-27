@@ -136,8 +136,8 @@ async function extractTextFromFile(rawFile) {
     }
   }
 
-  // DOCX
-  if (lowerName.endsWith('.docx') || type.includes('word')) {
+  // DOCX (exclude .doc which uses heuristic RTF below)
+  if (lowerName.endsWith('.docx') || (type.includes('word') && !lowerName.endsWith('.doc'))) {
     try {
       const result = await mammoth.extractRawText({ buffer });
       return result && result.value ? result.value : '';
@@ -202,7 +202,7 @@ async function extractTextFromFile(rawFile) {
   // Images (OCR)
   if (
     type.startsWith('image/') ||
-    ['.jpg', '.jpeg', '.png', '.bmp'].some((ext) => lowerName.endsWith(ext))
+    ['.jpg', '.jpeg', '.png', '.bmp', '.gif'].some((ext) => lowerName.endsWith(ext))
   ) {
     try {
       return await withOcrLimit(async () => {
@@ -260,8 +260,8 @@ async function extractTextFromFile(rawFile) {
     }
   }
 
-  // Heuristic for .doc (RTF) — best-effort
-  if (lowerName.endsWith('.doc')) {
+  // Heuristic for .doc and .rtf (RTF) — best-effort
+  if (lowerName.endsWith('.doc') || lowerName.endsWith('.rtf')) {
     try {
       const head = buffer.slice(0, 2000).toString('utf8');
       if (head.includes('{\\rtf')) {

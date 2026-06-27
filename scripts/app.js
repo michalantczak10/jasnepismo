@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
-        const allowedExtensions = ['.doc', '.dotx', '.docx', '.odt', '.pdf', '.rtf', '.txt', '.jpg', '.jpeg', '.png'];
+        const allowedExtensions = ['.doc', '.dotx', '.docx', '.odt', '.pdf', '.rtf', '.txt', '.jpg', '.jpeg', '.png', '.gif', '.bmp'];
         const fileName = f.name ? f.name.toLowerCase() : '';
         const hasValidExtension = allowedExtensions.some(function (ext) { return fileName.endsWith(ext); });
         if (!hasValidExtension) {
