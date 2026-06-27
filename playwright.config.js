@@ -20,7 +20,7 @@ if (fs.existsSync(envPath)) {
 
 module.exports = defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false, // disabled because all tests share the same webServer
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,

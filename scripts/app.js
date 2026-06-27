@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const fileInput = document.getElementById('documentFile');
   const fileDetails = document.getElementById('fileDetails');
   const resultCard = document.getElementById('resultCard');
+  const downloadButton = document.getElementById('downloadButton');
   const statusMessage = document.getElementById('statusMessage');
   const errorMessage = document.getElementById('errorMessage');
 
@@ -68,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const hasValidExtension = allowedExtensions.some(function (ext) { return fileName.endsWith(ext); });
         if (!hasValidExtension) {
           if (errorMessage) {
-            errorMessage.textContent = 'Nieobsługiwany format pliku. Dozwolone: PDF, DOCX, JPG, PNG, TXT, RTF, ODT.';
+            errorMessage.textContent = 'Nieobsługiwany format pliku. Dozwolone: PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF.';
             errorMessage.hidden = false;
           }
           fileInput.value = '';
@@ -178,16 +179,47 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  let modalCleanup = null;
+
+  function closeModal() {
+    const confirmModal = document.getElementById('confirmModal');
+    if (confirmModal) confirmModal.hidden = true;
+    if (lastFocusedElement) lastFocusedElement.focus();
+    lastFocusedElement = null;
+    if (modalCleanup) {
+      modalCleanup();
+      modalCleanup = null;
+    }
+  }
+
+  function openModal() {
+    const confirmModal = document.getElementById('confirmModal');
+    if (!confirmModal) return;
+    lastFocusedElement = clearButton;
+    confirmModal.hidden = false;
+
+    function onKeydown(e) {
+      if (e.key === 'Escape') closeModal();
+    }
+    function onOverlayClick(e) {
+      if (e.target === e.currentTarget) closeModal();
+    }
+
+    document.addEventListener('keydown', onKeydown);
+    confirmModal.addEventListener('click', onOverlayClick);
+    modalCleanup = function () {
+      document.removeEventListener('keydown', onKeydown);
+      confirmModal.removeEventListener('click', onOverlayClick);
+    };
+
+    const firstFocusable = confirmModal.querySelector(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (firstFocusable) firstFocusable.focus();
+  }
+
   if (clearButton) {
-    clearButton.addEventListener('click', function () {
-      const confirmModal = document.getElementById('confirmModal');
-      if (confirmModal) {
-        lastFocusedElement = clearButton;
-        confirmModal.hidden = false;
-        const firstFocusable = confirmModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (firstFocusable) firstFocusable.focus();
-      }
-    });
+    clearButton.addEventListener('click', openModal);
   }
 
   const confirmClearButton = document.getElementById('confirmClearButton');
@@ -204,19 +236,31 @@ document.addEventListener('DOMContentLoaded', function () {
       if (removeFileButton) removeFileButton.disabled = true;
       updateTextCount('');
       updateFreeButtonState();
-      const confirmModal = document.getElementById('confirmModal');
-      if (confirmModal) confirmModal.hidden = true;
-      if (lastFocusedElement) lastFocusedElement.focus();
-      lastFocusedElement = null;
+      closeModal();
     });
   }
 
   if (cancelClearButton) {
-    cancelClearButton.addEventListener('click', function () {
-      const confirmModal = document.getElementById('confirmModal');
-      if (confirmModal) confirmModal.hidden = true;
-      if (lastFocusedElement) lastFocusedElement.focus();
-      lastFocusedElement = null;
+    cancelClearButton.addEventListener('click', closeModal);
+  }
+
+  // Wire download button
+  if (downloadButton) {
+    downloadButton.addEventListener('click', function () {
+      const resultText = document.getElementById('resultText');
+      const usedModelEl = document.getElementById('usedModel');
+      const text = (resultText && resultText.textContent) || '';
+      const modelInfo = (usedModelEl && !usedModelEl.hidden && usedModelEl.textContent) || '';
+      const content = text + (modelInfo ? '\n\n---\n' + modelInfo : '');
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'jasnepismo-wyjasnienie.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
   }
 
@@ -290,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
         if (resultCard) resultCard.hidden = false;
+        if (downloadButton) downloadButton.hidden = false;
         if (statusMessage) statusMessage.hidden = true;
       } catch (err) {
         if (errorMessage) {

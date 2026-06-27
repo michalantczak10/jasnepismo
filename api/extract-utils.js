@@ -52,7 +52,7 @@ async function withOcrLimit(fn) {
   }
   _ocrActive++;
   try {
-    metrics.set && metrics.inc && metrics.inc('ocr.concurrent');
+    metrics.inc('ocr.concurrent');
     return await fn();
   } finally {
     _ocrActive--;
