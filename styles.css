@@ -55,7 +55,6 @@
 
   .hero {
     background:
-      linear-gradient(to bottom, transparent 65%, #121212 100%),
       radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 35%),
       linear-gradient(180deg, #c62828 0%, #5c0000 100%);
   }
@@ -216,7 +215,6 @@ a {
   text-align: center;
   gap: 28px;
   background:
-    linear-gradient(to bottom, transparent 65%, var(--color-bg) 100%),
     radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 35%),
     linear-gradient(180deg, #e50000 0%, #8b0000 100%);
   color: #fff;
