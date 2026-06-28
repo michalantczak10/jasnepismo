@@ -1650,3 +1650,193 @@ svg {
   color: #fff;
   padding: 0.06rem 0.25rem;
 }
+
+/* ===== How it works section ===== */
+.section--how {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 50px 32px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.1);
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.step-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.step-desc {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 32ch;
+}
+
+@media (max-width: 800px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .step-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 1.25rem 1.5rem;
+  }
+  .step-desc {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .step-card {
+    background: var(--card-bg);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* ===== Legal accordion in footer ===== */
+.footer-legal {
+  width: 100%;
+  max-width: 620px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .footer-legal {
+    border-top-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.legal-accordion {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(17, 17, 17, 0.82);
+}
+
+.legal-accordion + .legal-accordion {
+  margin-top: 0.75rem;
+}
+
+.legal-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-primary);
+  padding: 0.5rem 0;
+  user-select: none;
+  list-style: none;
+}
+
+.legal-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.accordion-icon::before {
+  content: '+';
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.legal-accordion[open] .accordion-icon::before {
+  content: '−';
+}
+
+.legal-accordion-body {
+  padding: 1rem 0 0.5rem;
+  text-align: left;
+}
+
+.legal-accordion-body h3 {
+  margin: 1.25rem 0 0.4rem;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.legal-accordion-body p {
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+
+.legal-accordion-body ul {
+  margin: 0.5rem 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.legal-accordion-body li {
+  margin: 0.3rem 0;
+  line-height: 1.7;
+}
+
+.legal-accordion-body .summary {
+  margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .legal-accordion {
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .legal-accordion-body .summary {
+    background: rgba(229, 57, 53, 0.1);
+    border-left-color: var(--color-primary);
+  }
+  .legal-accordion-body h3 {
+    color: #e0e0e0;
+  }
+}

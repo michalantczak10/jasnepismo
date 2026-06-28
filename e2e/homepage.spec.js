@@ -23,10 +23,19 @@ test.describe('Strona główna — struktura', () => {
     await expect(page.locator('[data-testid="hero-subtitle"]')).toBeVisible();
   });
 
+  test('powinna wyświetlać sekcję "Jak to działa?" z krokami', async ({ page }) => {
+    const howSection = page.locator('[data-testid="section-how"]');
+    await expect(howSection).toBeVisible();
+    await expect(howSection.locator('[data-testid="section-how-tag"]')).toHaveText('Jak to działa?');
+    await expect(howSection.locator('[data-testid="section-how-heading"]')).toHaveText('W 3 prostych krokach');
+    const steps = howSection.locator('.step-card');
+    await expect(steps).toHaveCount(3);
+  });
+
   test('powinna wyświetlać sekcję aplikacji z formularzem', async ({ page }) => {
     const appSection = page.locator('[data-testid="section-app"]');
     await expect(appSection).toBeVisible();
-    await expect(appSection.locator('[data-testid="section-app-tag"]')).toHaveText('Jak to działa?');
+    await expect(appSection.locator('[data-testid="section-app-tag"]')).toHaveText('Narzędzie');
     await expect(appSection.locator('[data-testid="section-app-heading"]')).toHaveText('Wklej pismo — my wyjaśniamy');
     await expect(appSection.locator('[data-testid="section-app-intro"]')).toBeVisible();
     await expect(appSection.locator('[data-testid="form-explain"]')).toBeVisible();
@@ -47,18 +56,16 @@ test.describe('Strona główna — struktura', () => {
     await expect(aboutSection.locator('[data-testid="section-about-heading"]')).toHaveText('Kim jesteśmy?');
   });
 
-  test('powinna wyświetlać sekcję polityki prywatności', async ({ page }) => {
-    const privacySection = page.locator('[data-testid="section-privacy"]');
-    await expect(privacySection).toBeVisible();
-    await expect(privacySection.locator('[data-testid="section-privacy-tag"]')).toHaveText('Prywatność');
-    await expect(privacySection.locator('[data-testid="section-privacy-heading"]')).toHaveText(/Co robimy z Twoimi danymi/);
+  test('powinna wyświetlać akordeon polityki prywatności w stopce', async ({ page }) => {
+    const privacyAccordion = page.locator('[data-testid="legal-privacy"]');
+    await expect(privacyAccordion).toBeVisible();
+    await expect(privacyAccordion.locator('summary')).toContainText('Prywatność');
   });
 
-  test('powinna wyświetlać sekcję regulaminu', async ({ page }) => {
-    const termsSection = page.locator('[data-testid="section-terms"]');
-    await expect(termsSection).toBeVisible();
-    await expect(termsSection.locator('[data-testid="section-terms-tag"]')).toHaveText('Regulamin');
-    await expect(termsSection.locator('[data-testid="section-terms-heading"]')).toHaveText(/Zasady korzystania/);
+  test('powinna wyświetlać akordeon regulaminu w stopce', async ({ page }) => {
+    const termsAccordion = page.locator('[data-testid="legal-terms"]');
+    await expect(termsAccordion).toBeVisible();
+    await expect(termsAccordion.locator('summary')).toContainText('Regulamin');
   });
 
   test('powinna wyświetlać stopkę z emailem kontaktowym', async ({ page }) => {
@@ -72,11 +79,10 @@ test.describe('Strona główna — struktura', () => {
     const sections = await page.locator('main > section').all();
     const sectionIds = await Promise.all(sections.map(s => s.getAttribute('id')));
     expect(sectionIds).toEqual([
+      'how-it-works',
       'app-section',
       'info-section',
       'about-section',
-      'privacy-section',
-      'terms-section',
     ]);
   });
 });

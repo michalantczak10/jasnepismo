@@ -11,8 +11,8 @@ test.describe('Nawigacja', () => {
     await expect(emailLink).toHaveText('kontakt@jasnepismo.pl');
   });
 
-  test('link do polityki prywatności w regulaminie powinien prowadzić do sekcji #privacy-section', async ({ page }) => {
-    const privacyLink = page.locator('[data-testid="section-terms"] a[href="#privacy-section"]');
+  test('link do polityki prywatności w regulaminie powinien prowadzić do sekcji #footer-legal', async ({ page }) => {
+    const privacyLink = page.locator('[data-testid="legal-terms"] a[href="#footer-legal"]');
     await expect(privacyLink).toBeVisible();
   });
 
