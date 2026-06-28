@@ -35,7 +35,7 @@ test.describe('Strona główna — struktura', () => {
   test('powinna wyświetlać sekcję aplikacji z formularzem', async ({ page }) => {
     const appSection = page.locator('[data-testid="section-app"]');
     await expect(appSection).toBeVisible();
-    await expect(appSection.locator('[data-testid="section-app-tag"]')).toHaveText('Narzędzie');
+    await expect(appSection.locator('[data-testid="section-app-tag"]')).toHaveText('Aplikacja');
     await expect(appSection.locator('[data-testid="section-app-heading"]')).toHaveText('Wklej pismo — my wyjaśniamy');
     await expect(appSection.locator('[data-testid="section-app-intro"]')).toBeVisible();
     await expect(appSection.locator('[data-testid="form-explain"]')).toBeVisible();
