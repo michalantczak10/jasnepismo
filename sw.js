@@ -46,7 +46,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets — cache first
+  // HTML — network first (zawsze świeża treść, offline→cache)
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // Static assets (CSS, JS, images) — cache first
   event.respondWith(cacheFirst(request));
 });
 
