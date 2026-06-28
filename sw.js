@@ -1,4 +1,4 @@
-const CACHE = 'jasnepismo-v1';
+const CACHE = 'jasnepismo-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
