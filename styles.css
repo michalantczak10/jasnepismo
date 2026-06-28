@@ -780,7 +780,7 @@ a:focus-visible,
   text-align: center !important;
 }
 
-/* Main page form primary CTA: match footer/terms yellow pill */
+/* Main form primary CTA: red, consistent with brand */
 .form-actions .hero-cta.cta-warm,
 .form-actions button.hero-cta.cta-warm {
   width: min(420px, 86%) !important;
@@ -789,12 +789,18 @@ a:focus-visible,
   margin: 0.9rem auto !important;
   padding: 1rem 1.4rem !important;
   border-radius: 36px !important;
-  background: linear-gradient(180deg, #ffda5c 0%, #ffd000 100%) !important;
-  color: #111 !important;
+  background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
+  color: #fff !important;
   font-size: 1.12rem !important;
   font-weight: 800 !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
   text-align: center !important;
+}
+
+.form-actions .hero-cta.cta-warm:hover:not(:disabled),
+.form-actions button.hero-cta.cta-warm:hover:not(:disabled) {
+  filter: brightness(1.08);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28) !important;
 }
 
 .content-actions {
