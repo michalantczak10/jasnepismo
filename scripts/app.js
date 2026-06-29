@@ -19,6 +19,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let extractInProgress = false;
   let lastFocusedElement = null;
+  let currentMode = "explain"; // "explain" | "write"
+
+  // Mode tab switching
+  const modeTabs = document.querySelectorAll(".mode-tab");
+  const fileSection = document.getElementById("fileSection");
+  const appHeading = document.getElementById("app-heading");
+  const appIntro = document.getElementById("app-intro");
+  const resultHeading = document.getElementById("resultHeading");
+
+  function setMode(mode) {
+    currentMode = mode;
+    if (form) form.dataset.mode = mode;
+
+    // Update tabs
+    modeTabs.forEach(function (tab) {
+      var isActive = tab.dataset.mode === mode;
+      tab.classList.toggle("active", isActive);
+      tab.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+
+    // Update heading / intro / placeholder
+    if (mode === "write") {
+      if (appHeading) appHeading.textContent = "Opisz, a my napiszemy pismo";
+      if (appIntro)
+        appIntro.textContent =
+          "Opisz własnymi słowami, czego potrzebujesz. My napiszemy oficjalne pismo.";
+      var ta = document.getElementById("documentText");
+      if (ta)
+        ta.placeholder =
+          "Opisz własnymi słowami, czego dotyczy twoja sprawa...";
+      if (freeButton) freeButton.textContent = "Generuj pismo";
+      if (resultHeading) resultHeading.textContent = "Twoje pismo";
+      if (downloadButton) downloadButton.textContent = "Pobierz pismo";
+      if (fileSection) fileSection.style.display = "none";
+    } else {
+      if (appHeading) appHeading.textContent = "Wklej pismo — my wyjaśniamy";
+      if (appIntro)
+        appIntro.textContent =
+          "Wklej tekst lub prześlij plik. Kliknij „Wyjaśnij” — gotowe.";
+      var ta2 = document.getElementById("documentText");
+      if (ta2) ta2.placeholder = "Wklej tutaj tekst z pisma...";
+      if (freeButton) freeButton.textContent = "Wyjaśnij";
+      if (resultHeading) resultHeading.textContent = "Wyjaśnienie";
+      if (downloadButton) downloadButton.textContent = "Pobierz odpowiedź";
+      if (fileSection) fileSection.style.display = "";
+    }
+
+    // Clear previous result when switching modes
+    if (resultCard) resultCard.hidden = true;
+    var rText = document.getElementById("resultText");
+    if (rText) rText.textContent = "";
+    if (statusMessage) statusMessage.hidden = true;
+    if (errorMessage) {
+      errorMessage.hidden = true;
+      errorMessage.textContent = "";
+    }
+    updateTextCount("");
+    if (textarea) textarea.value = "";
+    updateFreeButtonState();
+  }
+
+  modeTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      var mode = tab.dataset.mode;
+      if (mode && mode !== currentMode) setMode(mode);
+    });
+  });
 
   function updateTextCount(val) {
     const textCountEl = document.getElementById("textCount");
@@ -40,7 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (isLoading) {
       freeButton.dataset.orig = freeButton.textContent;
-      freeButton.textContent = "Wyjaśnianie...";
+      freeButton.textContent =
+        currentMode === "write" ? "Generowanie pisma..." : "Wyjaśnianie...";
       freeButton.setAttribute("aria-busy", "true");
     } else {
       if (freeButton.dataset.orig)
@@ -388,7 +456,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "jasnepismo-wyjasnienie.txt";
+      a.download =
+        currentMode === "write"
+          ? "jasnepismo-pismo.txt"
+          : "jasnepismo-wyjasnienie.txt";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -426,55 +497,88 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         const text = (textarea && textarea.value) || "";
-        const uploadFiles = fileInput && fileInput.files;
 
-        let response;
-        if (uploadFiles && uploadFiles.length > 0) {
-          const formData = new FormData();
-          if (text.trim()) formData.append("text", text);
-          for (var fi3 = 0; fi3 < uploadFiles.length; fi3++) {
-            formData.append("file", uploadFiles[fi3], uploadFiles[fi3].name);
-          }
-          response = await fetch("/api/explain", {
-            method: "POST",
-            body: formData,
-          });
-        } else {
+        if (currentMode === "write") {
           if (!text.trim()) {
             throw new Error(
-              "Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.",
+              "Opisz własnymi słowami, czego dotyczy twoja sprawa.",
             );
           }
-          response = await fetch("/api/explain", {
+          const response = await fetch("/api/write-letter", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ description: text }),
           });
-        }
-
-        if (!response.ok) {
-          const json = await response.json().catch(() => null);
-          throw new Error((json && json.error) || "Błąd serwera");
-        }
-
-        const data = await response.json();
-        const resultText = document.getElementById("resultText");
-        if (resultText) resultText.textContent = data.explanation || "";
-        // Show which model was used (if provided by backend)
-        const usedModelEl = document.getElementById("usedModel");
-        if (usedModelEl) {
-          const model = data && data.usedModel;
-          const fallback = data && data.usedFallback ? " (fallback)" : "";
-          if (model) {
-            usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
-            usedModelEl.hidden = false;
-          } else {
-            usedModelEl.hidden = true;
+          if (!response.ok) {
+            const json = await response.json().catch(() => null);
+            throw new Error((json && json.error) || "Błąd serwera");
           }
+          const data = await response.json();
+          const resultText = document.getElementById("resultText");
+          if (resultText) resultText.textContent = data.letter || "";
+          const usedModelEl = document.getElementById("usedModel");
+          if (usedModelEl) {
+            const model = data && data.usedModel;
+            if (model) {
+              usedModelEl.textContent = `Użyty model: ${model}`;
+              usedModelEl.hidden = false;
+            } else {
+              usedModelEl.hidden = true;
+            }
+          }
+          if (resultCard) resultCard.hidden = false;
+          if (downloadButton) downloadButton.hidden = false;
+          if (statusMessage) statusMessage.hidden = true;
+        } else {
+          const uploadFiles = fileInput && fileInput.files;
+
+          let response;
+          if (uploadFiles && uploadFiles.length > 0) {
+            const formData = new FormData();
+            if (text.trim()) formData.append("text", text);
+            for (var fi3 = 0; fi3 < uploadFiles.length; fi3++) {
+              formData.append("file", uploadFiles[fi3], uploadFiles[fi3].name);
+            }
+            response = await fetch("/api/explain", {
+              method: "POST",
+              body: formData,
+            });
+          } else {
+            if (!text.trim()) {
+              throw new Error(
+                "Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.",
+              );
+            }
+            response = await fetch("/api/explain", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text }),
+            });
+          }
+
+          if (!response.ok) {
+            const json = await response.json().catch(() => null);
+            throw new Error((json && json.error) || "Błąd serwera");
+          }
+
+          const data = await response.json();
+          const resultText = document.getElementById("resultText");
+          if (resultText) resultText.textContent = data.explanation || "";
+          const usedModelEl = document.getElementById("usedModel");
+          if (usedModelEl) {
+            const model = data && data.usedModel;
+            const fallback = data && data.usedFallback ? " (fallback)" : "";
+            if (model) {
+              usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
+              usedModelEl.hidden = false;
+            } else {
+              usedModelEl.hidden = true;
+            }
+          }
+          if (resultCard) resultCard.hidden = false;
+          if (downloadButton) downloadButton.hidden = false;
+          if (statusMessage) statusMessage.hidden = true;
         }
-        if (resultCard) resultCard.hidden = false;
-        if (downloadButton) downloadButton.hidden = false;
-        if (statusMessage) statusMessage.hidden = true;
       } catch (err) {
         if (errorMessage) {
           errorMessage.hidden = false;
