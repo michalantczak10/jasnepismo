@@ -158,6 +158,13 @@
     color: #fff;
     border-color: rgba(255, 255, 255, 0.25);
   }
+
+  .hero-cta-secondary:disabled,
+  .hero-cta-secondary[disabled] {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
 }
 
 * {
@@ -349,6 +356,18 @@ form .hero-cta-secondary:hover:not(:disabled) {
   color: rgba(17, 17, 17, 0.85);
   border-color: rgba(17, 17, 17, 0.2);
   box-shadow: none;
+}
+
+.hero-cta-secondary:disabled,
+.hero-cta-secondary[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed !important;
+  transform: none;
+  box-shadow: none;
+  filter: none;
+  background: rgba(17, 17, 17, 0.03);
+  color: rgba(17, 17, 17, 0.35);
+  border-color: rgba(17, 17, 17, 0.08);
 }
 
 button:disabled,
@@ -789,7 +808,7 @@ a:focus-visible,
   display: block !important;
   margin: 0 auto 1.2rem !important;
   padding: 1.25rem 2rem !important;
-  border-radius: 40px !important;
+  border-radius: 36px !important;
   background: linear-gradient(90deg, var(--color-primary), #cc2b2b) !important;
   color: #fff !important;
   font-size: clamp(1.1rem, 2vw, 1.3rem) !important;
@@ -1240,7 +1259,13 @@ a:focus-visible,
   background: var(--color-primary);
   color: #fff;
   border-color: var(--color-primary);
-  box-shadow: 0 4px 12px rgba(179, 0, 0, 0.25);
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.mode-tab:focus-visible {
+  outline: 3px solid rgba(242, 194, 0, 0.95);
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1251,6 +1276,10 @@ a:focus-visible,
   .mode-tab:hover {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.8);
+  }
+  .mode-tab.active {
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--color-primary) 25%, transparent);
   }
 }
 
@@ -1300,6 +1329,9 @@ a:focus-visible,
 .file-clear-button:disabled {
   opacity: 0.55;
   cursor: not-allowed !important;
+  background: rgba(17, 17, 17, 0.03);
+  color: rgba(17, 17, 17, 0.35);
+  border-color: rgba(17, 17, 17, 0.08);
 }
 
 .field-note {
@@ -1719,6 +1751,14 @@ svg {
   transform: translateY(-2px);
 }
 
+#downloadButton:disabled,
+#downloadButton[disabled] {
+  background: rgba(17, 17, 17, 0.03);
+  color: rgba(17, 17, 17, 0.35);
+  border-color: rgba(17, 17, 17, 0.08);
+  opacity: 0.55;
+}
+
 @media (prefers-color-scheme: dark) {
   #downloadButton {
     background: rgba(255, 255, 255, 0.08);
@@ -1729,6 +1769,12 @@ svg {
     background: rgba(255, 255, 255, 0.14);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.25);
+  }
+  #downloadButton:disabled,
+  #downloadButton[disabled] {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.06);
   }
 }
 
