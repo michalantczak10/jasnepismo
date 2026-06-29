@@ -6,12 +6,36 @@
     <!-- Primary SVG favicon (chosen variant: simple) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=7" />
     <!-- PNG fallbacks (version bumped) -->
-    <link rel="icon" type="image/png" href="/favicon-16x16.png?v=7" sizes="16x16" />
-    <link rel="icon" type="image/png" href="/favicon-32x32.png?v=7" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/favicon-192x192.png?v=7" sizes="192x192" />
-    <link rel="icon" type="image/png" href="/favicon-512x512.png?v=7" sizes="512x512" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-16x16.png?v=7"
+      sizes="16x16"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-32x32.png?v=7"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-192x192.png?v=7"
+      sizes="192x192"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-512x512.png?v=7"
+      sizes="512x512"
+    />
     <link rel="shortcut icon" href="/favicon.ico?v=7" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-192x192.png?v=7" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon-192x192.png?v=7"
+    />
     <link rel="manifest" href="/site.webmanifest?v=7" />
     <link rel="canonical" href="https://jasnepismo.pl/" />
     <title>Jasne pismo — zrozumiesz każde pismo z urzędu</title>
@@ -24,14 +48,25 @@
       name="keywords"
       content="pismo urzędowe, wyjaśnienie, ai, jasne pismo, dokumenty urzędowe"
     />
-    <meta name="theme-color" content="#b30000" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
+    <meta
+      name="theme-color"
+      content="#b30000"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1a1a2e"
+      media="(prefers-color-scheme: dark)"
+    />
     <meta name="author" content="Jasne pismo" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jasnepismo.pl/" />
-    <meta property="og:title" content="Jasne pismo — zrozumiesz każde pismo z urzędu" />
+    <meta
+      property="og:title"
+      content="Jasne pismo — zrozumiesz każde pismo z urzędu"
+    />
     <meta
       property="og:description"
       content="Wklej pismo z urzędu. Wyjaśnimy Ci prostym językiem, co znaczy."
@@ -43,7 +78,10 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Jasne pismo — zrozumiesz każde pismo z urzędu" />
+    <meta
+      name="twitter:title"
+      content="Jasne pismo — zrozumiesz każde pismo z urzędu"
+    />
     <meta
       name="twitter:description"
       content="Wklej pismo z urzędu. Dostaniesz prostą odpowiedź."
@@ -110,7 +148,8 @@
           Nie rozumiesz oficjalnego pisma? Wklej&nbsp;je.
         </h1>
         <p data-testid="hero-subtitle">
-          Urząd, bank, szkoła, pracodawca, NFZ — dowolne pismo. Wytłumaczymy Ci je w języku, który znasz na co dzień.
+          Urząd, bank, szkoła, pracodawca, NFZ — dowolne pismo. Wytłumaczymy Ci
+          je w języku, który znasz na co dzień.
         </p>
       </div>
     </header>
@@ -122,7 +161,9 @@
         data-testid="section-how"
       >
         <div class="section-header">
-          <p class="section-tag" data-testid="section-how-tag">Jak to działa?</p>
+          <p class="section-tag" data-testid="section-how-tag">
+            Jak to działa?
+          </p>
           <h2 id="how-heading" data-testid="section-how-heading">
             W 3 prostych krokach
           </h2>
@@ -135,14 +176,16 @@
             <span class="step-number" aria-hidden="true">1</span>
             <h3 class="step-title">Wklej pismo lub prześlij plik</h3>
             <p class="step-desc">
-              Wpisz treść lub wyślij plik — PDF, DOCX, ODT, JPG, PNG i inne. Pełna lista w formularzu.
+              Wpisz treść lub wyślij plik — PDF, DOCX, ODT, JPG, PNG i inne.
+              Pełna lista w formularzu.
             </p>
           </div>
           <div class="step-card">
             <span class="step-number" aria-hidden="true">2</span>
             <h3 class="step-title">Kliknij „Wyjaśnij”</h3>
             <p class="step-desc">
-              Przetwarzamy Twoje pismo i przygotowujemy odpowiedź w prostym języku.
+              Przetwarzamy Twoje pismo i przygotowujemy odpowiedź w prostym
+              języku.
             </p>
           </div>
           <div class="step-card">
@@ -182,10 +225,20 @@
             placeholder="Wklej tutaj tekst z pisma..."
             data-testid="documentText"
           ></textarea>
-          <p id="textCount" class="field-note" data-testid="textCount">0 / 5000 znaków</p>
-          <label class="file-upload-label" for="documentFile" data-testid="file-upload-label">
-            Możesz też dodać plik — dokument (PDF, DOCX, ODT), zdjęcie (JPG, PNG) lub skan. Tekst wgramy w pole wyżej. (opcjonalnie, maks. 10 plików po 5 MB)
+          <p id="textCount" class="field-note" data-testid="textCount">
+            0 / 5000 znaków
+          </p>
+          <label
+            class="file-upload-label"
+            for="documentFile"
+            data-testid="file-upload-label"
+          >
+            Dodaj plik (opcjonalnie)
           </label>
+          <p class="field-note" id="fileUploadDesc">
+            Dokument (PDF, DOCX, ODT), zdjęcie (JPG, PNG) lub skan — tekst
+            wgramy w pole wyżej. Maks. 10 plików po 5 MB.
+          </p>
           <div class="file-upload-row">
             <input
               id="documentFile"
@@ -211,7 +264,12 @@
               Usuń plik
             </button>
           </div>
-          <p id="fileDetails" class="field-note file-details" hidden data-testid="fileDetails"></p>
+          <p
+            id="fileDetails"
+            class="field-note file-details"
+            hidden
+            data-testid="fileDetails"
+          ></p>
           <div class="form-actions">
             <button
               type="button"
@@ -244,6 +302,7 @@
               id="errorMessage"
               class="error-message"
               role="alert"
+              aria-live="assertive"
               hidden
               data-testid="errorMessage"
             ></p>
@@ -261,9 +320,12 @@
         >
           <div class="modal-window">
             <div class="modal-copy">
-              <h3 id="confirmModalTitle" data-testid="confirmModalTitle">Usunąć tekst?</h3>
+              <h3 id="confirmModalTitle" data-testid="confirmModalTitle">
+                Usunąć tekst?
+              </h3>
               <p data-testid="confirmModalText">
-                Czy na pewno chcesz usunąć cały tekst? Zniknie też odpowiedź, którą dostaliśmy.
+                Czy na pewno chcesz usunąć cały tekst? Zniknie też odpowiedź,
+                którą dostaliśmy.
               </p>
             </div>
             <div class="modal-actions">
@@ -286,10 +348,25 @@
             </div>
           </div>
         </div>
-        <article id="resultCard" class="result-card" hidden data-testid="resultCard">
+        <article
+          id="resultCard"
+          class="result-card"
+          hidden
+          data-testid="resultCard"
+        >
           <h3 data-testid="resultHeading">Wyjaśnienie</h3>
-          <div id="resultText" class="result-text" data-testid="resultText"></div>
-          <p id="usedModel" class="field-note model-note" data-testid="usedModel" hidden></p>
+          <div
+            id="resultText"
+            class="result-text"
+            data-testid="resultText"
+            aria-live="polite"
+          ></div>
+          <p
+            id="usedModel"
+            class="field-note model-note"
+            data-testid="usedModel"
+            hidden
+          ></p>
           <div class="result-actions">
             <button
               type="button"
@@ -305,14 +382,29 @@
         <details class="file-info-details" data-testid="fileInfoDetails">
           <summary>Jak działa wysyłanie plików?</summary>
           <ul>
-            <li><strong>Kilka plików naraz</strong> — wybierz kilka plików (PDF, JPG, DOCX itd.). Zostaną posortowane alfabetycznie po nazwie i połączone w jeden tekst.</li>
-            <li><strong>Limit 5000 znaków</strong> — tekst ze wszystkich plików nie może przekroczyć 5000 znaków. Tekst powyżej tego limitu nie zmieści się w polu edycji.</li>
-            <li><strong>Ograniczenia</strong> — maks. 10 plików, każdy do 5 MB. Zdjęcia i skany są czytane przez OCR — jakość zależy od czytelności obrazu.</li>
-            <li><strong>Obsługiwane formaty</strong> — PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF. Pliki .txt są wczytywane od razu w przeglądarce, pozostałe formaty są przetwarzane na serwerze.</li>
+            <li>
+              <strong>Kilka plików naraz</strong> — wybierz kilka plików (PDF,
+              JPG, DOCX itd.). Zostaną posortowane alfabetycznie po nazwie i
+              połączone w jeden tekst.
+            </li>
+            <li>
+              <strong>Limit 5000 znaków</strong> — tekst ze wszystkich plików
+              nie może przekroczyć 5000 znaków. Tekst powyżej tego limitu nie
+              zmieści się w polu edycji.
+            </li>
+            <li>
+              <strong>Ograniczenia</strong> — maks. 10 plików, każdy do 5 MB.
+              Zdjęcia i skany są czytane przez OCR — jakość zależy od
+              czytelności obrazu.
+            </li>
+            <li>
+              <strong>Obsługiwane formaty</strong> — PDF, DOC, DOCX, ODT, RTF,
+              TXT, JPG, PNG, BMP, GIF. Pliki .txt są wczytywane od razu w
+              przeglądarce, pozostałe formaty są przetwarzane na serwerze.
+            </li>
           </ul>
         </details>
       </section>
-
 
       <section
         id="info-section"
@@ -323,26 +415,32 @@
         <div class="product-inner">
           <div class="section-header">
             <p class="section-tag" data-testid="section-info-tag">Twoje dane</p>
-            <h2 id="info-heading" data-testid="info-heading">Nie przechowujemy Twoich pism</h2>
+            <h2 id="info-heading" data-testid="info-heading">
+              Nie przechowujemy Twoich pism
+            </h2>
             <p data-testid="section-info-intro">
-              Twój tekst jest używany tylko do przygotowania wyjaśnienia. Nie zapisujemy go na stałe. Nie prowadzimy historii Twoich pism.
+              Twój tekst jest używany tylko do przygotowania wyjaśnienia. Nie
+              zapisujemy go na stałe. Nie prowadzimy historii Twoich pism.
             </p>
           </div>
           <ul class="product-features">
             <li>
-              <span class="feature-emoji">🔒</span><strong>Nie musisz się logować</strong
+              <span class="feature-emoji">🔒</span
+              ><strong>Nie musisz się logować</strong
               ><span class="feature-note"
                 >Nie zbieramy Twoich danych ani historii pism.</span
               >
             </li>
             <li>
-              <span class="feature-emoji">⚡</span><strong>Szybko dostajesz odpowiedź</strong
+              <span class="feature-emoji">⚡</span
+              ><strong>Szybko dostajesz odpowiedź</strong
               ><span class="feature-note"
                 >Wyjaśnienie jest gotowe w kilka sekund.</span
               >
             </li>
             <li>
-              <span class="feature-emoji">🌐</span><strong>Bezpieczna strona</strong
+              <span class="feature-emoji">🌐</span
+              ><strong>Bezpieczna strona</strong
               ><span class="feature-note"
                 >Strona jest szyfrowana, żeby chronić Twoje dane.</span
               >
@@ -351,23 +449,35 @@
         </div>
       </section>
 
-      <section id="about-section" class="section fade-in" aria-labelledby="about-heading" data-testid="section-about">
+      <section
+        id="about-section"
+        class="section fade-in"
+        aria-labelledby="about-heading"
+        data-testid="section-about"
+      >
         <div class="section-header">
           <p class="section-tag" data-testid="section-about-tag">O nas</p>
-          <h2 id="about-heading" data-testid="section-about-heading">Kim jesteśmy?</h2>
-          <p>Pomagamy zrozumieć pisma z urzędów. Piszemy prostym językiem, bez trudnych słów.</p>
+          <h2 id="about-heading" data-testid="section-about-heading">
+            Kim jesteśmy?
+          </h2>
+          <p>
+            Pomagamy zrozumieć pisma z urzędów. Piszemy prostym językiem, bez
+            trudnych słów.
+          </p>
         </div>
         <div class="content-block">
           <p>
-            Jasne pismo to mały, niezależny projekt. Nasz cel: pomóc Ci zrozumieć pisma z urzędu. Wklejasz tekst, klikasz „Wyjaśnij”, dostajesz prostą odpowiedź.
+            Jasne pismo to mały, niezależny projekt. Nasz cel: pomóc Ci
+            zrozumieć pisma z urzędu. Wklejasz tekst, klikasz „Wyjaśnij”,
+            dostajesz prostą odpowiedź.
           </p>
           <p>
-            Pomagamy w codziennych sprawach: z urzędu, ze spółdzielni, ze szkoły i innych. Pamiętaj: to, co piszemy, to informacje, a nie porada prawnika.
+            Pomagamy w codziennych sprawach: z urzędu, ze spółdzielni, ze szkoły
+            i innych. Pamiętaj: to, co piszemy, to informacje, a nie porada
+            prawnika.
           </p>
         </div>
-
       </section>
-
     </main>
 
     <footer id="footer" class="site-footer" data-testid="site-footer">
@@ -416,23 +526,30 @@
         </div>
         <div class="footer-legal" id="footer-legal">
           <details class="legal-accordion" data-testid="legal-privacy">
-            <summary>Prywatność <span class="accordion-icon" aria-hidden="true"></span></summary>
+            <summary>
+              Prywatność <span class="accordion-icon" aria-hidden="true"></span>
+            </summary>
             <div class="legal-accordion-body">
               <div class="summary">
                 <h3>Krótko i po ludzku</h3>
                 <ul>
                   <li>
-                    Twój tekst jest używany tylko do przygotowania wyjaśnienia. Nie zakładamy kont i nie przechowujemy Twoich pism.
+                    Twój tekst jest używany tylko do przygotowania wyjaśnienia.
+                    Nie zakładamy kont i nie przechowujemy Twoich pism.
                   </li>
                   <li>
-                    Do zrobienia odpowiedzi używamy zewnętrznych usług (dostawcy AI).
+                    Do zrobienia odpowiedzi używamy zewnętrznych usług (dostawcy
+                    AI).
                   </li>
                   <li>
-                    Zapisujemy tylko krótkie informacje techniczne (dla bezpieczeństwa).
+                    Zapisujemy tylko krótkie informacje techniczne (dla
+                    bezpieczeństwa).
                   </li>
                   <li>
                     Kontakt w sprawie danych:
-                    <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+                    <a href="mailto:kontakt@jasnepismo.pl"
+                      >kontakt@jasnepismo.pl</a
+                    >.
                   </li>
                 </ul>
               </div>
@@ -440,30 +557,41 @@
               <h3>Kto odpowiada za Twoje dane?</h3>
               <p>
                 Za Twoje dane odpowiada: Jasne pismo.
-                <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a>.
+                <a href="mailto:kontakt@jasnepismo.pl">kontakt@jasnepismo.pl</a
+                >.
               </p>
 
               <h3>Do czego używamy Twojego tekstu?</h3>
               <p>
-                Twój tekst (wpisany w formularz lub wczytany z pliku) jest używany tylko do jednego celu: zrobienia prostego wyjaśnienia.
+                Twój tekst (wpisany w formularz lub wczytany z pliku) jest
+                używany tylko do jednego celu: zrobienia prostego wyjaśnienia.
               </p>
               <p>
-                Żeby zrobić wyjaśnienie, Twój tekst jest wysyłany do zewnętrznej usługi AI (OpenAI). Nie zakładamy kont. Nie trzymamy historii Twoich pism.
+                Żeby zrobić wyjaśnienie, Twój tekst jest wysyłany do zewnętrznej
+                usługi AI (OpenAI). Nie zakładamy kont. Nie trzymamy historii
+                Twoich pism.
               </p>
 
               <h3>Podstawa prawna — dla chętnych</h3>
               <p>
-                Twoje dane przetwarzamy, bo tego trzeba, żeby wykonać usługę, o którą prosisz (art. 6 ust. 1 lit. b RODO). Logi techniczne trzymamy dla bezpieczeństwa (art. 6 ust. 1 lit. f RODO).
+                Twoje dane przetwarzamy, bo tego trzeba, żeby wykonać usługę, o
+                którą prosisz (art. 6 ust. 1 lit. b RODO). Logi techniczne
+                trzymamy dla bezpieczeństwa (art. 6 ust. 1 lit. f RODO).
               </p>
 
               <h3>Jak długo trzymamy dane?</h3>
               <p>
-                Twojego tekstu nie zapisujemy na stałe. Po zrobieniu wyjaśnienia nie mamy go u siebie. Krótkie logi techniczne (np. adres IP) możemy trzymać przez ograniczony czas dla bezpieczeństwa.
+                Twojego tekstu nie zapisujemy na stałe. Po zrobieniu wyjaśnienia
+                nie mamy go u siebie. Krótkie logi techniczne (np. adres IP)
+                możemy trzymać przez ograniczony czas dla bezpieczeństwa.
               </p>
 
               <h3>Twoje prawa</h3>
               <ul>
-                <li>Prawo dostępu do danych — możesz zapytać, jakie dane o Tobie mamy.</li>
+                <li>
+                  Prawo dostępu do danych — możesz zapytać, jakie dane o Tobie
+                  mamy.
+                </li>
                 <li>Prawo do poprawienia danych.</li>
                 <li>Prawo do usunięcia danych.</li>
                 <li>Prawo do ograniczenia przetwarzania.</li>
@@ -473,7 +601,9 @@
 
               <h3>Ciasteczka i zewnętrzne usługi</h3>
               <p>
-                Nie używamy własnych ciasteczek do śledzenia Cię. Twoja przeglądarka lub dostawca hostingu mogą jednak używać swoich technicznych ciasteczek.
+                Nie używamy własnych ciasteczek do śledzenia Cię. Twoja
+                przeglądarka lub dostawca hostingu mogą jednak używać swoich
+                technicznych ciasteczek.
               </p>
               <p>Korzystamy z zewnętrznych usług:</p>
               <ul>
@@ -483,71 +613,100 @@
 
               <h3>Bezpieczeństwo</h3>
               <p>
-                Strona działa przez bezpieczne połączenie (HTTPS). Staramy się dobrze chronić Twoje dane. Mimo to nie przesyłaj w formularzu bardzo wrażliwych informacji (np. numeru PESEL, danych zdrowotnych, danych karty).
+                Strona działa przez bezpieczne połączenie (HTTPS). Staramy się
+                dobrze chronić Twoje dane. Mimo to nie przesyłaj w formularzu
+                bardzo wrażliwych informacji (np. numeru PESEL, danych
+                zdrowotnych, danych karty).
               </p>
 
               <h3>Zmiany w polityce prywatności</h3>
               <p>
                 Możemy aktualizować tę politykę.
-                <span class="nowrap">Ostatnia aktualizacja: <strong>2026-05-29</strong>.</span>
+                <span class="nowrap"
+                  >Ostatnia aktualizacja: <strong>2026-05-29</strong>.</span
+                >
               </p>
             </div>
           </details>
 
           <details class="legal-accordion" data-testid="legal-terms">
-            <summary>Regulamin <span class="accordion-icon" aria-hidden="true"></span></summary>
+            <summary>
+              Regulamin <span class="accordion-icon" aria-hidden="true"></span>
+            </summary>
             <div class="legal-accordion-body">
               <div class="summary">
                 <h3>Krótko i po ludzku</h3>
                 <ul>
-                  <li>Wyjaśniamy Ci, co znaczy urzędowe pismo. Piszemy prosto.</li>
-                  <li>Nasza odpowiedź to informacja, nie porada prawnika. Może mieć uproszczenia.</li>
-                  <li>Nie przesyłaj bardzo wrażliwych danych (np. PESEL, zdrowie, konto w banku).</li>
+                  <li>
+                    Wyjaśniamy Ci, co znaczy urzędowe pismo. Piszemy prosto.
+                  </li>
+                  <li>
+                    Nasza odpowiedź to informacja, nie porada prawnika. Może
+                    mieć uproszczenia.
+                  </li>
+                  <li>
+                    Nie przesyłaj bardzo wrażliwych danych (np. PESEL, zdrowie,
+                    konto w banku).
+                  </li>
                   <li>Używaj serwisu zgodnie z prawem.</li>
                 </ul>
               </div>
 
               <h3>Co to za serwis?</h3>
               <p>
-                Jasne pismo to narzędzie, które pomaga Ci zrozumieć urzędowe pisma. Wklejasz tekst, my wyjaśniamy.
+                Jasne pismo to narzędzie, które pomaga Ci zrozumieć urzędowe
+                pisma. Wklejasz tekst, my wyjaśniamy.
               </p>
 
               <h3>Ważne: to nie jest porada prawnika</h3>
               <p>
-                Nasza odpowiedź to informacja, a nie porada prawna, administracyjna ani podatkowa. Nie mówimy Ci, co masz robić — tylko wyjaśniamy, co pismo znaczy. Jeśli potrzebujesz porady, idź do prawnika.
+                Nasza odpowiedź to informacja, a nie porada prawna,
+                administracyjna ani podatkowa. Nie mówimy Ci, co masz robić —
+                tylko wyjaśniamy, co pismo znaczy. Jeśli potrzebujesz porady,
+                idź do prawnika.
               </p>
 
               <h3>Zasady dla Ciebie</h3>
               <ul>
                 <li>Nie wysyłaj cudzych tekstów bez zgody.</li>
-                <li>Nie podawaj danych, których nie chcesz nikomu pokazywać (PESEL, zdrowie, numery kont).</li>
+                <li>
+                  Nie podawaj danych, których nie chcesz nikomu pokazywać
+                  (PESEL, zdrowie, numery kont).
+                </li>
                 <li>Nie używaj serwisu do złych rzeczy.</li>
               </ul>
 
               <h3>Czego potrzebujesz, żeby korzystać?</h3>
               <p>
-                Nowoczesnej przeglądarki, internetu i włączonego JavaScriptu. Żeby dodać plik, musisz go wybrać na swoim komputerze.
+                Nowoczesnej przeglądarki, internetu i włączonego JavaScriptu.
+                Żeby dodać plik, musisz go wybrać na swoim komputerze.
               </p>
 
               <h3>Dane i prywatność</h3>
               <p>
-                Nie zakładamy kont. Twój tekst jest używany tylko do zrobienia wyjaśnienia. Więcej w <a href="#footer-legal">polityce prywatności</a>.
+                Nie zakładamy kont. Twój tekst jest używany tylko do zrobienia
+                wyjaśnienia. Więcej w
+                <a href="#footer-legal">polityce prywatności</a>.
               </p>
 
               <h3>Kto odpowiada?</h3>
               <p>
-                Używasz serwisu na własną odpowiedzialność. My nie odpowiadamy za decyzje, które podejmiesz na podstawie naszych wyjaśnień.
+                Używasz serwisu na własną odpowiedzialność. My nie odpowiadamy
+                za decyzje, które podejmiesz na podstawie naszych wyjaśnień.
               </p>
 
               <h3>Prawa autorskie</h3>
               <p>
-                Wygląd strony, kod i treści napisane przez nas są chronione prawem.
+                Wygląd strony, kod i treści napisane przez nas są chronione
+                prawem.
               </p>
 
               <h3>Zmiany regulaminu</h3>
               <p>
                 Możemy aktualizować ten regulamin.
-                <span class="nowrap">Ostatnia aktualizacja: <strong>2026-06-24</strong>.</span>
+                <span class="nowrap"
+                  >Ostatnia aktualizacja: <strong>2026-06-24</strong>.</span
+                >
               </p>
             </div>
           </details>
