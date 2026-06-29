@@ -1662,20 +1662,6 @@ a:focus-visible,
   font-size: 0.95rem;
 }
 
-.result-actions .hero-cta-secondary {
-  background: rgba(17, 17, 17, 0.05);
-  color: rgba(17, 17, 17, 0.65);
-  border: 1px solid rgba(17, 17, 17, 0.12);
-}
-
-@media (prefers-color-scheme: dark) {
-  .result-actions .hero-cta-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.7);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-}
-
 /* Responsive tweaks */
 @media (max-width: 640px) {
   .section--app {
@@ -1715,6 +1701,35 @@ svg {
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24);
   text-decoration: none;
   box-sizing: border-box;
+}
+
+/* Download button in result card — override section--app .hero-cta */
+#downloadButton {
+  background: rgba(17, 17, 17, 0.05);
+  color: rgba(17, 17, 17, 0.65);
+  border: 1px solid rgba(17, 17, 17, 0.12);
+}
+
+#downloadButton:hover:not(:disabled) {
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.85);
+  border-color: rgba(17, 17, 17, 0.2);
+  box-shadow: none;
+  filter: none;
+  transform: translateY(-2px);
+}
+
+@media (prefers-color-scheme: dark) {
+  #downloadButton {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  #downloadButton:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
 }
 
 /* Emojis and icons */
