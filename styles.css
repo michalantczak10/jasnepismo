@@ -167,6 +167,31 @@
     color: rgba(255, 255, 255, 0.25);
     border-color: transparent;
   }
+
+  .section--app .hero-cta-secondary,
+  .form-actions .hero-cta-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .section--app .hero-cta-secondary:hover:not(:disabled),
+  .form-actions .hero-cta-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  }
+
+  .section--app .hero-cta-secondary:disabled,
+  .section--app .hero-cta-secondary[disabled],
+  .form-actions .hero-cta-secondary:disabled,
+  .form-actions .hero-cta-secondary[disabled] {
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.25);
+    border-color: transparent;
+  }
 }
 
 * {
@@ -1747,6 +1772,28 @@ svg {
   box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24);
   text-decoration: none;
   box-sizing: border-box;
+}
+
+/* Secondary buttons in app section — override gradient from .section--app .hero-cta */
+.section--app .hero-cta-secondary,
+.form-actions .hero-cta-secondary {
+  background: rgba(17, 17, 17, 0.04);
+  color: rgba(17, 17, 17, 0.55);
+  border: 2px solid transparent;
+  box-shadow: none;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.65rem 1.5rem;
+}
+
+.section--app .hero-cta-secondary:hover:not(:disabled),
+.form-actions .hero-cta-secondary:hover:not(:disabled) {
+  background: rgba(17, 17, 17, 0.07);
+  color: rgba(17, 17, 17, 0.8);
+  border-color: transparent;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  filter: none;
 }
 
 /* Download button in result card — override section--app .hero-cta */
