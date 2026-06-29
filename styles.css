@@ -149,15 +149,29 @@
 
   form .hero-cta-secondary {
     background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.5);
-    border-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow: none;
   }
 
   form .hero-cta-secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  }
+
+  .hero-cta-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: none;
+  }
+
+  .hero-cta-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
 
@@ -165,22 +179,22 @@
   .hero-cta-secondary[disabled] {
     background: rgba(255, 255, 255, 0.03);
     color: rgba(255, 255, 255, 0.25);
-    border-color: transparent;
+    border-color: rgba(255, 255, 255, 0.06);
   }
 
   .section--app .hero-cta-secondary,
   .form-actions .hero-cta-secondary {
     background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.5);
-    border-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow: none;
   }
 
   .section--app .hero-cta-secondary:hover:not(:disabled),
   .form-actions .hero-cta-secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
 
@@ -190,7 +204,7 @@
   .form-actions .hero-cta-secondary[disabled] {
     background: rgba(255, 255, 255, 0.03);
     color: rgba(255, 255, 255, 0.25);
-    border-color: transparent;
+    border-color: rgba(255, 255, 255, 0.06);
   }
 }
 
@@ -356,8 +370,8 @@ button:hover:not(:disabled),
 
 .hero-cta-secondary {
   background: rgba(17, 17, 17, 0.04);
-  color: rgba(17, 17, 17, 0.55);
-  border: 2px solid transparent;
+  color: rgba(17, 17, 17, 0.75);
+  border: 2px solid rgba(17, 17, 17, 0.15);
   backdrop-filter: none;
   box-shadow: none;
   font-weight: 700;
@@ -366,9 +380,9 @@ button:hover:not(:disabled),
 }
 
 .hero-cta-secondary:hover:not(:disabled) {
-  background: rgba(17, 17, 17, 0.07);
-  color: rgba(17, 17, 17, 0.8);
-  border-color: transparent;
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.95);
+  border-color: rgba(17, 17, 17, 0.25);
   transform: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   filter: none;
@@ -376,8 +390,8 @@ button:hover:not(:disabled),
 
 form .hero-cta-secondary {
   background: rgba(17, 17, 17, 0.04);
-  color: rgba(17, 17, 17, 0.55);
-  border: 2px solid transparent;
+  color: rgba(17, 17, 17, 0.75);
+  border: 2px solid rgba(17, 17, 17, 0.15);
   backdrop-filter: none;
   box-shadow: none;
   font-weight: 700;
@@ -386,9 +400,9 @@ form .hero-cta-secondary {
 }
 
 form .hero-cta-secondary:hover:not(:disabled) {
-  background: rgba(17, 17, 17, 0.07);
-  color: rgba(17, 17, 17, 0.8);
-  border-color: transparent;
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.95);
+  border-color: rgba(17, 17, 17, 0.25);
   transform: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   filter: none;
@@ -1778,8 +1792,8 @@ svg {
 .section--app .hero-cta-secondary,
 .form-actions .hero-cta-secondary {
   background: rgba(17, 17, 17, 0.04);
-  color: rgba(17, 17, 17, 0.55);
-  border: 2px solid transparent;
+  color: rgba(17, 17, 17, 0.75);
+  border: 2px solid rgba(17, 17, 17, 0.15);
   box-shadow: none;
   font-weight: 700;
   font-size: 1rem;
@@ -1788,9 +1802,9 @@ svg {
 
 .section--app .hero-cta-secondary:hover:not(:disabled),
 .form-actions .hero-cta-secondary:hover:not(:disabled) {
-  background: rgba(17, 17, 17, 0.07);
-  color: rgba(17, 17, 17, 0.8);
-  border-color: transparent;
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.95);
+  border-color: rgba(17, 17, 17, 0.25);
   transform: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   filter: none;
@@ -1799,8 +1813,8 @@ svg {
 /* Download button in result card — override section--app .hero-cta */
 #downloadButton {
   background: rgba(17, 17, 17, 0.04);
-  color: rgba(17, 17, 17, 0.55);
-  border: 2px solid transparent;
+  color: rgba(17, 17, 17, 0.75);
+  border: 2px solid rgba(17, 17, 17, 0.15);
   box-shadow: none;
   font-weight: 700;
   font-size: 0.95rem;
@@ -1808,9 +1822,9 @@ svg {
 }
 
 #downloadButton:hover:not(:disabled) {
-  background: rgba(17, 17, 17, 0.07);
-  color: rgba(17, 17, 17, 0.8);
-  border-color: transparent;
+  background: rgba(17, 17, 17, 0.08);
+  color: rgba(17, 17, 17, 0.95);
+  border-color: rgba(17, 17, 17, 0.25);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   filter: none;
   transform: none;
@@ -1820,28 +1834,28 @@ svg {
 #downloadButton[disabled] {
   background: rgba(17, 17, 17, 0.03);
   color: rgba(17, 17, 17, 0.35);
-  border-color: transparent;
+  border-color: rgba(17, 17, 17, 0.08);
   opacity: 0.55;
 }
 
 @media (prefers-color-scheme: dark) {
   #downloadButton {
     background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.5);
-    border-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow: none;
   }
   #downloadButton:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-    border-color: transparent;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
   #downloadButton:disabled,
   #downloadButton[disabled] {
     background: rgba(255, 255, 255, 0.03);
     color: rgba(255, 255, 255, 0.25);
-    border-color: transparent;
+    border-color: rgba(255, 255, 255, 0.06);
   }
 }
 
