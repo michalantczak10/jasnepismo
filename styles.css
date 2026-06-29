@@ -151,12 +151,14 @@
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.7);
     border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   }
 
   form .hero-cta-secondary:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.14);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
 
   .hero-cta-secondary:disabled,
@@ -349,13 +351,14 @@ form .hero-cta-secondary {
   color: rgba(17, 17, 17, 0.65);
   border: 1px solid rgba(17, 17, 17, 0.12);
   backdrop-filter: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 form .hero-cta-secondary:hover:not(:disabled) {
   background: rgba(17, 17, 17, 0.08);
   color: rgba(17, 17, 17, 0.85);
   border-color: rgba(17, 17, 17, 0.2);
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .hero-cta-secondary:disabled,
@@ -1740,13 +1743,14 @@ svg {
   background: rgba(17, 17, 17, 0.05);
   color: rgba(17, 17, 17, 0.65);
   border: 1px solid rgba(17, 17, 17, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 #downloadButton:hover:not(:disabled) {
   background: rgba(17, 17, 17, 0.08);
   color: rgba(17, 17, 17, 0.85);
   border-color: rgba(17, 17, 17, 0.2);
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   filter: none;
   transform: translateY(-2px);
 }
@@ -1764,11 +1768,13 @@ svg {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.7);
     border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   }
   #downloadButton:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.14);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
   #downloadButton:disabled,
   #downloadButton[disabled] {
