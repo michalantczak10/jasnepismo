@@ -137,7 +137,7 @@ async function extractTextFromFile(rawFile) {
   }
 
   // DOCX (exclude .doc which uses heuristic RTF below)
-  if (lowerName.endsWith('.docx') || (type.includes('word') && !lowerName.endsWith('.doc'))) {
+  if (lowerName.endsWith('.docx') || lowerName.endsWith('.dotx') || (type.includes('word') && !lowerName.endsWith('.doc'))) {
     try {
       const result = await mammoth.extractRawText({ buffer });
       return result && result.value ? result.value : '';
