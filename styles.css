@@ -1502,7 +1502,7 @@ svg {
 .footer-legal {
   width: 100%;
   max-width: 620px;
-  margin: 2rem auto 0;
+  margin: 1.5rem auto 0;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(17, 17, 17, 0.08);
 }
@@ -1510,7 +1510,7 @@ svg {
 .legal-accordion {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: rgba(17, 17, 17, 0.82);
+  color: var(--color-text);
 }
 
 .legal-accordion + .legal-accordion {
