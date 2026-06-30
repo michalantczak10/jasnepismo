@@ -9,7 +9,7 @@
     },
     {
       "source": "/about.html",
-      "destination": "/#about-section",
+      "destination": "/#footer-legal",
       "permanent": true
     },
     {

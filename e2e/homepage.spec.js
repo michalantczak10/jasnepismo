@@ -49,13 +49,6 @@ test.describe('Strona główna — struktura', () => {
     await expect(infoSection.locator('[data-testid="section-info-intro"]')).toBeVisible();
   });
 
-  test('powinna wyświetlać sekcję "O nas"', async ({ page }) => {
-    const aboutSection = page.locator('[data-testid="section-about"]');
-    await expect(aboutSection).toBeVisible();
-    await expect(aboutSection.locator('[data-testid="section-about-tag"]')).toHaveText('O nas');
-    await expect(aboutSection.locator('[data-testid="section-about-heading"]')).toHaveText('Kim jesteśmy?');
-  });
-
   test('powinna wyświetlać akordeon polityki prywatności w stopce', async ({ page }) => {
     const privacyAccordion = page.locator('[data-testid="legal-privacy"]');
     await expect(privacyAccordion).toBeVisible();
@@ -82,7 +75,6 @@ test.describe('Strona główna — struktura', () => {
       'how-it-works',
       'app-section',
       'info-section',
-      'about-section',
     ]);
   });
 });
