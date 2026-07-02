@@ -1025,7 +1025,7 @@ a:focus-visible,
 
 .mode-tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
   justify-content: center;
   margin-top: 1.5rem;
 }
