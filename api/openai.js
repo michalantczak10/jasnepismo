@@ -8,10 +8,39 @@ function getOpenAIModel() {
   return process.env.OPENAI_MODEL || "gpt-4o-mini";
 }
 
-async function callOpenAI(body) {
-  const OPENAI_API_KEY = getOpenAIApiKey();
-  if (!OPENAI_API_KEY) throw new Error("Brak klucza OpenAI API na serwerze.");
+async function checkOpenAIAvailable() {
+  const key = getOpenAIApiKey();
+  if (!key) throw new Error("Brak klucza OpenAI API na serwerze.");
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const resp = await fetch("https://api.openai.com/v1/models?limit=1", {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: controller.signal,
+    });
+    if (!resp.ok) {
+      const data = await resp.json().catch(() => null);
+      const msg = (data && data.error && data.error.message) || `API OpenAI nie odpowiada (${resp.status})`;
+      const err = new Error(msg);
+      err.status = resp.status;
+      throw err;
+    }
+  } catch (e) {
+    if (e && e.name === "AbortError") {
+      throw new Error("Serwer OpenAI nie odpowiada — przekroczono limit czasu.");
+    }
+    if (e.status) throw e;
+    throw new Error("Nie można połączyć się z API OpenAI. Sprawdź połączenie internetowe serwera.");
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function callOpenAI(body) {
+  await checkOpenAIAvailable();
+
+  const OPENAI_API_KEY = getOpenAIApiKey();
   const REQUEST_TIMEOUT_MS = Number(
     process.env.OPENAI_REQUEST_TIMEOUT_MS || 20000,
   );

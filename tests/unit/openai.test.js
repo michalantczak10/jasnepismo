@@ -19,18 +19,32 @@ describe('openai.js', () => {
     global.fetch = originalFetch;
   });
 
+  function mockFetch(responses) {
+    let callCount = 0;
+    global.fetch = mock.fn(() => {
+      const r = responses[callCount] || responses[responses.length - 1];
+      callCount++;
+      return Promise.resolve(r);
+    });
+  }
+
+  function okResponse(data) {
+    return { ok: true, json: () => Promise.resolve(data) };
+  }
+
+  function failResponse(status, data) {
+    return { ok: false, status, json: () => Promise.resolve(data) };
+  }
+
   describe('generateExplanation', () => {
     it('should return explanation on successful API call', async () => {
-      global.fetch = mock.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              choices: [{ message: { content: '  Test explanation  ' } }],
-              usage: { prompt_tokens: 10, completion_tokens: 20 },
-            }),
-        })
-      );
+      mockFetch([
+        okResponse({}), // checkOpenAIAvailable
+        okResponse({ // actual chat completion
+          choices: [{ message: { content: '  Test explanation  ' } }],
+          usage: { prompt_tokens: 10, completion_tokens: 20 },
+        }),
+      ]);
 
       const result = await openai.generateExplanation('Test text');
 
@@ -42,13 +56,10 @@ describe('openai.js', () => {
     });
 
     it('should throw on API error', async () => {
-      global.fetch = mock.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 500,
-          json: () => Promise.resolve({ error: { message: 'Server error' } }),
-        })
-      );
+      mockFetch([
+        okResponse({}), // checkOpenAIAvailable
+        failResponse(500, { error: { message: 'Server error' } }), // actual API
+      ]);
 
       await assert.rejects(
         () => openai.generateExplanation('Test'),
@@ -56,7 +67,18 @@ describe('openai.js', () => {
       );
     });
 
-    it('should throw on timeout (AbortError)', async () => {
+    it('should throw when check fails', async () => {
+      global.fetch = mock.fn(() =>
+        Promise.resolve(failResponse(401, { error: { message: 'Incorrect API key provided', code: 'invalid_api_key' } }))
+      );
+
+      await assert.rejects(
+        () => openai.generateExplanation('Test'),
+        /Incorrect API key/
+      );
+    });
+
+    it('should throw on timeout (AbortError) from check', async () => {
       global.fetch = mock.fn(() => {
         const err = new Error('The operation was aborted');
         err.name = 'AbortError';
@@ -65,7 +87,7 @@ describe('openai.js', () => {
 
       await assert.rejects(
         () => openai.generateExplanation('Test'),
-        /wygasło/
+        /nie odpowiada/
       );
     });
 
@@ -83,15 +105,11 @@ describe('openai.js', () => {
       );
     });
 
-    it('should propagate API key error with code', async () => {
-      global.fetch = mock.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 401,
-          json: () =>
-            Promise.resolve({ error: { message: 'Incorrect API key provided', code: 'invalid_api_key' } }),
-        })
-      );
+    it('should propagate API key error with code (check passes, API fails)', async () => {
+      mockFetch([
+        okResponse({}), // checkOpenAIAvailable
+        failResponse(401, { error: { message: 'Incorrect API key provided', code: 'invalid_api_key' } }),
+      ]);
 
       try {
         await openai.generateExplanation('Test');
@@ -102,20 +120,16 @@ describe('openai.js', () => {
       }
     });
 
-    it('should detect org unverified error', async () => {
-      global.fetch = mock.fn(() =>
-        Promise.resolve({
-          ok: false,
-          status: 403,
-          json: () =>
-            Promise.resolve({
-              error: {
-                message: 'You must be verified for this organization',
-                code: 'organization_not_verified',
-              },
-            }),
-        })
-      );
+    it('should detect org unverified error (check passes, API fails)', async () => {
+      mockFetch([
+        okResponse({}), // checkOpenAIAvailable
+        failResponse(403, {
+          error: {
+            message: 'You must be verified for this organization',
+            code: 'organization_not_verified',
+          },
+        }),
+      ]);
 
       try {
         await openai.generateExplanation('Test');
@@ -128,16 +142,13 @@ describe('openai.js', () => {
 
   describe('getLastUsage', () => {
     it('should return last usage after successful call', async () => {
-      global.fetch = mock.fn(() =>
-        Promise.resolve({
-          ok: true,
-          json: () =>
-            Promise.resolve({
-              choices: [{ message: { content: 'Explanation' } }],
-              usage: { prompt_tokens: 5, completion_tokens: 10 },
-            }),
-        })
-      );
+      mockFetch([
+        okResponse({}), // checkOpenAIAvailable
+        okResponse({ // actual chat completion
+          choices: [{ message: { content: 'Explanation' } }],
+          usage: { prompt_tokens: 5, completion_tokens: 10 },
+        }),
+      ]);
 
       await openai.generateExplanation('Test');
       const usage = openai.getLastUsage();
