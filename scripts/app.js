@@ -136,9 +136,44 @@ document.addEventListener("DOMContentLoaded", function () {
     return Promise.resolve(null);
   }
 
+  var _pdfjs = null;
+  async function getPdfjs() {
+    if (_pdfjs) return _pdfjs;
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    _pdfjs = pdfjsLib;
+    return _pdfjs;
+  }
+
   function extractPdfTextSimple(file) {
-    // PDF wymaga zaawansowanego parsera — wysyłamy na serwer
-    return Promise.resolve(null);
+    return new Promise(async function (resolve) {
+      try {
+        var pdfjs = await getPdfjs();
+        var buf = await file.arrayBuffer();
+        var doc = await pdfjs.getDocument({ data: buf }).promise;
+        var parts = [];
+        for (var i = 1; i <= doc.numPages; i++) {
+          var page = await doc.getPage(i);
+          var content = await page.getTextContent();
+          var lines = [];
+          var lastY = null;
+          for (var j = 0; j < content.items.length; j++) {
+            var item = content.items[j];
+            if (lastY != null && Math.abs(item.transform[5] - lastY) > 5) {
+              lines.push("\n");
+            }
+            lines.push(item.str);
+            lastY = item.transform[5];
+          }
+          parts.push(lines.join("").replace(/\n+/g, "\n"));
+        }
+        var text = parts.join("\n\n").trim();
+        resolve(text || null);
+      } catch (e) {
+        console.warn("Lokalna ekstrakcja PDF nie powiodła się:", e);
+        resolve(null);
+      }
+    });
   }
 
   function getTextFromXml(xmlText) {
