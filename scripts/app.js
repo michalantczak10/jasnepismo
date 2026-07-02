@@ -136,6 +136,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp") || name.endsWith(".gif")) {
       return extractImageText(file);
     }
+    if (name.endsWith(".doc")) {
+      return extractDocSimple(file);
+    }
     return Promise.resolve(null);
   }
 
@@ -201,6 +204,38 @@ document.addEventListener("DOMContentLoaded", function () {
         console.warn("Lokalne OCR nie powiodło się:", e);
         resolve(null);
       }
+    });
+  }
+
+  function extractDocSimple(file) {
+    return new Promise(function (resolve) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        try {
+          var buf = e.target.result;
+          var view = new DataView(buf);
+          var parts = [];
+          var current = "";
+          for (var i = 0; i < view.byteLength; i++) {
+            var b = view.getUint8(i);
+            if (b >= 32 && b <= 126 || b >= 0x80 || b === 9 || b === 10 || b === 13) {
+              current += String.fromCharCode(b);
+            } else {
+              if (current.length >= 4) {
+                var t = current.trim();
+                if (t.length >= 4) parts.push(t);
+              }
+              current = "";
+            }
+          }
+          var text = parts.join("\n").replace(/\n{4,}/g, "\n\n").trim();
+          resolve(text.length > 20 ? text : null);
+        } catch (e2) {
+          resolve(null);
+        }
+      };
+      reader.onerror = function () { resolve(null); };
+      reader.readAsArrayBuffer(file);
     });
   }
 
