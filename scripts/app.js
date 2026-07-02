@@ -117,6 +117,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function compressImageIfNeeded(file) {
+    var imageExts = [".jpg", ".jpeg", ".png", ".bmp", ".gif"];
+    var name = (file && file.name) || "";
+    var isImage = imageExts.some(function (ext) { return name.toLowerCase().endsWith(ext); });
+    if (!isImage) return Promise.resolve(file);
+    return new Promise(function (resolve) {
+      var img = new Image();
+      img.onload = function () {
+        var MAX = 2000;
+        var w = img.width, h = img.height;
+        if (w <= MAX && h <= MAX && file.size < 1024 * 1024) {
+          resolve(file);
+          return;
+        }
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+        var canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(function (blob) {
+          if (!blob) { resolve(file); return; }
+          var newName = name.replace(/\.\w+$/, ".jpg");
+          var newFile = new File([blob], newName, { type: "image/jpeg" });
+          resolve(newFile);
+        }, "image/jpeg", 0.8);
+      };
+      img.onerror = function () { resolve(file); };
+      var url = URL.createObjectURL(file);
+      img.src = url;
+    });
+  }
+
   if (fileInput && fileDetails && removeFileButton) {
     fileInput.addEventListener("change", async function () {
       var files = fileInput.files;
@@ -263,7 +297,8 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
           var formData = new FormData();
           for (var fi2 = 0; fi2 < validFiles.length; fi2++) {
-            formData.append("file", validFiles[fi2], validFiles[fi2].name);
+            var compressedFile = await compressImageIfNeeded(validFiles[fi2]);
+            formData.append("file", compressedFile, compressedFile.name || validFiles[fi2].name);
           }
           var resp = await fetch("/api/explain", {
             method: "POST",
@@ -537,7 +572,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const formData = new FormData();
             if (text.trim()) formData.append("text", text);
             for (var fi3 = 0; fi3 < uploadFiles.length; fi3++) {
-              formData.append("file", uploadFiles[fi3], uploadFiles[fi3].name);
+              var compressedFile = await compressImageIfNeeded(uploadFiles[fi3]);
+              formData.append("file", compressedFile, compressedFile.name || uploadFiles[fi3].name);
             }
             response = await fetch("/api/explain", {
               method: "POST",
