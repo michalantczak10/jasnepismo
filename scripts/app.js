@@ -117,38 +117,88 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function compressImageIfNeeded(file) {
-    var imageExts = [".jpg", ".jpeg", ".png", ".bmp", ".gif"];
-    var name = (file && file.name) || "";
-    var isImage = imageExts.some(function (ext) { return name.toLowerCase().endsWith(ext); });
-    if (!isImage) return Promise.resolve(file);
+  function extractTextFromFile(file) {
+    var name = (file && file.name || "").toLowerCase();
+    if (name.endsWith(".txt") || name.endsWith(".md") || name.endsWith(".csv") || name.endsWith(".rtf")) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onload = function (e) { resolve(e.target.result || ""); };
+        reader.onerror = function () { reject(new Error("Nie udało się odczytać pliku.")); };
+        reader.readAsText(file, "utf-8");
+      });
+    }
+    if (name.endsWith(".docx") || name.endsWith(".dotx") || name.endsWith(".odt")) {
+      return extractFromOfficeFile(file);
+    }
+    if (name.endsWith(".pdf")) {
+      return extractPdfTextSimple(file);
+    }
+    return Promise.resolve(null);
+  }
+
+  function extractPdfTextSimple(file) {
     return new Promise(function (resolve) {
-      var img = new Image();
-      img.onload = function () {
-        var MAX = 2000;
-        var w = img.width, h = img.height;
-        if (w <= MAX && h <= MAX && file.size < 1024 * 1024) {
-          resolve(file);
-          return;
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var raw = e.target.result || "";
+        var parts = [];
+        var re = /\(([^)]*)\)/g;
+        var m;
+        while ((m = re.exec(raw))) {
+          var t = m[1].replace(/\\[0-9]{3}/g, "").replace(/\\(.)/g, "$1").trim();
+          if (t) parts.push(t);
         }
-        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
-        if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
-        var canvas = document.createElement("canvas");
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, w, h);
-        canvas.toBlob(function (blob) {
-          if (!blob) { resolve(file); return; }
-          var newName = name.replace(/\.\w+$/, ".jpg");
-          var newFile = new File([blob], newName, { type: "image/jpeg" });
-          resolve(newFile);
-        }, "image/jpeg", 0.8);
+        var text = parts.join(" ");
+        if (text.length > 30) { resolve(text); return; }
+        resolve(null);
       };
-      img.onerror = function () { resolve(file); };
-      var url = URL.createObjectURL(file);
-      img.src = url;
+      reader.onerror = function () { resolve(null); };
+      reader.readAsBinaryString(file);
     });
+  }
+
+  function getTextFromXml(xmlText) {
+    var doc = new DOMParser().parseFromString(xmlText, "text/xml");
+    var parts = [];
+    function walk(n) {
+      if (n.nodeType === 3) { var t = (n.textContent || "").trim(); if (t) parts.push(t); }
+      for (var i = 0; i < n.childNodes.length; i++) walk(n.childNodes[i]);
+    }
+    walk(doc);
+    return parts.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  }
+
+  function loadScript(url) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = url;
+      s.onload = resolve;
+      s.onerror = function () { reject(new Error("Nie udało się załadować biblioteki.")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  var _JSZip = null;
+  async function getJSZip() {
+    if (_JSZip) return _JSZip;
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js");
+    _JSZip = window.JSZip;
+    return _JSZip;
+  }
+
+  async function extractFromOfficeFile(file) {
+    try {
+      var JSZip = await getJSZip();
+      var buf = await file.arrayBuffer();
+      var zip = await JSZip.loadAsync(buf);
+      var xmlFile = zip.file("word/document.xml") || zip.file("word/document2.xml") || zip.file("content.xml");
+      if (!xmlFile) return null;
+      var xmlText = await xmlFile.async("string");
+      return getTextFromXml(xmlText);
+    } catch (e) {
+      console.warn("Lokalna ekstrakcja nie powiodła się:", e);
+      return null;
+    }
   }
 
   if (fileInput && fileDetails && removeFileButton) {
@@ -245,102 +295,77 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         removeFileButton.disabled = false;
 
-        var textareaEl = document.getElementById("documentText");
-
-        // Single .txt/.md/.csv file: read locally (instant)
-        if (validFiles.length === 1) {
-          var singleFile = validFiles[0];
-          var lowerName = singleFile.name ? singleFile.name.toLowerCase() : "";
-          if (
-            (singleFile.type && singleFile.type.startsWith("text/")) ||
-            lowerName.endsWith(".txt") ||
-            lowerName.endsWith(".md") ||
-            lowerName.endsWith(".csv")
-          ) {
-            (function (f) {
-              var reader = new FileReader();
-              extractInProgress = true;
-              updateFreeButtonState();
-              if (statusMessage) {
-                statusMessage.hidden = false;
-                statusMessage.textContent = "Wczytywanie pliku...";
-              }
-              reader.addEventListener("load", function (ev) {
-                var content = ev.target.result || "";
-                if (content.length > 5000) {
-                  content = content.slice(0, 5000);
-                  if (errorMessage) {
-                    errorMessage.textContent =
-                      "Plik został przycięty do 5000 znaków (maksymalny limit).";
-                    errorMessage.hidden = false;
-                  }
-                }
-                if (textareaEl) textareaEl.value = content;
-                updateTextCount(content);
-                extractInProgress = false;
-                if (statusMessage) statusMessage.hidden = true;
-                updateFreeButtonState();
-              });
-              reader.readAsText(f, "utf-8");
-            })(singleFile);
-            return;
-          }
-        }
-
-        // Multiple files or binary files: send to server for extraction
+        // Extract text locally from all files
         extractInProgress = true;
         updateFreeButtonState();
         if (statusMessage) {
           statusMessage.hidden = false;
           statusMessage.textContent = "Wczytywanie pliku...";
         }
+
         try {
-          var formData = new FormData();
+          var allText = "";
+          var fallbackFiles = [];
           for (var fi2 = 0; fi2 < validFiles.length; fi2++) {
-            var compressedFile = await compressImageIfNeeded(validFiles[fi2]);
-            formData.append("file", compressedFile, compressedFile.name || validFiles[fi2].name);
-          }
-          var resp = await fetch("/api/explain", {
-            method: "POST",
-            headers: { "X-Extract-Only": "1" },
-            body: formData,
-          });
-          if (resp.ok) {
-            var json = await resp.json().catch(function () {
-              return null;
-            });
-            var extracted = (json && (json.extractedText || json.text)) || "";
-            if (textareaEl && extracted) {
-              if (extracted.length > 5000) {
-                extracted = extracted.slice(0, 5000);
-                if (errorMessage) {
-                  errorMessage.textContent =
-                    "Tekst został przycięty do 5000 znaków (maksymalny limit).";
-                  errorMessage.hidden = false;
-                }
-              }
-              textareaEl.value = extracted;
-              updateTextCount(extracted);
-              if (errorMessage) {
-                errorMessage.hidden = true;
-                errorMessage.textContent = "";
-              }
+            var extracted = await extractTextFromFile(validFiles[fi2]);
+            if (extracted != null) {
+              if (allText) allText += "\n\n---\n\n";
+              allText += extracted;
             } else {
+              fallbackFiles.push(validFiles[fi2]);
+            }
+          }
+
+          // Put locally extracted text into textarea
+          if (allText) {
+            if (allText.length > 5000) {
+              allText = allText.slice(0, 5000);
               if (errorMessage) {
+                errorMessage.textContent = "Tekst został przycięty do 5000 znaków (maksymalny limit).";
                 errorMessage.hidden = false;
-                errorMessage.textContent =
-                  "Nie udało się automatycznie wczytać tekstu z pliku. Wyślij plik do wyjaśnienia — OCR zostanie wykonany na serwerze. Możesz też wpisać tekst ręcznie.";
               }
             }
-          } else {
-            var errJson = await resp.json().catch(function () {
-              return null;
-            });
-            if (errorMessage) {
-              errorMessage.hidden = false;
-              errorMessage.textContent =
-                (errJson && errJson.error) || "Nie udało się wczytać pliku.";
+            if (textarea) textarea.value = allText;
+            updateTextCount(allText);
+          }
+
+          // For files that couldn't be extracted locally, send to server
+          if (fallbackFiles.length > 0) {
+            if (statusMessage) statusMessage.textContent = "Wysyłanie plików do ekstrakcji na serwerze...";
+            var formData = new FormData();
+            for (var fi3 = 0; fi3 < fallbackFiles.length; fi3++) {
+              formData.append("file", fallbackFiles[fi3], fallbackFiles[fi3].name);
             }
+            var resp = await fetch("/api/explain", {
+              method: "POST",
+              headers: { "X-Extract-Only": "1" },
+              body: formData,
+            });
+            if (resp.ok) {
+              var json = await resp.json().catch(function () { return null; });
+              var serverText = (json && (json.extractedText || json.text)) || "";
+              if (serverText) {
+                if (allText) serverText = "\n\n---\n\n" + serverText;
+                var combined = allText + serverText;
+                if (combined.length > 5000) {
+                  combined = combined.slice(0, 5000);
+                  if (errorMessage) {
+                    errorMessage.textContent = "Tekst został przycięty do 5000 znaków (maksymalny limit).";
+                    errorMessage.hidden = false;
+                  }
+                }
+                if (textarea) textarea.value = combined;
+                updateTextCount(combined);
+                allText = combined;
+              }
+            }
+          }
+
+          if (!allText && errorMessage && !errorMessage.hidden) {
+            // Keep existing error, don't overwrite
+          } else if (!allText && errorMessage) {
+            errorMessage.textContent = "Nie udało się odczytać tekstu z żadnego pliku.";
+            errorMessage.hidden = false;
           }
         } catch (e) {
           if (errorMessage) {
@@ -565,32 +590,16 @@ document.addEventListener("DOMContentLoaded", function () {
           if (downloadButton) downloadButton.hidden = false;
           if (statusMessage) statusMessage.hidden = true;
         } else {
-          const uploadFiles = fileInput && fileInput.files;
-
-          let response;
-          if (uploadFiles && uploadFiles.length > 0) {
-            const formData = new FormData();
-            if (text.trim()) formData.append("text", text);
-            for (var fi3 = 0; fi3 < uploadFiles.length; fi3++) {
-              var compressedFile = await compressImageIfNeeded(uploadFiles[fi3]);
-              formData.append("file", compressedFile, compressedFile.name || uploadFiles[fi3].name);
-            }
-            response = await fetch("/api/explain", {
-              method: "POST",
-              body: formData,
-            });
-          } else {
-            if (!text.trim()) {
-              throw new Error(
-                "Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.",
-              );
-            }
-            response = await fetch("/api/explain", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ text }),
-            });
+          if (!text.trim()) {
+            throw new Error(
+              "Proszę wkleić treść pisma do przetworzenia lub dołączyć plik z tekstem.",
+            );
           }
+          const response = await fetch("/api/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          });
 
           if (!response.ok) {
             const json = await response.json().catch(() => null);
