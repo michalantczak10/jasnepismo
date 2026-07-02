@@ -56,6 +56,12 @@
     border-color: rgba(255, 255, 255, 0.1);
   }
 
+  .error-message {
+    background: #2a1a1a;
+    color: #ff8a80;
+    border-color: rgba(239, 83, 80, 0.25);
+  }
+
   .hero {
     background:
       radial-gradient(
