@@ -137,24 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function extractPdfTextSimple(file) {
-    return new Promise(function (resolve) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        var raw = e.target.result || "";
-        var parts = [];
-        var re = /\(([^)]*)\)/g;
-        var m;
-        while ((m = re.exec(raw))) {
-          var t = m[1].replace(/\\[0-9]{3}/g, "").replace(/\\(.)/g, "$1").trim();
-          if (t) parts.push(t);
-        }
-        var text = parts.join(" ");
-        if (text.length > 30) { resolve(text); return; }
-        resolve(null);
-      };
-      reader.onerror = function () { resolve(null); };
-      reader.readAsBinaryString(file);
-    });
+    // PDF wymaga zaawansowanego parsera — wysyłamy na serwer
+    return Promise.resolve(null);
   }
 
   function getTextFromXml(xmlText) {
