@@ -131,7 +131,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return extractFromOfficeFile(file);
     }
     if (name.endsWith(".pdf")) {
-      return extractPdfTextSimple(file);
+      return extractPdfSimple(file);
+    }
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".bmp") || name.endsWith(".gif")) {
+      return extractImageText(file);
     }
     return Promise.resolve(null);
   }
@@ -145,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return _pdfjs;
   }
 
-  function extractPdfTextSimple(file) {
+  function extractPdfSimple(file) {
     return new Promise(async function (resolve) {
       try {
         var pdfjs = await getPdfjs();
@@ -171,6 +174,31 @@ document.addEventListener("DOMContentLoaded", function () {
         resolve(text || null);
       } catch (e) {
         console.warn("Lokalna ekstrakcja PDF nie powiodła się:", e);
+        resolve(null);
+      }
+    });
+  }
+
+  var _Tesseract = null;
+  async function getTesseract() {
+    if (_Tesseract) return _Tesseract;
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js");
+    _Tesseract = Tesseract;
+    return _Tesseract;
+  }
+
+  function extractImageText(file) {
+    return new Promise(async function (resolve) {
+      try {
+        var tess = await getTesseract();
+        if (statusMessage) statusMessage.textContent = "Rozpoznawanie tekstu z obrazu (OCR)...";
+        var result = await tess.recognize(file, "pol", {
+          logger: function () {},
+        });
+        var text = (result && result.data && result.data.text) || "";
+        resolve(text.trim() || null);
+      } catch (e) {
+        console.warn("Lokalne OCR nie powiodło się:", e);
         resolve(null);
       }
     });
