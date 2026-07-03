@@ -93,29 +93,20 @@ test.describe('Obsługa formatów plików — upload + wyjaśnij', () => {
   }
 });
 
-test.describe('Obsługa formatów plików — extract-only', () => {
-  // Tylko formaty wysyłane do serwera w celu ekstrakcji
-  const serverExtracted = existingSamples.filter(s => !isLocallyRead(s.name));
-
-  for (const sample of serverExtracted) {
-    test(`${sample.name} — extract-only wywołuje endpoint`, async ({ page }) => {
-      let extractCalled = false;
-
+test.describe('Obsługa formatów plików — lokalna ekstrakcja', () => {
+  for (const sample of existingSamples) {
+    test(`${sample.name} — tekst wyodrębniony lokalnie`, async ({ page }) => {
       await page.route('**/api/explain', async (route) => {
         const request = route.request();
         const headers = request.headers();
-        const isExtractOnly = headers['x-extract-only'] === '1';
-
-        if (isExtractOnly) {
-          extractCalled = true;
+        if (headers['x-extract-only'] === '1') {
           await route.fulfill({
             status: 200,
             contentType: 'application/json',
-            body: JSON.stringify({ extractedText: 'Wyodrębniony tekst z pliku ' + sample.name }),
+            body: JSON.stringify({ extractedText: 'Fallback: ' + sample.name }),
           });
           return;
         }
-
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -132,8 +123,10 @@ test.describe('Obsługa formatów plików — extract-only', () => {
         buffer: fileBuffer,
       });
 
-      await page.waitForTimeout(1500);
-      expect(extractCalled).toBe(true);
+      // Czekamy aż textarea otrzyma tekst (z lokalnej ekstrakcji lub fallbacku z serwera)
+      const textarea = page.locator('[data-testid="documentText"]');
+      await expect(textarea).not.toBeEmpty({ timeout: 15000 });
+      await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
     });
   }
 });
@@ -193,19 +186,14 @@ test.describe('Multi-file upload — kilka plików', () => {
   const existingPages = pageFiles.filter(n => fs.existsSync(path.join(SAMPLES_DIR, n)));
   test.skip(existingPages.length < 3, 'brak plików page1/2/3.pdf');
 
-  test('wysyła kilka plików — extract-only zwraca scalony tekst', async ({ page }) => {
-    let extractBody = null;
-
+  test('wysyła kilka plików — lokalna ekstrakcja scala tekst', async ({ page }) => {
     await page.route('**/api/explain', async (route) => {
       const headers = route.request().headers();
       if (headers['x-extract-only'] === '1') {
-        // Read the request body to verify multi-file was sent
-        const postBody = route.request().postDataBuffer();
-        if (postBody) extractBody = postBody;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ extractedText: 'Scalony tekst z 3 plików.' }),
+          body: JSON.stringify({ extractedText: 'Fallback: ' }),
         });
         return;
       }
@@ -224,33 +212,22 @@ test.describe('Multi-file upload — kilka plików', () => {
     }));
 
     await page.locator('[data-testid="documentFile"]').setInputFiles(fileBuffers);
-    await page.waitForTimeout(1500);
-
-    // extract-only should have been called with multiple files
-    expect(extractBody).not.toBeNull();
 
     // fileDetails should show multiple files
     await expect(page.locator('[data-testid="fileDetails"]')).toBeVisible();
     await expect(page.locator('[data-testid="fileDetails"]')).toContainText('3 plik');
     await expect(page.locator('[data-testid="fileDetails"]')).toContainText('page1.pdf');
 
-    // textarea should contain the concatenated response
+    // textarea should contain locally extracted text from all 3 PDFs
     const textarea = page.locator('[data-testid="documentText"]');
-    await expect(textarea).toHaveValue(/Scalony tekst z 3 plików/);
+    await expect(textarea).not.toBeEmpty({ timeout: 15000 });
+    await expect(textarea).toHaveValue(/STRONA PIERWSZA/);
+    await expect(textarea).toHaveValue(/STRONA TRZECIA/);
   });
 
   test('wysyła kilka plików — wyjaśnienie działa', async ({ page }) => {
     await page.route('**/api/explain', async (route) => {
       await new Promise(r => setTimeout(r, 100));
-      const headers = route.request().headers();
-      if (headers['x-extract-only'] === '1') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ extractedText: 'Scalony tekst.' }),
-        });
-        return;
-      }
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -270,11 +247,10 @@ test.describe('Multi-file upload — kilka plików', () => {
     }));
 
     await page.locator('[data-testid="documentFile"]').setInputFiles(fileBuffers);
-    await page.waitForTimeout(1500);
 
-    // Wait for extract-only to complete and fill textarea
+    // Wait for local extraction to complete
     const textarea = page.locator('[data-testid="documentText"]');
-    await expect(textarea).toHaveValue(/Scalony tekst/, { timeout: 5000 });
+    await expect(textarea).not.toBeEmpty({ timeout: 15000 });
 
     await page.locator('[data-testid="freeButton"]').click();
     await expect(page.locator('[data-testid="statusMessage"]')).toBeVisible({ timeout: 3000 });
