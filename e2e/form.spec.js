@@ -10,26 +10,26 @@ test.describe('Formularz — interakcje', () => {
     await expect(textarea).toHaveValue('');
   });
 
-  test('textarea powinien mieć atrybut maxlength="5000"', async ({ page }) => {
+  test('textarea powinien mieć atrybut maxlength="15000"', async ({ page }) => {
     const textarea = page.locator('[data-testid="documentText"]');
-    await expect(textarea).toHaveAttribute('maxlength', '5000');
+    await expect(textarea).toHaveAttribute('maxlength', '15000');
   });
 
-  test('licznik znaków powinien pokazywać 0 / 5000 na początku', async ({ page }) => {
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 5000 znaków');
+  test('licznik znaków powinien pokazywać 0 / 15000 na początku', async ({ page }) => {
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 15000 znaków');
   });
 
   test('licznik znaków powinien aktualizować się podczas pisania', async ({ page }) => {
     const textarea = page.locator('[data-testid="documentText"]');
     await textarea.fill('Testowe pismo');
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('13 / 5000 znaków');
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('13 / 15000 znaków');
   });
 
   test('licznik znaków powinien pokazywać poprawną liczbę dla długiego tekstu', async ({ page }) => {
     const textarea = page.locator('[data-testid="documentText"]');
     const longText = 'A'.repeat(1234);
     await textarea.fill(longText);
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('1234 / 5000 znaków');
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('1234 / 15000 znaków');
   });
 
   test('przycisk "Wyjaśnij" powinien być wyłączony gdy textarea jest pusty', async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe('Formularz — interakcje', () => {
     const polishText = 'Zażółć gęślą jaźń';
     await textarea.fill(polishText);
     await expect(textarea).toHaveValue(polishText);
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${polishText.length} / 5000 znaków`);
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${polishText.length} / 15000 znaków`);
   });
 
   test('formularz nie powinien się przeładowywać strony przy naciśnięciu Enter', async ({ page }) => {

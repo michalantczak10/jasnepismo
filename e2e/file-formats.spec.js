@@ -84,8 +84,6 @@ test.describe('Obsługa formatów plików — upload + wyjaśnij', () => {
       await expect(page.locator('[data-testid="resultCard"]')).toBeVisible({ timeout: 10000 });
       await expect(page.locator('[data-testid="resultHeading"]')).toHaveText('Wyjaśnienie');
       await expect(page.locator('[data-testid="resultText"]')).toContainText('To jest podsumowanie pisma.');
-      await expect(page.locator('[data-testid="usedModel"]')).toBeVisible();
-      await expect(page.locator('[data-testid="usedModel"]')).toContainText('gpt-4o-mini');
       await expect(page.locator('[data-testid="errorMessage"]')).not.toBeVisible();
       await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
       await expect(page.locator('[data-testid="freeButton"]')).toHaveText('Wyjaśnij');
@@ -177,7 +175,6 @@ test.describe('Multi-page PDF', () => {
     await expect(page.locator('[data-testid="statusMessage"]')).toBeVisible({ timeout: 3000 });
     await expect(page.locator('[data-testid="resultCard"]')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('[data-testid="resultText"]')).toContainText('To jest podsumowanie pisma.');
-    await expect(page.locator('[data-testid="usedModel"]')).toContainText('gpt-4o-mini');
   });
 });
 

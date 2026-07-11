@@ -215,10 +215,10 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Proszę wkleić treść pisma do przetworzenia.', requestId });
     }
 
-    if (trimmedText.length > 5000) {
+    if (trimmedText.length > 15000) {
       return res
         .status(413)
-        .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${5000} znaków.`, requestId });
+        .json({ error: `Tekst przekracza maksymalną dozwoloną długość ${15000} znaków.`, requestId });
     }
 
     if (text !== trimmedText) {

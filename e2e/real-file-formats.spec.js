@@ -53,10 +53,6 @@ test.describe('REAL API — wszystkie formaty plików', () => {
       const textContent = await resultText.textContent();
       expect(textContent.length).toBeGreaterThan(30);
 
-      await expect(page.locator('[data-testid="usedModel"]')).toBeVisible();
-      const modelText = await page.locator('[data-testid="usedModel"]').textContent();
-      expect(modelText).toMatch(/Użyty model:/);
-
       await expect(page.locator('[data-testid="statusMessage"]')).not.toBeVisible();
       await expect(page.locator('[data-testid="errorMessage"]')).not.toBeVisible();
       await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();

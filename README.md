@@ -4,7 +4,7 @@ Wklej tekst urzędowego pisma lub wyślij plik (PDF, JPG, DOCX). Kliknij „Wyja
 
 ## Jak działa
 
-- **Tekst** — wklej treść pisma w pole tekstowe (maks. 5000 znaków).
+- **Tekst** — wklej treść pisma w pole tekstowe (maks. 15000 znaków).
 - **Pliki** — wyślij jeden lub kilka plików. Obsługiwane formaty: PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF.
 - **Kilka plików naraz** — pliki są sortowane alfabetycznie po nazwie i łączone w jeden tekst przed wysłaniem do AI.
 - **Ograniczenia** — maks. 10 plików, każdy do 5 MB. Zdjęcia i skany są czytane przez OCR (jakość zależy od czytelności).

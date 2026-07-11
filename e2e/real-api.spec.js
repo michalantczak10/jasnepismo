@@ -20,7 +20,7 @@ test.describe('Prawdziwe API — E2E', () => {
       const testText = 'Szanowny Panie, niniejszym zawiadamiam, że decyzja administracyjna nr 123/2024 została wydana. Proszę o pilne rozpatrzenie sprawy.';
 
       await page.locator('[data-testid="documentText"]').fill(testText);
-      await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${testText.length} / 5000 znaków`);
+      await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${testText.length} / 15000 znaków`);
       await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
 
       await page.locator('[data-testid="freeButton"]').click();
@@ -35,10 +35,6 @@ test.describe('Prawdziwe API — E2E', () => {
       await expect(resultText).not.toBeEmpty();
       const textContent = await resultText.textContent();
       expect(textContent.length).toBeGreaterThan(50);
-
-      await expect(page.locator('[data-testid="usedModel"]')).toBeVisible();
-      const modelText = await page.locator('[data-testid="usedModel"]').textContent();
-      expect(modelText).toMatch(/Użyty model:/);
 
       await expect(page.locator('[data-testid="statusMessage"]')).not.toBeVisible();
       await expect(page.locator('[data-testid="errorMessage"]')).not.toBeVisible();

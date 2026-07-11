@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateTextCount(val) {
     const textCountEl = document.getElementById("textCount");
     if (textCountEl)
-      textCountEl.textContent = `${(val || "").length} / 5000 znaków`;
+      textCountEl.textContent = `${(val || "").length} / 15000 znaków`;
   }
 
   function updateFreeButtonState() {
@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Extract text locally from all files
         extractInProgress = true;
         updateFreeButtonState();
+        setProgressBar("Wczytywanie plików...", 30);
         if (statusMessage) {
           statusMessage.hidden = false;
           statusMessage.textContent = "Wczytywanie pliku...";
@@ -400,10 +401,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Put locally extracted text into textarea
           if (allText) {
-            if (allText.length > 5000) {
-              allText = allText.slice(0, 5000);
+            if (allText.length > 15000) {
+              allText = allText.slice(0, 15000);
               if (errorMessage) {
-                errorMessage.textContent = "Tekst został przycięty do 5000 znaków (maksymalny limit).";
+                errorMessage.textContent = "Tekst został przycięty do 15000 znaków (maksymalny limit).";
                 errorMessage.hidden = false;
               }
             }
@@ -429,10 +430,10 @@ document.addEventListener("DOMContentLoaded", function () {
               if (serverText) {
                 if (allText) serverText = "\n\n---\n\n" + serverText;
                 var combined = allText + serverText;
-                if (combined.length > 5000) {
-                  combined = combined.slice(0, 5000);
+                if (combined.length > 15000) {
+                  combined = combined.slice(0, 15000);
                   if (errorMessage) {
-                    errorMessage.textContent = "Tekst został przycięty do 5000 znaków (maksymalny limit).";
+                    errorMessage.textContent = "Tekst został przycięty do 15000 znaków (maksymalny limit).";
                     errorMessage.hidden = false;
                   }
                 }
@@ -456,6 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         } finally {
           extractInProgress = false;
+          hideProgressBar();
           if (statusMessage) statusMessage.hidden = true;
           updateFreeButtonState();
         }
@@ -589,12 +591,8 @@ document.addEventListener("DOMContentLoaded", function () {
   if (downloadButton) {
     downloadButton.addEventListener("click", function () {
       const resultText = document.getElementById("resultText");
-      const usedModelEl = document.getElementById("usedModel");
       const text = (resultText && resultText.textContent) || "";
-      const modelInfo =
-        (usedModelEl && !usedModelEl.hidden && usedModelEl.textContent) || "";
-      const content = text + (modelInfo ? "\n\n---\n" + modelInfo : "");
-      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -658,16 +656,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const data = await response.json();
           const resultText = document.getElementById("resultText");
           if (resultText) resultText.textContent = data.letter || "";
-          const usedModelEl = document.getElementById("usedModel");
-          if (usedModelEl) {
-            const model = data && data.usedModel;
-            if (model) {
-              usedModelEl.textContent = `Użyty model: ${model}`;
-              usedModelEl.hidden = false;
-            } else {
-              usedModelEl.hidden = true;
-            }
-          }
           if (resultCard) resultCard.hidden = false;
           if (downloadButton) downloadButton.hidden = false;
           if (statusMessage) statusMessage.hidden = true;
@@ -691,17 +679,6 @@ document.addEventListener("DOMContentLoaded", function () {
           const data = await response.json();
           const resultText = document.getElementById("resultText");
           if (resultText) resultText.textContent = data.explanation || "";
-          const usedModelEl = document.getElementById("usedModel");
-          if (usedModelEl) {
-            const model = data && data.usedModel;
-            const fallback = data && data.usedFallback ? " (fallback)" : "";
-            if (model) {
-              usedModelEl.textContent = `Użyty model: ${model}${fallback}`;
-              usedModelEl.hidden = false;
-            } else {
-              usedModelEl.hidden = true;
-            }
-          }
           if (resultCard) resultCard.hidden = false;
           if (downloadButton) downloadButton.hidden = false;
           if (statusMessage) statusMessage.hidden = true;
@@ -729,6 +706,118 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
+
+  // Copy to clipboard button
+  const copyButton = document.getElementById("copyButton");
+  if (copyButton) {
+    copyButton.addEventListener("click", async function () {
+      const resultText = document.getElementById("resultText");
+      const text = (resultText && resultText.textContent) || "";
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyButton.textContent = "Skopiowano!";
+        setTimeout(function () {
+          copyButton.textContent = "Kopiuj do schowka";
+        }, 2000);
+      } catch {
+        copyButton.textContent = "Nie udało się";
+        setTimeout(function () {
+          copyButton.textContent = "Kopiuj do schowka";
+        }, 2000);
+      }
+    });
+  }
+
+  // Show copy button when result appears
+  const resultObserver = new MutationObserver(function () {
+    if (copyButton && resultCard && !resultCard.hidden) {
+      copyButton.hidden = false;
+    }
+  });
+  if (resultCard) {
+    resultObserver.observe(resultCard, { attributes: true, attributeFilter: ["hidden"] });
+  }
+
+  // Example letter button
+  const exampleButton = document.getElementById("exampleButton");
+  if (exampleButton && textarea) {
+    exampleButton.addEventListener("click", function () {
+      textarea.value = "Szanowni Państwo,\n\ninformuję, że w związku z zakończeniem postępowania administracyjnego znak sprawy: OA.III.4210.12.2026, decyzja Nr 89/2026 z dnia 15 czerwca 2026 roku wydana przez Burmistrza Miasta Przykładowego w sprawie ustalenia warunków zabudowy dla inwestycji polegającej na budowie budynku mieszkalnego jednorodzinnego przy ul. Głównej 42 w miejscowości Przykładowo, stała się ostateczna.\n\nOd decyzji przysługuje prawo wniesienia skargi do Wojewódzkiego Sądu Administracyjnego za pośrednictwem organu, który wydał decyzję, w terminie 30 dni od dnia doręczenia decyzji.";
+      updateTextCount(textarea.value);
+      updateFreeButtonState();
+      if (errorMessage) {
+        errorMessage.hidden = true;
+        errorMessage.textContent = "";
+      }
+      textarea.focus();
+    });
+  }
+
+  // Drag & drop support
+  const dropZone = document.getElementById("dropZone");
+  const appSection = document.getElementById("app-section");
+
+  function showDropZone(e) {
+    e.preventDefault();
+    if (dropZone) dropZone.hidden = false;
+  }
+
+  function hideDropZone(e) {
+    e.preventDefault();
+    if (dropZone) dropZone.hidden = true;
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    if (dropZone) dropZone.hidden = true;
+    const files = e.dataTransfer && e.dataTransfer.files;
+    if (files && files.length > 0 && fileInput) {
+      const dt = new DataTransfer();
+      for (var i = 0; i < files.length; i++) {
+        dt.items.add(files[i]);
+      }
+      fileInput.files = dt.files;
+      fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }
+
+  if (appSection) {
+    appSection.addEventListener("dragenter", showDropZone);
+    appSection.addEventListener("dragover", showDropZone);
+    appSection.addEventListener("dragleave", hideDropZone);
+    appSection.addEventListener("drop", handleDrop);
+  }
+
+  // Progress bar helpers
+  function setProgressBar(text, percent) {
+    const bar = document.getElementById("progressBar");
+    const fill = bar && bar.querySelector(".progress-bar-fill");
+    const label = bar && bar.querySelector(".progress-bar-text");
+    if (bar) bar.hidden = false;
+    if (fill) fill.style.width = (percent != null ? percent : 0) + "%";
+    if (label) label.textContent = text || "";
+  }
+
+  function hideProgressBar() {
+    const bar = document.getElementById("progressBar");
+    if (bar) bar.hidden = true;
+  }
+
+  // Integrate progress bar into existing loading flow:
+  // Patch extractInProgress visibility
+  var origSetLoading = setLoading;
+  setLoading = function (isLoading) {
+    origSetLoading(isLoading);
+    if (isLoading) {
+      setProgressBar(
+        currentMode === "write" ? "Generowanie pisma..." : "Wyjaśnianie...",
+        50
+      );
+    } else {
+      hideProgressBar();
+    }
+  };
 
   // Register service worker for offline support (skip in automation/Playwright)
   if ("serviceWorker" in navigator && !navigator.webdriver) {

@@ -140,7 +140,7 @@
         </h1>
         <p data-testid="hero-subtitle">
           Urząd, bank, szkoła, pracodawca, NFZ — dowolne pismo. Wytłumaczymy Ci
-          je w języku, który znasz na co dzień.
+          je w języku, który znasz na co dzień. A jeśli potrzebujesz <strong>napisać</strong> pismo — też pomożemy.
         </p>
       </div>
     </header>
@@ -231,19 +231,40 @@
           data-mode="explain"
         >
           <label class="sr-only" for="documentText">Treść pisma</label>
-          <textarea
-            id="documentText"
-            name="text"
-            rows="12"
-            maxlength="5000"
-            aria-label="Treść pisma"
-            aria-describedby="textCount"
-            placeholder="Wklej tutaj tekst z pisma..."
-            data-testid="documentText"
-          ></textarea>
+          <div class="textarea-wrapper">
+            <textarea
+              id="documentText"
+              name="text"
+              rows="12"
+              maxlength="15000"
+              aria-label="Treść pisma"
+              aria-describedby="textCount"
+              placeholder="Wklej tutaj tekst z pisma..."
+              data-testid="documentText"
+            ></textarea>
+            <div
+              id="dropZone"
+              class="drop-zone"
+              hidden
+              data-testid="dropZone"
+            >
+              <p>Upuść pliki tutaj</p>
+            </div>
+          </div>
           <p id="textCount" class="field-note" data-testid="textCount">
-            0 / 5000 znaków
+            0 / 15000 znaków
           </p>
+          <div
+            id="progressBar"
+            class="progress-bar"
+            hidden
+            role="progressbar"
+            aria-label="Postęp przetwarzania"
+            data-testid="progressBar"
+          >
+            <div class="progress-bar-fill"></div>
+            <span class="progress-bar-text">Wczytywanie...</span>
+          </div>
           <div id="fileSection">
             <label
               class="file-upload-label"
@@ -287,6 +308,16 @@
               hidden
               data-testid="fileDetails"
             ></p>
+          </div>
+          <div class="form-extra-actions">
+            <button
+              type="button"
+              id="exampleButton"
+              class="hero-cta hero-cta-secondary example-button"
+              data-testid="exampleButton"
+            >
+              Wklej przykład
+            </button>
           </div>
           <div class="form-actions">
             <button
@@ -379,12 +410,7 @@
             data-testid="resultText"
             aria-live="polite"
           ></div>
-          <p
-            id="usedModel"
-            class="field-note model-note"
-            data-testid="usedModel"
-            hidden
-          ></p>
+
           <div class="result-actions">
             <button
               type="button"
@@ -394,6 +420,15 @@
               data-testid="downloadButton"
             >
               Pobierz wynik
+            </button>
+            <button
+              type="button"
+              id="copyButton"
+              class="hero-cta hero-cta-secondary"
+              hidden
+              data-testid="copyButton"
+            >
+              Kopiuj do schowka
             </button>
           </div>
         </article>
@@ -406,8 +441,8 @@
               połączone w jeden tekst.
             </li>
             <li>
-              <strong>Limit 5000 znaków</strong> — tekst ze wszystkich plików
-              nie może przekroczyć 5000 znaków. Tekst powyżej tego limitu nie
+              <strong>Limit 15000 znaków</strong> — tekst ze wszystkich plików
+              nie może przekroczyć 15000 znaków. Tekst powyżej tego limitu nie
               zmieści się w polu edycji.
             </li>
             <li>

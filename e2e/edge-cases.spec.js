@@ -5,20 +5,20 @@ test.describe('Scenariusze brzegowe', () => {
     await page.goto('/');
   });
 
-  test('textarea powinien akceptować tekst bliski limitowi 5000 znaków', async ({ page }) => {
+  test('textarea powinien akceptować tekst bliski limitowi 15000 znaków', async ({ page }) => {
     const textarea = page.locator('[data-testid="documentText"]');
-    const longText = 'A'.repeat(4990);
+    const longText = 'A'.repeat(14990);
     await textarea.fill(longText);
     await expect(textarea).toHaveValue(longText);
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('4990 / 5000 znaków');
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('14990 / 15000 znaków');
   });
 
-  test('textarea nie powinien akceptować więcej niż 5000 znaków', async ({ page }) => {
+  test('textarea nie powinien akceptować więcej niż 15000 znaków', async ({ page }) => {
     const textarea = page.locator('[data-testid="documentText"]');
-    const tooLong = 'A'.repeat(6000);
+    const tooLong = 'A'.repeat(16000);
     await textarea.fill(tooLong);
     const val = await textarea.inputValue();
-    expect(val.length).toBeLessThanOrEqual(5000);
+    expect(val.length).toBeLessThanOrEqual(15000);
   });
 
   test('powinien wyczyścić textarea i zresetować licznik po potwierdzeniu', async ({ page }) => {
@@ -40,24 +40,7 @@ test.describe('Scenariusze brzegowe', () => {
     await page.locator('[data-testid="clearButton"]').click();
     await page.locator('[data-testid="confirmClearButton"]').click();
     await expect(page.locator('[data-testid="documentText"]')).toHaveValue('');
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 5000 znaków');
-  });
-
-  test('API zwracające pustą odpowiedź nie powinno wyświetlić modelu', async ({ page }) => {
-    await page.route('**/api/explain', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          explanation: 'Wyjaśnienie bez modelu.',
-        }),
-      });
-    });
-
-    await page.locator('[data-testid="documentText"]').fill('Treść pisma.');
-    await page.locator('[data-testid="freeButton"]').click();
-    await expect(page.locator('[data-testid="resultCard"]')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('[data-testid="usedModel"]')).not.toBeVisible();
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 15000 znaków');
   });
 
   test('plik i tekst łącznie — wysłanie pliku z tekstem', async ({ page }) => {

@@ -1,7 +1,7 @@
 const { checkRateLimit } = require("./rate-limit");
 const openai = require("./openai");
 
-const MAX_DESC_LENGTH = 5000;
+const MAX_DESC_LENGTH = 15000;
 
 function getPrompt() {
   return {

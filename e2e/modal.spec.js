@@ -55,7 +55,7 @@ test.describe('Modal potwierdzenia wyczyszczenia', () => {
   test('"Tak, wyczyść" powinien zresetować licznik znaków do 0', async ({ page }) => {
     await page.locator('[data-testid="clearButton"]').click();
     await page.locator('[data-testid="confirmClearButton"]').click();
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 5000 znaków');
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText('0 / 15000 znaków');
   });
 
   test('"Tak, wyczyść" powinien wyłączyć przycisk "Wyjaśnij"', async ({ page }) => {

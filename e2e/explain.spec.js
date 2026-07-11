@@ -99,14 +99,6 @@ test.describe('Przepływ wyjaśniania — API', () => {
     await expect(page.locator('[data-testid="resultText"]')).toContainText('Zrób krok pierwszy');
   });
 
-  test('powinien wyświetlić użyty model po udanej odpowiedzi', async ({ page }) => {
-    await page.locator('[data-testid="documentText"]').fill('Treść pisma.');
-    await page.locator('[data-testid="freeButton"]').click();
-
-    await expect(page.locator('[data-testid="usedModel"]')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('[data-testid="usedModel"]')).toContainText('gpt-4o-mini');
-  });
-
   test('powinien ukryć status i przywrócić przyciski po odpowiedzi', async ({ page }) => {
     await page.locator('[data-testid="documentText"]').fill('Treść pisma.');
     await page.locator('[data-testid="freeButton"]').click();
@@ -190,7 +182,7 @@ test.describe('Przepływ wyjaśniania — API', () => {
     const testText = 'Niniejszym informuję, że decyzja administracyjna została wydana.';
 
     await page.locator('[data-testid="documentText"]').fill(testText);
-    await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${testText.length} / 5000 znaków`);
+    await expect(page.locator('[data-testid="textCount"]')).toHaveText(`${testText.length} / 15000 znaków`);
     await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
 
     await page.locator('[data-testid="freeButton"]').click();
@@ -204,10 +196,6 @@ test.describe('Przepływ wyjaśniania — API', () => {
     await expect(page.locator('[data-testid="resultText"]')).toContainText(MOCK_SUMMARY);
     await expect(page.locator('[data-testid="resultText"]')).toContainText('Ważny punkt pierwszy');
     await expect(page.locator('[data-testid="resultText"]')).toContainText('Zrób krok pierwszy');
-    await expect(page.locator('[data-testid="usedModel"]')).toBeVisible();
-    await expect(page.locator('[data-testid="usedModel"]')).toContainText('gpt-4o-mini');
-    await expect(page.locator('[data-testid="usedModel"]')).not.toContainText('fallback');
-
     await expect(page.locator('[data-testid="statusMessage"]')).not.toBeVisible();
     await expect(page.locator('[data-testid="errorMessage"]')).not.toBeVisible();
     await expect(page.locator('[data-testid="freeButton"]')).toBeEnabled();
