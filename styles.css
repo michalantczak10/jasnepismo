@@ -1468,4 +1468,300 @@ svg {
   }
 }
 
+/* ===== Dark mode ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #121212;
+    --color-text: #e4e4e4;
+    --muted: #9ca3af;
+    --card-bg: #1e1e1e;
+    --color-primary-contrast: #ffffff;
+    --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.35), 0 3px 8px rgba(0, 0, 0, 0.2);
+    --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.2);
+  }
+
+  body:not(.light-mode) {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  body:not(.light-mode) .hero {
+    background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 35%),
+      linear-gradient(180deg, #b30000 0%, #6b0000 100%);
+  }
+
+  body:not(.light-mode) .step-card {
+    background: var(--card-bg);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  body:not(.light-mode) .product-inner {
+    background: linear-gradient(180deg, #2a2500 0%, #1a1a1a 80%);
+    border-color: rgba(255, 204, 0, 0.15);
+  }
+
+  body:not(.light-mode) .product-features li {
+    background: linear-gradient(180deg, #2a2500, #1f1f1f);
+    border-color: rgba(255, 204, 0, 0.1);
+    color: var(--color-text);
+  }
+
+  body:not(.light-mode) .explain-form textarea {
+    background: #1a1a1a;
+    color: var(--color-text);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  body:not(.light-mode) .result-card {
+    background: var(--card-bg);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  body:not(.light-mode) .result-text {
+    color: var(--color-text);
+  }
+
+  body:not(.light-mode) .modal-window {
+    background: #1e1e1e;
+    color: var(--color-text);
+  }
+
+  body:not(.light-mode) .modal-copy p {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  body:not(.light-mode) .hero-cta-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  body:not(.light-mode) .hero-cta-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  body:not(.light-mode) .drop-zone {
+    background: rgba(30, 30, 30, 0.92);
+  }
+
+  body:not(.light-mode) .section-tag {
+    background: #554400;
+    color: #ffd400;
+  }
+
+  body:not(.light-mode) .site-footer a {
+    color: #ff6b6b;
+  }
+
+  body:not(.light-mode) .legal-accordion summary {
+    color: #ff6b6b;
+  }
+
+  body:not(.light-mode) .field-note {
+    color: var(--muted);
+  }
+
+  body:not(.light-mode) .progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  body:not(.light-mode) .file-info-details summary {
+    color: var(--color-text);
+  }
+}
+
+body.dark-mode {
+  --color-bg: #121212;
+  --color-text: #e4e4e4;
+  --muted: #9ca3af;
+  --card-bg: #1e1e1e;
+  --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.35), 0 3px 8px rgba(0, 0, 0, 0.2);
+  --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.2);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+body.dark-mode .hero {
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 35%),
+    linear-gradient(180deg, #b30000 0%, #6b0000 100%);
+}
+
+body.dark-mode .step-card {
+  background: var(--card-bg);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .product-inner {
+  background: linear-gradient(180deg, #2a2500 0%, #1a1a1a 80%);
+  border-color: rgba(255, 204, 0, 0.15);
+}
+
+body.dark-mode .product-features li {
+  background: linear-gradient(180deg, #2a2500, #1f1f1f);
+  border-color: rgba(255, 204, 0, 0.1);
+  color: var(--color-text);
+}
+
+body.dark-mode .explain-form textarea {
+  background: #1a1a1a;
+  color: var(--color-text);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .result-card {
+  background: var(--card-bg);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.dark-mode .result-text {
+  color: var(--color-text);
+}
+
+body.dark-mode .modal-window {
+  background: #1e1e1e;
+  color: var(--color-text);
+}
+
+body.dark-mode .modal-copy p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.dark-mode .hero-cta-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .hero-cta-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+body.dark-mode .drop-zone {
+  background: rgba(30, 30, 30, 0.92);
+}
+
+body.dark-mode .section-tag {
+  background: #554400;
+  color: #ffd400;
+}
+
+body.dark-mode .site-footer a {
+  color: #ff6b6b;
+}
+
+body.dark-mode .legal-accordion summary {
+  color: #ff6b6b;
+}
+
+body.dark-mode .field-note {
+  color: var(--muted);
+}
+
+body.dark-mode .progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .file-info-details summary {
+  color: var(--color-text);
+}
+
+/* Dark mode toggle button */
+.dark-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: none;
+  width: 2.5rem !important;
+  max-width: 2.5rem !important;
+}
+
+.dark-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+.dark-toggle:focus-visible {
+  outline: 3px solid rgba(242, 194, 0, 0.95);
+  outline-offset: 3px;
+}
+
+body.dark-mode .dark-toggle,
+@media (prefers-color-scheme: dark) {
+  body:not(.light-mode) .dark-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Auto-resize textarea */
+.explain-form textarea.textarea-auto {
+  min-height: 220px;
+  max-height: 70vh;
+  overflow-y: auto;
+  resize: none;
+}
+
+/* Word count */
+.word-count {
+  margin-left: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .word-count {
+    margin-left: 0;
+    display: block;
+  }
+}
+
+/* PWA install button */
+.install-pwa {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 40;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  box-shadow: 0 8px 24px rgba(179, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.install-pwa:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(179, 0, 0, 0.45);
+}
+
+.install-pwa[hidden] {
+  display: none;
+}
+
 

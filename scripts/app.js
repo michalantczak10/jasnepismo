@@ -831,6 +831,95 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  // Dark mode toggle
+  var darkToggle = document.getElementById("darkToggle");
+  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  var storedTheme = localStorage.getItem("jasnepismo-theme");
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      document.body.classList.add("dark-mode");
+      document.body.classList.remove("light-mode");
+      if (darkToggle) darkToggle.textContent = "☀️";
+      if (darkToggle) darkToggle.setAttribute("aria-label", "Przełącz tryb jasny");
+    } else if (theme === "light") {
+      document.body.classList.remove("dark-mode");
+      document.body.classList.add("light-mode");
+      if (darkToggle) darkToggle.textContent = "🌙";
+      if (darkToggle) darkToggle.setAttribute("aria-label", "Przełącz tryb ciemny");
+    }
+  }
+
+  if (storedTheme) {
+    applyTheme(storedTheme);
+  } else if (prefersDark) {
+    applyTheme("dark");
+  }
+
+  if (darkToggle) {
+    darkToggle.addEventListener("click", function () {
+      var isDark = document.body.classList.contains("dark-mode");
+      if (isDark) {
+        applyTheme("light");
+        localStorage.setItem("jasnepismo-theme", "light");
+      } else {
+        applyTheme("dark");
+        localStorage.setItem("jasnepismo-theme", "dark");
+      }
+    });
+  }
+
+  // Auto-resize textarea
+  if (textarea) {
+    function autoResize() {
+      textarea.style.height = "auto";
+      textarea.style.height = Math.min(textarea.scrollHeight, parseFloat(getComputedStyle(textarea).maxHeight || "70vh")) + "px";
+    }
+    textarea.addEventListener("input", autoResize);
+    // Initial resize
+    setTimeout(autoResize, 0);
+  }
+
+  // Word count
+  var wordCountEl = document.getElementById("wordCount");
+  function updateWordCount(val) {
+    if (!wordCountEl) return;
+    var text = (val || "").trim();
+    var count = text ? text.split(/\s+/).length : 0;
+    wordCountEl.textContent = count + " słów";
+  }
+  // Patch existing updateTextCount to also update word count
+  var origUpdateTextCount = updateTextCount;
+  updateTextCount = function (val) {
+    origUpdateTextCount(val);
+    updateWordCount(val);
+  };
+
+  // PWA install prompt
+  var deferredPrompt = null;
+  var installButton = document.getElementById("installPwa");
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installButton) installButton.hidden = false;
+  });
+
+  if (installButton) {
+    installButton.addEventListener("click", async function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      var result = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installButton.hidden = true;
+    });
+  }
+
+  window.addEventListener("appinstalled", function () {
+    deferredPrompt = null;
+    if (installButton) installButton.hidden = true;
+  });
+
   // Register service worker for offline support (skip in automation/Playwright)
   if ("serviceWorker" in navigator && !navigator.webdriver) {
     navigator.serviceWorker.register("/sw.js").catch(function () {

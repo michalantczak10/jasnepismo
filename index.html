@@ -109,6 +109,46 @@
         ]
       }
     </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Jakie formaty plików obsługujecie?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Obsługujemy PDF, DOC, DOCX, ODT, RTF, TXT, JPG, PNG, BMP, GIF. Możesz wysłać do 10 plików, każdy do 5 MB."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Czy moje dane są bezpieczne?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Tak. Nie przechowujemy Twoich pism na stałe. Tekst jest używany tylko do wygenerowania wyjaśnienia przez AI i nie jest zapisywany."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Czy to jest porada prawna?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Nie. Nasze wyjaśnienia mają charakter informacyjny. W ważnych sprawach skonsultuj się z prawnikiem."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Ile znaków mogę wkleić?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Maksymalnie 15000 znaków. To wystarczy na większość pism urzędowych."
+            }
+          }
+        ]
+      }
+    </script>
 
     <link rel="stylesheet" href="styles.css?v=2" />
     <link rel="preconnect" href="https://api.openai.com" />
@@ -116,6 +156,13 @@
   <body>
     <a class="skip-link" href="#app-section">Przejdź do treści</a>
     <header id="header" class="hero" data-testid="header-hero">
+      <button
+        type="button"
+        id="darkToggle"
+        class="dark-toggle"
+        aria-label="Przełącz tryb ciemny"
+        data-testid="darkToggle"
+      >🌙</button>
       <div class="hero-bg-svg" aria-hidden="true" data-testid="hero-bg-svg">
         <svg
           width="100%"
@@ -240,6 +287,7 @@
               aria-label="Treść pisma"
               aria-describedby="textCount"
               placeholder="Wklej tutaj tekst z pisma..."
+              class="textarea-auto"
               data-testid="documentText"
             ></textarea>
             <div
@@ -253,6 +301,7 @@
           </div>
           <p id="textCount" class="field-note" data-testid="textCount">
             0 / 15000 znaków
+            <span id="wordCount" class="word-count" data-testid="wordCount">0 słów</span>
           </p>
           <div
             id="progressBar"
@@ -503,6 +552,15 @@
 
     </main>
 
+    <button
+      type="button"
+      id="installPwa"
+      class="install-pwa"
+      hidden
+      data-testid="installPwa"
+    >
+      📲 Zainstaluj aplikację
+    </button>
     <footer id="footer" class="site-footer" data-testid="site-footer">
       <div class="footer-inner">
         <div class="footer-branding">
