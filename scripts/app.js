@@ -68,6 +68,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Clear previous result when switching modes
     if (resultCard) resultCard.hidden = true;
+    if (copyButton) copyButton.hidden = true;
+    if (downloadButton) downloadButton.hidden = true;
     var rText = document.getElementById("resultText");
     if (rText) rText.textContent = "";
     if (statusMessage) statusMessage.hidden = true;
@@ -577,6 +579,9 @@ document.addEventListener("DOMContentLoaded", function () {
         fileDetails.textContent = "";
       }
       if (removeFileButton) removeFileButton.disabled = true;
+      if (resultCard) resultCard.hidden = true;
+      if (copyButton) copyButton.hidden = true;
+      if (downloadButton) downloadButton.hidden = true;
       updateTextCount("");
       updateFreeButtonState();
       closeModal();
@@ -757,19 +762,26 @@ document.addEventListener("DOMContentLoaded", function () {
   // Drag & drop support
   const dropZone = document.getElementById("dropZone");
   const appSection = document.getElementById("app-section");
+  var dragCounter = 0;
 
   function showDropZone(e) {
     e.preventDefault();
+    dragCounter++;
     if (dropZone) dropZone.hidden = false;
   }
 
   function hideDropZone(e) {
     e.preventDefault();
-    if (dropZone) dropZone.hidden = true;
+    dragCounter--;
+    if (dragCounter <= 0) {
+      dragCounter = 0;
+      if (dropZone) dropZone.hidden = true;
+    }
   }
 
   function handleDrop(e) {
     e.preventDefault();
+    dragCounter = 0;
     if (dropZone) dropZone.hidden = true;
     const files = e.dataTransfer && e.dataTransfer.files;
     if (files && files.length > 0 && fileInput) {
@@ -784,7 +796,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (appSection) {
     appSection.addEventListener("dragenter", showDropZone);
-    appSection.addEventListener("dragover", showDropZone);
+    appSection.addEventListener("dragover", function (e) { e.preventDefault(); });
     appSection.addEventListener("dragleave", hideDropZone);
     appSection.addEventListener("drop", handleDrop);
   }
